@@ -1,0 +1,278 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leonics monitoring and Operation Center</title>
+
+<style>
+a:focus{color:#fff;}
+.active {background-color: transparent;border-color:transparent;}
+.visited {background-color: transparent;border-color:transparent;}
+
+/* 🔥 เพิ่มตรงนี้ */
+/*#main {
+    transition: margin-top 0.3s ease;
+	position: absolute;
+    top: 140px;
+    margin-left: 120px;
+}
+#main.charger-layout {
+    top: 105px;
+}*/
+.main-transition {
+    transition: margin-top 0.3s ease;
+}
+
+.charger-layout {
+    top: 105px !important;
+}
+
+/* 🔥 ฆ่าทุก animation + scale */
+.m-list li,
+.m-list li a,
+.m-list li:hover,
+.m-list li:hover a {
+    transform: none !important;
+    scale: 1 !important;
+    transition: none !important;
+    animation: none !important;
+}
+
+/* 🔥 ลบพื้นดำ */
+.m-list li:hover {
+    background: transparent !important;
+}
+
+/* 🔥 เหลือแค่เปลี่ยนสี */
+.m-list li a:hover {
+    color: #fceb26 !important;
+}
+/* ===== เพิ่ม CSS สำหรับชื่อ site เป็นข้อความ ===== */
+/* CSS สำหรับชื่อ site เป็นข้อความ */
+.m-list li b {
+    cursor: default;       /* เมาส์ไม่เป็น pointer */
+    color: #fff;           /* เปลี่ยนเป็นสีขาว */
+    text-decoration: none; /* ไม่มี underline */
+    transition: none;      /* ปิด transition เวลา hover */
+}
+.m-list li b:hover {
+    color: #fff;           /* สีไม่เปลี่ยนเวลาชี้ */
+    text-decoration: none; /* ไม่มี underline */
+}
+#screen-debug { /* ใช้แสดงขนาดของหน้าจอ เมื่อย่อ-ขยาย*/
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(0,0,0,0.7);
+    color: #fff;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-family: Arial;
+    border-radius: 6px;
+    z-index: 9999;
+}
+#screen-debug {
+    display: none;
+}
+
+#screen-debug.show {
+    display: block;
+}
+</style>
+
+<script src="js/jquery-latest.js"></script>
+<script>
+$(function(){
+    $("nav").click(function(){ 
+        if($(window).width() <= 1031){ 
+            $(".me_1").toggleClass('closed');
+        }
+    });
+});
+</script>
+
+<link href="boilerplate.css" rel="stylesheet">
+<link href="menu.css" rel="stylesheet">
+<script src="respond.min.js"></script>
+</head>
+
+<body>
+
+<script>
+// ===== ฟังก์ชันโหลด XML ด้วย fetch + retry + timeout =====
+function fetchXMLWithRetry(url, callback, retries, timeout) {
+    retries = (typeof retries !== "undefined") ? retries : 3;
+    timeout = (typeof timeout !== "undefined") ? timeout : 5000;
+
+    var attempt = 1;
+
+    function tryFetch() {
+        var controller = new AbortController();
+        var timer = setTimeout(function() {
+            controller.abort();
+        }, timeout);
+
+        fetch(url, { signal: controller.signal })
+            .then(function(response) {
+                clearTimeout(timer);
+                if (!response.ok) throw new Error("HTTP error " + response.status);
+                return response.text();
+            })
+            .then(function(text) {
+                var parser = new DOMParser();
+                var xmlDoc = parser.parseFromString(text, "text/xml");
+                if (xmlDoc.getElementsByTagName("DateServer").length > 0) {
+                    callback(xmlDoc);
+                } else {
+                    throw new Error("XML invalid");
+                }
+            })
+            .catch(function(err) {
+                console.warn("Fetch XML attempt " + attempt + " failed:", err);
+                if (attempt < retries) {
+                    attempt++;
+                    setTimeout(tryFetch, 1000); // retry after 1 sec
+                } else {
+                    callback(null);
+                }
+            });
+    }
+
+    tryFetch();
+}
+
+// ===== ฟังก์ชันเปลี่ยน Site =====
+function myFunction(a) {
+    var objtxt  = document.getElementById("txt");
+    var objDate = document.getElementById("Date");
+    var objDesc = document.getElementById("desc");
+    var objMain = document.getElementById("main");
+
+    objDate.innerHTML = "Loading...";
+
+    var url = "";
+
+    if(a == 1){
+        objtxt.innerHTML = "UPS Wisma A (Server Room)";
+        objDesc.style.display = "";
+        objMain.classList.remove("charger-layout");
+        url = "proxy.php?type=UPS";
+    } else if(a == 2){
+        objtxt.innerHTML = "Charger 110Vdc75A System";
+        objDesc.style.display = "none";
+        objMain.classList.add("charger-layout");
+        url = "proxy.php?type=Charger";
+    }
+
+    if(url){
+        fetchXMLWithRetry(url, function(xml){
+            if(xml){
+                var date = xml.getElementsByTagName("DateServer")[0].textContent;
+                var time = xml.getElementsByTagName("TimeServer")[0].textContent;
+                objDate.innerHTML = date + " " + time;
+            } else {
+                objDate.innerHTML = "Load error";
+            }
+        });
+    }
+}
+
+// ===== โหลดค่าเริ่มต้น =====
+window.onload = function(){
+    myFunction(1);
+};
+</script>
+
+<div id="logo"><img src="image/leo.svg"> Monitoring and Operation Center</div>
+<div id="logo2"></div>
+<div id="line"><hr class="new1"></div>
+
+<div id="menu">
+<nav>
+<div id="pic" align="center"></div>
+
+<div class="menu_1">
+<div class="openbtn">☰</div>
+
+<div class="me_1">
+<ul class="m-list">
+
+<li><b>UPS</b></li>
+<li><a href="http://www.leonics-moc.com:52080/UPS_Parallels/f1/plant.html" target="IF_m" onclick="myFunction(1)">Dashboard</a></li>
+<li><a href="http://www.leonics-moc.com:52080/UPS_Parallels/f1/ups.php" target="IF_m" onclick="myFunction(1)">UPS-1</a></li>
+<li><a href="http://www.leonics-moc.com:52080/UPS_Parallels/f1/ups2.php" target="IF_m" onclick="myFunction(1)">UPS-2</a></li>
+<li><a href="http://www.leonics-moc.com:52080/UPS_Parallels/f1/batt.php" target="IF_m" onclick="myFunction(1)">Battery 1-4</a></li>
+<li><a href="http://www.leonics-moc.com:52080/UPS_Parallels/f1/graph.php" target="IF_m" onclick="myFunction(1)">Power</a></li>
+<li><a href="http://www.leonics-moc.com:52080/UPS_Parallels/f1/data/data.php" target="IF_m" onclick="myFunction(1)">Download</a></li>
+
+<li><br></li>
+
+<li><b>110Vdc<br>Charger</b></li>
+<li><a href="http://www.leonics-moc.com:51080/Charger110v75A/f1/report1.php" target="IF_m" onclick="myFunction(2)">Dashboard</a></li>
+<li><a href="http://www.leonics-moc.com:51080/Charger110v75A/f1/Charger.php" target="IF_m" onclick="myFunction(2)">Charger</a></li>
+<li><a href="http://www.leonics-moc.com:51080/Charger110v75A/f1/Batt1-5.php" target="IF_m" onclick="myFunction(2)">Battery 1-5</a></li>
+<li><a href="http://www.leonics-moc.com:51080/Charger110v75A/f1/Batt6-10.php" target="IF_m" onclick="myFunction(2)">Battery 6-10</a></li>
+<li><a href="http://www.leonics-moc.com:51080/Charger110v75A/f1/data/data.php" target="IF_m" onclick="myFunction(2)">Download</a></li>
+
+</ul>
+</div>
+</div>
+</nav>
+</div>
+
+<div id="Txt_head">
+<table width="100%">
+<tr>
+<td class="styleL" align="left" width="45%">Site name</td>
+<td class="styleL" align="left" width="10%"></td>
+<td class="styleL" align="right" width="35%">Last updated&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+</tr>
+
+<tr>
+<td class="styleL2" align="left" width="45%" id="txt">UPS Wisma A (Server Room)</td>
+<td class="styleL2" align="left" width="10%"></td>
+<td class="styleL2" align="right" width="35%" id="Date"></td>
+</tr>
+
+<tr>
+<td class="styleL3" align="left" id="desc">Two UPS in parallel with shared SoNick battery bank</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+</div>
+
+<div id="main" class="main-transition">
+<iframe name="IF_m"
+src="http://www.leonics-moc.com:52080/UPS_Parallels/f1/plant.html"
+width="100%" height="100%" frameborder="0" scrolling="no"></iframe>
+</div>
+
+<div id="screen-debug"></div>
+<script>
+function updateScreenSize() {
+    var w = window.innerWidth;
+    var text = "";
+
+    if (w <= 480) {
+        text = "Mobile (≤480px)";
+    } else if (w <= 549) {
+        text = "Tablet (481–549px)";
+    } else if (w <= 999) {
+        text = "Tablet ใหญ่ (550–999px)";
+    } else {
+        text = "Desktop (1000px+)";
+    }
+
+    document.getElementById("screen-debug").innerHTML = text + " | " + w + "px";
+}
+
+//document.getElementById("screen-debug").classList.add("show"); // แสดง
+document.getElementById("screen-debug").classList.remove("show"); // ซ่อน
+
+window.addEventListener("resize", updateScreenSize);
+window.addEventListener("load", updateScreenSize);
+</script>
+</body>
+</html>

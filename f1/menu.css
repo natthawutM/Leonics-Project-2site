@@ -1,0 +1,685 @@
+@charset "utf-8";
+/* Simple fluid media
+   Note: Fluid media requires that you remove the media's height and width attributes from the HTML
+   http://www.alistapart.com/articles/fluid-images/ 
+*/
+img, object, embed, video {
+	max-width: 100%;
+}
+
+/* IE 6 does not support max-width so default to width 100% */
+.ie6 img {
+	width:100%;
+}
+
+/*
+	Dreamweaver Fluid Grid Properties
+	----------------------------------
+	dw-num-cols-mobile:		5;
+	dw-num-cols-tablet:		8;
+	dw-num-cols-desktop:	10;
+	dw-gutter-percentage:	25;
+	
+	Inspiration from "Responsive Web Design" by Ethan Marcotte 
+	http://www.alistapart.com/articles/responsive-web-design
+	
+	and Golden Grid System by Joni Korpi
+	http://goldengridsystem.com/
+*/
+
+/* Mobile Layout: 480px and below. */
+
+.gridContainer {
+	margin-left: auto;
+	margin-right: auto;
+	width: 87.36%;
+	padding-left: 1.82%;
+	padding-right: 1.82%;
+}
+hr.new1 {
+  border-top: 3px solid #0070c0;
+}
+.closed{
+    display: none;
+    }
+#logo {
+	clear: both;
+	float: left;
+	margin-left: 0;
+	width: 100%;
+	display: block;
+	font-family:Calibri;
+	font-size:14px;
+	color:#2e75b6;
+	vertical-align:bottom;
+	padding-left:0px;
+	padding-right:25px;
+}
+#M_P {
+	clear: both;
+	position: absolute;
+	right: 18%;
+	top:60px;
+	width: 50vw;
+	height:20px;
+	font-family:Calibri ;
+	letter-spacing: 0.01em;
+	font-size:1.2em;
+	color:#fff;
+	text-align:right;
+	z-index:30;
+}
+#logo2 {
+	display: block;
+	clear: both;
+	position: absolute;
+	left: 0%;
+	width: 98vw;
+	z-index:10;
+	top:60px;
+	font-family:Calibri ;
+	letter-spacing: 0.01em;
+	font-size:1.2em;
+	color:#fff;
+	text-align:right;
+}
+#pic{ display:none;}
+#pic2{ 
+	display:block;
+	float:right;
+	margin-left: 0;
+	padding-left:3px;
+	padding-top:10px;
+	}
+#menu { position:absolute;
+	clear: both;
+	float: left;
+	margin-left: 0px;
+	margin-top:-15px;
+	width: 100%;
+	display: block; 
+	background:#00529e;
+	z-index:10;
+}
+.menu_1{ 
+	font:Calibri; 
+	font-size:20px;
+	color:#FFF; 
+	padding-left:5px;
+	padding-top:0px;
+}
+.openbtn {
+  font-size: 15px;
+  cursor: pointer;
+  background-color: transparent;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  -webkit-border-radius: 5px; -moz-border-radius: 5px;border-radius: 5px;
+}
+
+.openbtn:hover {
+  font-size: 17px;
+  cursor: pointer;
+  background-color: transparent;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+}
+.m-list li{ 
+	list-style-type:none; 
+	font:Calibri; 
+	font-size:10px;
+	color:#FFF; 
+	padding:8px 10px;
+	
+}
+.m-list{ display:none;}
+.menu_1:hover .m-list{ 
+	display:block;
+	list-style-type:none; 
+	font:Calibri; 
+	font-size:10px;
+	color:#FFF; 
+	padding-left:0px;
+}
+.m-list li:hover { 
+	overflow:auto;
+	background: rgba(51,51,51,1);
+	color:#FFF;
+}
+#main {
+	clear: both;
+	float: left;
+	margin-left: 0;
+	width: 100%;
+	display: block;
+	padding-top:80px;
+	height:2200px;
+	
+}
+#Txt_head{  
+	position: absolute;
+	margin-left: 12px;
+	padding-bottom:10px;
+  	width: 93vw;
+	height:40px;
+  	top:  90px; 
+	border-bottom:solid 0px #000;
+	text-align: left;
+	z-index:1;
+}
+#Tim{  
+	position: absolute;
+	padding-right:20px;
+	padding-bottom:30px;
+  	width: 96vw;
+	height:40px;;
+  	top:  5px; 
+	text-align: right;
+	z-index:1;
+}
+.styleL {font-family: Calibri ;font-size: 11px;color: #726d64;font-weight: normal;line-height:10pt;}
+.styleL2{font-family: Calibri ;font-size: 11px;color: #000000;font-weight: normal;}
+.styleL3{font-family: Calibri ;font-size: 9px;color: #726d64;font-weight: normal;}
+/* Tablet Layout: 481px to 768px. Inherits styles from: Mobile Layout. */
+
+@media only screen and (min-width: 481px) {
+.gridContainer {
+	width: 90.675%;
+	padding-left: 1.1625%;
+	padding-right: 1.1625%;
+}
+hr.new1 {
+  border-top: 2px solid #0070c0;
+}
+.closed{
+    display: none;
+    }
+#logo {
+	clear: both;
+	float: left;
+	margin-left: 0;
+	width: 100%;
+	display: block;
+	font-family:Calibri;
+	font-size:15px;
+	color:#2e75b6;
+	vertical-align:bottom;
+}
+#M_P {
+	clear: both;
+	position: absolute;
+	right: 18%;
+	top:60px;
+	width: 50vw;
+	height:20px;
+	font-family:Calibri ;
+	letter-spacing: 0.01em;
+	font-size:1.2em;
+	color:#fff;
+	text-align:right;
+	z-index:30;
+}
+#logo2 {
+	display: block;
+	clear: both;
+	position: absolute;
+	left: 0%;
+	width: 94vw;
+	z-index:10;
+	top:60px;
+	font-family:Calibri ;
+	letter-spacing: 0.01em;
+	font-size:1.2em;
+	color:#fff;
+	text-align:right;
+}
+#pic{ display:none;}
+#pic2{ 
+	display:block;
+	float:right;
+	margin-left: 0;
+	padding-left:3px;
+	padding-top:10px;
+	}
+#menu {
+	position:absolute;
+	clear: both;
+	float: left;
+	margin-left: 0px;
+	margin-top:-15px;
+	width: 100%;
+	display: block; 
+	background:#00529e;
+	z-index:10;
+}
+.menu_1{ 
+	font:Calibri; 
+	font-size:20px;
+	color:#FFF; 
+	padding-left:5px;
+	padding-top:0px;
+}
+.openbtn {
+  font-size: 16px;
+  cursor: pointer;
+  background-color: transparent;
+  border-color:transparent; 
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  -webkit-border-radius: 5px; -moz-border-radius: 5px;border-radius: 5px;
+}
+
+.openbtn:hover {
+  font-size: 18px;
+  cursor: pointer;
+  background-color: transparent;
+  border-color:transparent; 
+  color: white;
+  padding: 10px 15px;
+  border: none;
+}
+.m-list li{ 
+	list-style-type:none; 
+	font:Calibri; 
+	font-size:12px;
+	font-weight:normal;
+	color:#24a8c2;
+	text-decoration: none;
+	padding:8px 10px;
+	
+}
+.m-list{ display:none;}
+.menu_1:hover .m-list{ 
+	display:block;
+	list-style-type:none; 
+	font:Calibri; 
+	font-size:12px;
+	color:#FFF; 
+	padding-left:0px;
+}
+.m-list li:hover { 
+	overflow:auto;
+	background: rgba(51,51,51,1);
+	color:#FFF;
+}
+#main {
+	clear: both;
+	float: left;
+	margin-left: 0;
+	width: 100%;
+	display: block;
+	padding-top:80px;
+	margin-right:10px;
+	height:2200px;
+}
+#Txt_head{  
+	position: absolute;
+	margin-left: 18px;
+	padding-bottom:10px;
+  	width: 93vw;
+	height:20px;
+  	top:  100px; 
+	border-bottom:solid 0px #000;
+	text-align: left;
+	z-index:1;
+}
+#Tim{  
+	position: absolute;
+	right:10px;
+	padding-bottom:30px;
+  	width: 140vw;
+	height:40px;;
+  	top:  5px; 
+	text-align: right;
+	z-index:1;
+}
+.styleL {font-family: Calibri ;font-size: 12px;color: #726d64;font-weight: normal;line-height:10pt;}
+.styleL2{font-family: Calibri ;font-size: 12px;color: #000000;font-weight: normal;}
+.styleL3{font-family: Calibri ;font-size: 10px;color: #726d64;font-weight: normal;}
+}
+@media only screen and (min-width: 550px) {
+.gridContainer {
+	width: 90.675%;
+	padding-left: 1.1625%;
+	padding-right: 1.1625%;
+}
+hr.new1 {
+  border-top: 2px solid #0070c0;
+}
+.closed{
+    display: none;
+    }
+#logo {
+	clear: both;
+	float: left;
+	margin-left: 0;
+	width: 100%;
+	display: block;
+	font-family:Calibri;
+	font-size:1.5em;
+	color:#2e75b6;
+	vertical-align:bottom;
+}
+#M_P {
+	clear: both;
+	position: absolute;
+	right: 13%;
+	top:60px;
+	width: 50vw;
+	height:20px;
+	font-family:Calibri ;
+	letter-spacing: 0.01em;
+	font-size:1.2em;
+	color:#fff;
+	text-align:right;
+	z-index:30;
+}
+#logo2 {
+	display: block;
+	clear: both;
+	position: absolute;
+	left: 0%;
+	width: 98vw;
+	z-index:10;
+	top:60px;
+	font-family:Calibri ;
+	letter-spacing: 0.01em;
+	font-size:1.2em;
+	color:#fff;
+	text-align:right;
+}
+#pic{ display:none;}
+#pic2{ 
+	display:block;
+	float:right;
+	margin-left: 0;
+	padding-left:3px;
+	padding-top:10px;
+	}
+#menu {
+	position:absolute;
+	clear: both;
+	float: left;
+	margin-left: 0px;
+	margin-top:-15px;
+	width: 100%;
+	display: block; 
+	background:#00529e;
+	z-index:10;
+}
+.menu_1{ 
+	font:Calibri; 
+	font-size:20px;
+	color:#FFF; 
+	padding-left:5px;
+	padding-top:0px;
+}
+.openbtn {
+  font-size: 16px;
+  cursor: pointer;
+  /*background-color: #00529e;
+  border-color:#00529e; */
+  background-color: transparent;
+  border-color:transparent; 
+  color: white;
+  padding: 10px 15px;
+  border: 0;
+  -webkit-border-radius: 5px; -moz-border-radius: 5px;border-radius: 5px;
+}
+
+.openbtn:hover {
+  font-size: 18px;
+  cursor: pointer;
+  /*background-color: #00529e;
+  border-color:#00529e; */
+  background-color: transparent;
+  border-color:transparent;
+  color: white;
+  padding: 10px 15px;
+  border: 0;
+}
+.openbtn:active {
+  font-size: 18px;
+  cursor: pointer;
+   /*background-color: #00529e;
+  border-color:#00529e;*/
+  background-color: transparent;
+  border-color:transparent;
+  color: white;
+  padding: 10px 15px;
+  border: 0;
+}
+.openbtn:visited {
+  font-size: 18px;
+  cursor: pointer;
+  /* background-color: #00529e;
+  border-color:#00529e;*/
+  background-color: transparent;
+  border-color:transparent;
+  color: white;
+  padding: 10px 15px;
+  border: 0;
+}
+.m-list li{ 
+	list-style-type:none; 
+	font:Calibri; 
+	font-size:12px;
+	font-weight:normal;
+	color:#24a8c2;
+	text-decoration: none;
+	padding:8px 10px;
+}
+.m-list{ display:none;}
+.menu_1:hover .m-list{ 
+	display:block;
+	list-style-type:none; 
+	font:Calibri; 
+	font-size:12px;
+	color:#FFF; 
+	padding-left:0px;
+}
+.m-list li:hover { 
+	overflow:auto;
+	background: rgba(51,51,51,1);
+	color:#FFF;
+}
+#main {
+	clear: both;
+	float: left;
+	margin-left: 0;
+	width: 100%;
+	display: block;
+	top:200px;
+	padding-top:80px;
+	margin-right:10px;
+	height:2350px;
+}
+#Txt_head{  
+	position: absolute;
+	margin-left: 18px;
+	padding-bottom:10px;
+  	width: 93vw;
+	height:20px;
+  	top:  100px; 
+	border-bottom:solid 0px #000;
+	text-align: left;
+	z-index:1;
+}
+#Tim{  
+	position: absolute;
+	right:10px;
+	padding-bottom:30px;
+  	width: 67vw;
+	height:40px;;
+  	top:  5px; 
+	text-align: right;
+	z-index:1;
+}
+.styleL {font-family: Calibri ;font-size: 14px;color: #726d64;font-weight: normal;line-height:10pt;}
+.styleL2{font-family: Calibri ;font-size: 14px;color: #000000;font-weight: normal;}
+.styleL3{font-family: Calibri ;font-size: 12px;color: #726d64;font-weight: normal;}
+}
+
+/* Desktop Layout: 769px to a max of 1232px.  Inherits styles from: Mobile Layout and Tablet Layout. */
+
+@media only screen and (min-width: 1000px) {
+.gridContainer {
+	width: 88.2%;
+	max-width: 1232px;
+	padding-left: 0.9%;
+	padding-right: 0.9%;
+	margin: auto;
+}
+hr.new1 {
+  border-top: 2px solid #0070c0;
+}
+.closed{
+    	display: block;
+	overflow:auto;
+    }
+#logo {
+	clear: both;
+	float: left;
+	margin-left: 120px;
+	width: 86vw;
+	display: block;
+	font-family:Calibri;
+	font-size:2.1em;
+	color:#2e75b6;
+	vertical-align:bottom;
+	padding-top:20px;
+}
+#logo2 {
+	display: block;
+	clear: both;
+	left: 0%;
+	top:0px;
+	width: 94vw;
+	position: absolute;
+	z-index:10;
+	padding-top:60px;
+	font-family:Calibri ;
+	letter-spacing: 0.01em;
+	font-size:1.2em;
+	color:#fff;
+	text-align:right;
+}
+#line {
+	clear: both;
+	float: left;
+	margin-left: 100px;
+	width: 94vw;
+	
+}
+#M_P {
+	clear: both;
+	position: absolute;
+	left: 130px;
+	top:95px;
+	width: 50vw;
+	height:20px;
+	font-family:Calibri ;
+	letter-spacing: 0.01em;
+	font-size:1.2em;
+	color:#333;
+	text-align:left;
+	z-index:30;
+}
+#pic{ 
+	display:block;
+	padding-left:25px;
+	padding-right:25px;
+	padding-top:60px;
+	}
+#pic2{ 
+	display:block;
+	padding-left:1px;
+	padding-right:10px;
+	padding-top:15px;
+	}	
+.openbtn{ display:none;}
+#menu{
+	position: absolute;
+	overflow: auto;
+	display: block;
+	width: 100px;
+	height:82vw;
+	left: 0px;
+	top: -30px;
+	background:#00529e;
+}
+.menu_1{ float:left;
+	padding-top:100px;
+	font:Calibri; 
+	font-size:0px;
+	color:#FFF; 
+	padding-left:0px;
+}
+.m-list{
+	display: block;
+	overflow:auto;
+	font:Calibri; 
+	font-size:14px;
+	font-weight:normal;
+	color:#fff;
+	padding-left:0px;
+	text-decoration: none;
+	}
+.m-list li{ 
+	overflow:auto;
+	font:Calibri; 
+	font-size:14px;
+	font-weight:normal;
+	color:#fff;
+	text-decoration: none;
+}
+.m-list li:hover{ 
+	overflow:auto;
+	font:Calibri; 
+	font-size:14px;
+	font-weight:normal;
+	color:#24a8c2;
+	background:#333333;
+	width:150px;
+	text-decoration: none;
+}
+#main {
+	clear: both;
+	position: absolute;
+	display: block;
+	float: left;
+	margin-left: 120px;
+	padding-top:50px;
+	top:90px;
+	width: 98vw;
+	height:70vw;
+	background-color:#FFF;
+}
+#Txt_head{  
+	position: absolute;
+	margin-left: 130px;
+	padding-bottom:10px;
+  	width: 83vw;
+	height:40px;
+  	top:  90px; 
+	border-bottom:solid 0px #000;
+	text-align: left;
+	z-index:1;
+}
+#Tim{  
+	position: absolute;
+	padding-right:20px;
+	padding-bottom:30px;
+  	width: 82vw;
+	height:40px;;
+  	top:  20px; 
+	text-align: right;
+	z-index:1;
+}
+.styleL {font-family: Calibri ;font-size: 20px;color: #726d64;font-weight: normal;line-height:20pt;}
+.styleL2{font-family: Calibri ;font-size: 20px;color: #000000;font-weight: normal;}
+.styleL3{font-family: Calibri ;font-size: 18px;color: #726d64;font-weight: normal;}
+}

@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BDI — Tetabuan MOC</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-main:#f5f5f0;--bg-card:#ffffff;--bg-panel:#fafaf7;
+  --border-default:#e8e6df;--text-primary:#1a1a1a;--text-secondary:#888;--text-tertiary:#aaa;
+  --success:#22c55e;--danger:#ef4444;--warning:#f59e0b;--info:#3b82f6;--purple:#8b5cf6;
+  --radius-sm:6px;--radius-md:8px;--radius-lg:12px;
+  --font-sans:'DM Sans',system-ui,sans-serif;--font-mono:'DM Mono',monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;max-width:100vw;overflow-x:hidden}
+body{font-family:var(--font-sans);background:var(--bg-main);color:var(--text-primary);font-size:13px;line-height:1.5;padding:16px;min-height:100vh}
+.mono{font-family:var(--font-mono);font-feature-settings:"tnum" 1}
+
+.page{max-width:1400px;margin:0 auto}
+.grid-2{display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:14px}
+
+.card{background:var(--bg-card);border:1px solid var(--border-default);border-radius:var(--radius-lg);padding:16px;margin-bottom:12px;min-width:0}
+.card-title{font-size:12px;font-weight:600;color:var(--text-primary);text-transform:uppercase;letter-spacing:.3px;margin:0 0 12px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.card-title .left{display:flex;align-items:center;gap:8px}
+.card-title .dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+
+/* Status pill */
+.pill{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:10px;font-size:11px;font-weight:500}
+.pill-ok{background:rgba(34,197,94,.10);color:var(--success)}
+.pill-warn{background:rgba(139,92,246,.10);color:var(--purple)}
+.pill-idle{background:var(--bg-panel);color:var(--text-secondary)}
+.pill .dot{width:6px;height:6px;border-radius:50%;display:inline-block}
+.dot-ok{background:var(--success)}.dot-warn{background:var(--purple)}.dot-off{background:var(--text-tertiary)}
+
+/* SOC ring + summary row */
+.soc-wrap{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.soc-ring{position:relative;width:90px;height:90px;flex-shrink:0}
+.soc-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.soc-ring .bg{fill:none;stroke:var(--border-default);stroke-width:7}
+.soc-ring .fg{fill:none;stroke-width:7;stroke-linecap:round;transition:stroke-dashoffset .6s ease,stroke .3s}
+.soc-pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:18px;font-weight:600}
+.soc-info{flex:1;min-width:0}
+.soc-info .lbl{font-size:10px;font-weight:500;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.3px}
+.soc-info .val{font-family:var(--font-mono);font-size:20px;font-weight:700;margin-top:2px}
+.soc-info .val .u{font-size:12px;color:var(--text-secondary);margin-left:3px;font-weight:500}
+.soc-info .sub{margin-top:6px;font-size:11px;color:var(--text-secondary)}
+.soc-info .sub .v{color:var(--text-primary);font-family:var(--font-mono);font-weight:500}
+
+/* KPI row */
+.kpi-row{display:grid;grid-template-columns:repeat(4, minmax(0, 1fr));gap:6px;margin-bottom:12px}
+.kpi-box{background:var(--bg-panel);border-radius:var(--radius-sm);padding:8px 10px;min-width:0;overflow:hidden}
+.kpi-box .lbl{font-size:9px;font-weight:500;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpi-box .val{font-family:var(--font-mono);font-size:14px;font-weight:600;margin-top:2px;white-space:nowrap}
+.kpi-box .val .u{font-size:10px;color:var(--text-secondary);margin-left:2px;font-weight:500}
+
+/* Phase table */
+.section-label{font-size:11px;font-weight:600;color:var(--text-primary);text-transform:uppercase;letter-spacing:.3px;padding:10px 0 6px;border-bottom:1px solid var(--border-default);margin:8px 0 6px}
+.phase-table{width:100%;border-collapse:collapse}
+.phase-table th{font-size:9px;font-weight:500;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.3px;text-align:right;padding:5px 4px;border-bottom:1px solid var(--border-default)}
+.phase-table th:first-child{text-align:left}
+.phase-table td{font-family:var(--font-mono);font-size:12px;padding:6px 4px;text-align:right;border-bottom:1px solid var(--border-default)}
+.phase-table td:first-child{font-family:var(--font-sans);text-align:left;font-weight:500;font-size:11px}
+.phase-table tr:last-child td{border-bottom:none}
+.phase-chip{display:inline-block;width:6px;height:6px;border-radius:2px;margin-right:5px;vertical-align:middle}
+
+/* Energy boxes */
+.energy-row{display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:6px;margin-top:6px}
+.energy-box{background:var(--bg-panel);border-radius:var(--radius-sm);padding:8px 10px;display:flex;justify-content:space-between;align-items:center;min-width:0}
+.energy-box .lbl{font-size:10px;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.energy-box .val{font-family:var(--font-mono);font-size:13px;font-weight:600;white-space:nowrap}
+.energy-box .val .u{font-size:10px;color:var(--text-secondary);margin-left:2px}
+
+.stamp{font-size:11px;color:var(--text-tertiary);display:flex;justify-content:space-between;padding:4px;margin-top:4px}
+.stamp .live{display:inline-flex;align-items:center;gap:6px;color:var(--success);font-weight:500}
+.stamp .live::before{content:"";width:6px;height:6px;background:var(--success);border-radius:50%;animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+@media(max-width:1024px){
+  .grid-2{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  body{padding:10px}
+  .card{padding:12px}
+  .kpi-row{grid-template-columns:repeat(2, minmax(0, 1fr))}
+  .energy-row{grid-template-columns:1fr}
+  .soc-ring{width:70px;height:70px}
+  .soc-pct{font-size:14px}
+  .soc-info .val{font-size:16px}
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="grid-2" id="bdi-grid">
+    <!-- BDI cards rendered by JS -->
+  </div>
+  <div class="stamp">
+    <span class="live">Live · refreshes every 2s</span>
+    <span>Last update: <span id="last-update" class="mono" style="color:#1a1a1a">—</span></span>
+  </div>
+</div>
+
+<script>
+const XML_URL = 'Xml/Main_test.xml';   // production. Test: 'Xml/simulate.php'
+const POLL_MS = 2000;
+const $ = id => document.getElementById(id);
+
+function num(xml, tag, d=2){
+  const el = xml.querySelector(tag); if(!el) return null;
+  const t = el.textContent.trim();
+  if(t==='' || t==='Err' || t==='err' || isNaN(parseFloat(t))) return null;
+  return Number(parseFloat(t).toFixed(d));
+}
+function fmt(v, d=2){ return v===null||v===undefined ? '—' : Number(v).toFixed(d); }
+
+function buildBdiCard(xml, energyXml, n){
+  // n = 1 (Master) or 2 (Slave)
+  const role = n===1 ? 'Master' : 'Slave';
+  const p  = 'BDI' + n + '_BDI_';
+  const ap = 'BDI' + n + '_ACin_';
+  const lp = 'BDI' + n + '_Load_';
+  const xp = 'BDI' + n + '_';
+  const v  = (tag, d=2) => fmt(num(xml, p+tag, d), d);
+  const av = (tag, d=2) => fmt(num(xml, ap+tag, d), d);
+  const lv = (tag, d=2) => fmt(num(xml, lp+tag, d), d);
+  const xv = (tag, d=2) => fmt(num(xml, xp+tag, d), d);
+  const ex = (tag, d=2) => fmt(num(energyXml, xp+tag, d), d);
+
+  // Status from DC Power
+  const dcP = num(xml, p+'DC_Power_kW', 2);
+  let statusText = 'Idle', statusPillClass = 'pill-idle', statusDotClass = 'dot-off', statusColor = '#888';
+  if(dcP !== null && dcP < -0.5){
+    statusText = 'Charging'; statusPillClass = 'pill-ok'; statusDotClass = 'dot-ok'; statusColor = '#22c55e';
+  } else if(dcP !== null && dcP > 0.5){
+    statusText = 'Discharging'; statusPillClass = 'pill-warn'; statusDotClass = 'dot-warn'; statusColor = '#8b5cf6';
+  }
+
+  // SOC arc calculation (radius=42, circumference ~ 264)
+  const soc = num(xml, p+'SOC', 0);
+  const socVal = soc !== null ? Math.min(100, Math.max(0, soc)) : 0;
+  const circ = 2 * Math.PI * 38;
+  const dashOff = circ * (1 - socVal/100);
+  const arcColor = socVal<20 ? '#ef4444' : socVal<50 ? '#f59e0b' : '#8b5cf6';
+  const socDisp = soc !== null ? Math.round(soc)+'%' : '—';
+
+  // Total power AC
+  const totalAC = num(xml, p+'Total_Power_kW', 2);
+
+  return `<div class="card">
+    <div class="card-title">
+      <span class="left"><span class="dot" style="background:#8b5cf6"></span>BDI ${n} <span style="color:#888;font-weight:500;letter-spacing:0;text-transform:none;font-size:11px">· ${role}</span></span>
+      <span class="pill ${statusPillClass}"><span class="dot ${statusDotClass}"></span>${statusText}</span>
+    </div>
+
+    <!-- SOC ring + DC summary -->
+    <div class="soc-wrap">
+      <div class="soc-ring">
+        <svg viewBox="0 0 100 100">
+          <circle class="bg" cx="50" cy="50" r="38"/>
+          <circle class="fg" cx="50" cy="50" r="38" stroke="${arcColor}"
+            stroke-dasharray="${circ.toFixed(1)}" stroke-dashoffset="${dashOff.toFixed(1)}"/>
+        </svg>
+        <div class="soc-pct mono">${socDisp}</div>
+      </div>
+      <div class="soc-info">
+        <div class="lbl">DC Power</div>
+        <div class="val mono" style="color:${statusColor}">${fmt(dcP,2)}<span class="u">kW</span></div>
+        <div class="sub">
+          AC Total: <span class="v">${fmt(totalAC,2)}</span> kW &nbsp;·&nbsp;
+          Heat sink: <span class="v">${v('Heat_Sink_Temp',1)}</span> °C
+        </div>
+      </div>
+    </div>
+
+    <!-- Battery KPI row -->
+    <div class="kpi-row">
+      <div class="kpi-box"><div class="lbl">Batt voltage</div><div class="val mono">${v('Batt_Voltage',1)}<span class="u">V</span></div></div>
+      <div class="kpi-box"><div class="lbl">Batt current</div><div class="val mono">${v('Battery_Current',2)}<span class="u">A</span></div></div>
+      <div class="kpi-box"><div class="lbl">Frequency</div><div class="val mono">${v('Freq',2)}<span class="u">Hz</span></div></div>
+      <div class="kpi-box"><div class="lbl">Power factor</div><div class="val mono">${v('PF',2)}</div></div>
+    </div>
+
+    <!-- Inverter Output 3-phase -->
+    <div class="section-label">Inverter Output (AC)</div>
+    <table class="phase-table">
+      <thead><tr><th></th><th>V</th><th>A</th><th>kW</th><th>kVAr</th><th>kVA</th></tr></thead>
+      <tbody>
+        <tr><td><span class="phase-chip" style="background:#ef4444"></span>L1</td>
+          <td>${v('Voltage_L1',1)}</td><td>${v('Current_I1')}</td>
+          <td>${v('Power_P1_kW')}</td><td>${v('Power_Q1_kVAr')}</td><td>${v('Power_S1_kVA')}</td></tr>
+        <tr><td><span class="phase-chip" style="background:#f59e0b"></span>L2</td>
+          <td>${v('Voltage_L2',1)}</td><td>${v('Current_I2')}</td>
+          <td>${v('Power_P2_kW')}</td><td>${v('Power_Q2_kVAr')}</td><td>${v('Power_S2_kVA')}</td></tr>
+        <tr><td><span class="phase-chip" style="background:#3b82f6"></span>L3</td>
+          <td>${v('Voltage_L3',1)}</td><td>${v('Current_I3')}</td>
+          <td>${v('Power_P3_kW')}</td><td>${v('Power_Q3_kVAr')}</td><td>${v('Power_S3_kVA')}</td></tr>
+        <tr><td style="font-weight:600">Total</td>
+          <td>—</td><td>${v('Total_Current_I')}</td>
+          <td style="font-weight:600">${v('Total_Power_kW')}</td>
+          <td>${v('Total_Power_kVAr')}</td><td>${v('Total_Power_kVA')}</td></tr>
+      </tbody>
+    </table>
+
+    <!-- AC Input 3-phase -->
+    <div class="section-label">AC Input</div>
+    <table class="phase-table">
+      <thead><tr><th></th><th>V</th><th>A</th><th>kW</th><th>kVAr</th><th>kVA</th></tr></thead>
+      <tbody>
+        <tr><td><span class="phase-chip" style="background:#ef4444"></span>L1</td>
+          <td>${av('Voltage_L1',1)}</td><td>${av('Current_I1')}</td>
+          <td>${av('Power_P1_kW')}</td><td>${av('Power_Q1_kVAr')}</td><td>${av('Power_S1_kVA')}</td></tr>
+        <tr><td><span class="phase-chip" style="background:#f59e0b"></span>L2</td>
+          <td>${av('Voltage_L2',1)}</td><td>${av('Current_I2')}</td>
+          <td>${av('Power_P2_kW')}</td><td>${av('Power_Q2_kVAr')}</td><td>${av('Power_S2_kVA')}</td></tr>
+        <tr><td><span class="phase-chip" style="background:#3b82f6"></span>L3</td>
+          <td>${av('Voltage_L3',1)}</td><td>${av('Current_I3')}</td>
+          <td>${av('Power_P3_kW')}</td><td>${av('Power_Q3_kVAr')}</td><td>${av('Power_S3_kVA')}</td></tr>
+        <tr><td style="font-weight:600">Total</td>
+          <td>—</td><td>${av('Total_Current_I')}</td>
+          <td style="font-weight:600">${av('Total_Power_kW')}</td>
+          <td>${av('Total_Power_kVAr')}</td><td>${av('Total_Power_kVA')}</td></tr>
+      </tbody>
+    </table>
+
+    <!-- Energy summary -->
+    <div class="section-label">Energy</div>
+    <div class="energy-row">
+      <div class="energy-box"><span class="lbl">Today supply AC</span><span class="val mono">${ex('Supply_AC_kWh')}<span class="u">kWh</span></span></div>
+      <div class="energy-box"><span class="lbl">Todate supply AC</span><span class="val mono">${v('Todate_Supply_AC_kWh')}<span class="u">kWh</span></span></div>
+      <div class="energy-box"><span class="lbl">Today AC charge</span><span class="val mono">${ex('AC_Charge_kWh')}<span class="u">kWh</span></span></div>
+      <div class="energy-box"><span class="lbl">Todate AC charge</span><span class="val mono">${v('Todate_AC_Chg_kWh')}<span class="u">kWh</span></span></div>
+      <div class="energy-box"><span class="lbl">Today DC charge</span><span class="val mono">${ex('Charge_DC_kWh')}<span class="u">kWh</span></span></div>
+      <div class="energy-box"><span class="lbl">Today DC discharge</span><span class="val mono">${ex('DisChg_DC_kWh')}<span class="u">kWh</span></span></div>
+      <div class="energy-box"><span class="lbl">Today batt charge</span><span class="val mono">${ex('Batt_Chg_kWh')}<span class="u">kWh</span></span></div>
+      <div class="energy-box"><span class="lbl">Today batt discharge</span><span class="val mono">${ex('Batt_DisChg_kWh')}<span class="u">kWh</span></span></div>
+    </div>
+  </div>`;
+}
+
+async function fetchAndRender(){
+  try{
+    const [res, energyRes] = await Promise.all([
+      fetch(XML_URL + '?_=' + Date.now(), {cache:'no-store'}),
+      fetch('Xml/Energylog.xml?_=' + Date.now(), {cache:'no-store'})
+    ]);
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    if(!energyRes.ok) throw new Error('HTTP '+energyRes.status);
+    const xml = new DOMParser().parseFromString(await res.text(), 'text/xml');
+    const energyXml = new DOMParser().parseFromString(await energyRes.text(), 'text/xml');
+    $('bdi-grid').innerHTML = buildBdiCard(xml, energyXml, 1) + buildBdiCard(xml, energyXml, 2);
+    const now = new Date(), pad = n => String(n).padStart(2,'0');
+    $('last-update').textContent = pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
+  }catch(e){
+    console.error('BDI fetch error:', e);
+    const lu = $('last-update');
+    if(lu){ lu.textContent = 'error: '+e.message; lu.style.color='#ef4444'; }
+  }
+}
+fetchAndRender();
+setInterval(fetchAndRender, POLL_MS);
+</script>
+</body>
+</html>

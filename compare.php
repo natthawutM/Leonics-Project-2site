@@ -1,0 +1,292 @@
+<?php
+$COOKIE_NAME = 'moc_user';
+function isLoggedIn(){
+  global $COOKIE_NAME;
+  if(!isset($_COOKIE[$COOKIE_NAME]) || $_COOKIE[$COOKIE_NAME] === '') return false;
+  $parts = explode('|', $_COOKIE[$COOKIE_NAME]);
+  if(count($parts) !== 2) return false;
+  return $parts[1] === md5($parts[0] . 'leonics_moc_salt_2024');
+}
+function getUsername(){
+  global $COOKIE_NAME;
+  if(!isset($_COOKIE[$COOKIE_NAME])) return '';
+  $parts = explode('|', $_COOKIE[$COOKIE_NAME]);
+  return $parts[0];
+}
+// ปิดการใช้งาน login: อนุญาตให้เข้าใช้งานหน้า compare/dashboard ได้ทันทีโดยไม่ต้องล็อกอิน
+// if(!isLoggedIn()){ header('Location: /BELB_Sabah/login.php'); exit(); }
+?>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leonics MOC — Compare Sites</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f5f5f0;--card:#fff;--panel:#fafaf7;--border:#e8e6df;--text:#1a1a1a;--sub:#888;--hint:#aaa;--success:#22c55e;--danger:#ef4444;--warning:#f59e0b;--radius:12px;--font:'DM Sans',system-ui,sans-serif;--mono:'DM Mono',monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;min-height:100vh}
+
+.header{background:#1a1a1a;color:#f5f5f0;padding:0 24px;height:48px;display:flex;align-items:center;justify-content:space-between}
+.header .brand{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:500}
+.header .nav{display:flex;gap:4px}
+.header .nav a{color:#999;text-decoration:none;font-size:13px;font-weight:500;padding:6px 14px;border-radius:8px;transition:all .12s}
+.header .nav a:hover{color:#fff;background:rgba(255,255,255,.08)}
+.header .nav a.active{color:#fff;background:rgba(255,255,255,.15)}
+
+.page{max-width:1000px;margin:0 auto;padding:24px 20px}
+h1{font-size:22px;font-weight:700;margin-bottom:4px}
+.subtitle{font-size:13px;color:var(--sub);margin-bottom:20px}
+
+/* Compare grid */
+.compare-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:24px}
+.cmp-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center}
+.cmp-card.offline{opacity:.45}
+.cmp-site{font-size:12px;color:var(--sub);font-weight:500;text-transform:uppercase;letter-spacing:.3px;margin-bottom:8px}
+
+/* SOC ring */
+.ring-wrap{position:relative;width:80px;height:80px;margin:0 auto 8px}
+.ring-wrap svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring-wrap .bg{fill:none;stroke:var(--border);stroke-width:7}
+.ring-wrap .fg{fill:none;stroke-width:7;stroke-linecap:round;transition:stroke-dashoffset .6s}
+.ring-pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:16px;font-weight:600}
+.ring-label{font-size:11px;color:var(--sub);margin-bottom:12px}
+
+/* Metric rows */
+.cmp-sep{border-top:1px solid var(--border);margin:12px 0;padding-top:12px}
+.cmp-metric{margin-bottom:10px}
+.cmp-metric .lbl{font-size:10px;color:var(--hint);text-transform:uppercase;letter-spacing:.3px;font-weight:500}
+.cmp-metric .val{font-family:var(--mono);font-size:18px;font-weight:600;margin-top:2px}
+.cmp-metric .val .u{font-size:11px;color:var(--sub);margin-left:1px;font-weight:500}
+
+/* Bar */
+.bar-wrap{height:6px;background:var(--border);border-radius:3px;margin-top:6px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;transition:width .4s}
+
+/* Summary card */
+.summary{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px}
+.summary-title{font-size:11px;font-weight:500;color:var(--sub);text-transform:uppercase;letter-spacing:.3px;margin-bottom:12px}
+.summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.sum-box{background:var(--panel);border-radius:8px;padding:10px 12px}
+.sum-box .lbl{font-size:10px;color:var(--hint);text-transform:uppercase;letter-spacing:.3px;font-weight:500}
+.sum-box .val{font-family:var(--mono);font-size:20px;font-weight:600;margin-top:2px}
+.sum-box .val .u{font-size:12px;color:var(--sub);margin-left:2px}
+
+@media(max-width:700px){.compare-grid{grid-template-columns:1fr 1fr}.summary-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.compare-grid{grid-template-columns:1fr}.page{padding:16px 12px}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="brand">Leonics MOC</div>
+  <div style="display:flex;align-items:center;gap:16px;">
+    <div class="nav">
+      <a href="fleet.php">My sites</a>
+      <a href="compare.php" class="active">Compare</a>
+    </div>
+    <span style="color:#888;font-size:12px"><?php echo htmlspecialchars(getUsername()); ?></span>
+    <a href="/BELB_Sabah/logout.php" style="color:#888;font-size:12px;text-decoration:none;padding:4px 10px;border:1px solid #555;border-radius:6px;">Logout</a>
+  </div>
+</div>
+
+<div class="page">
+  <h1>Compare sites</h1>
+  <div class="subtitle">Solar ratio vs Generator usage — real-time snapshot</div>
+
+  <div class="compare-grid" id="compare"></div>
+
+  <div class="summary" id="summary"></div>
+</div>
+
+<script>
+const SITES = [
+  { id: 1, name: 'Tetabuan', path: '/BELB_Sabah/Tetabuan_MYS/f1/', xmlPath: 'Xml/Main_test.xml' },
+  { id: 2, name: 'Terusan', path: '/BELB_Sabah/Terusan_MYS/f1/', xmlPath: 'Xml/Main_test.xml' },
+];
+
+const CIRC = 2 * Math.PI * 38; // ~238.8
+
+function num(xml,tag){
+  const el=xml.querySelector(tag);
+  if(!el)return null;
+  const t=el.textContent.trim();
+  if(t===''||t==='err'||isNaN(parseFloat(t)))return null;
+  return parseFloat(t);
+}
+
+async function fetchSite(site){
+  try{
+    const res = await fetch(site.path + site.xmlPath + '?_=' + Date.now(), {cache:'no-store'});
+    if(!res.ok) return null;
+    return new DOMParser().parseFromString(await res.text(),'text/xml');
+  }catch(e){ return null; }
+}
+
+function ringColor(pct){
+  if(pct >= 60) return '#22c55e';
+  if(pct >= 30) return '#f59e0b';
+  return '#ef4444';
+}
+
+function sumNums(xml, tags){
+  let total = 0;
+  let found = false;
+  tags.forEach((tag) => {
+    const value = num(xml, tag);
+    if(value !== null){
+      total += value;
+      found = true;
+    }
+  });
+  return found ? total : null;
+}
+
+function firstNum(xml, tags){
+  for(const tag of tags){
+    const value = num(xml, tag);
+    if(value !== null) return value;
+  }
+  return null;
+}
+
+function buildCompareCard(site, xml){
+  const online = xml !== null;
+  let solar = 0;
+  let gen = 0;
+  let load = 0;
+  let soc = 0;
+  let battDC = 0;
+
+  if(online){
+    solar = firstNum(xml, ['PV_kW'])
+      ?? sumNums(xml, ['SCC1_Chg_Power_kW', 'SCC2_Chg_Power_kW', 'SCC3_Chg_Power_kW', 'SCC4_Chg_Power_kW'])
+      ?? sumNums(xml, ['GCI1_AC_Power_kW', 'GCI2_AC_Power_kW', 'GCI3_AC_Power_kW', 'GCI4_AC_Power_kW'])
+      ?? 0;
+
+    gen = sumNums(xml, ['Gen1_Total_Power_kW', 'Gen2_Total_Power_kW'])
+      ?? firstNum(xml, ['ACin_PM_Total_P_kW', 'Ctrl_PM_Total_P_kW'])
+      ?? 0;
+
+    load = firstNum(xml, ['Load_PM_Total_P_kW'])
+      ?? sumNums(xml, ['BDI1_Load_Total_Power_kW', 'BDI2_Load_Total_Power_kW'])
+      ?? 0;
+
+    const bdiSoc = num(xml, 'BDI_BDI_SOC');
+    if(bdiSoc !== null){
+      soc = bdiSoc;
+    }else{
+      const socValues = ['BDI1_BDI_SOC', 'BDI2_BDI_SOC']
+        .map((tag) => num(xml, tag))
+        .filter((value) => value !== null);
+      soc = socValues.length ? socValues.reduce((a, b) => a + b, 0) / socValues.length : 0;
+    }
+
+    battDC = sumNums(xml, ['BDI1_BDI_DC_Power_kW', 'BDI2_BDI_DC_Power_kW'])
+      ?? num(xml, 'BDI_BDI_DC_Power_kW')
+      ?? 0;
+  }
+
+  // Solar ratio = solar / (solar + gen) when producing
+  const totalSupply = solar + gen;
+  const solarRatio = totalSupply > 0.5 ? Math.round((solar / totalSupply) * 100) : (solar > 0.1 ? 100 : 0);
+
+  // Gen status
+  const genOn = gen > 0.5;
+  const genStatus = genOn ? 'Running' : 'Off';
+
+  // Battery status
+  const battStatus = battDC < -0.5 ? 'Charging' : battDC > 0.5 ? 'Discharging' : 'Idle';
+  const battColor = battDC < -0.5 ? '#22c55e' : battDC > 0.5 ? '#8b5cf6' : '#888';
+
+  const offset = online ? CIRC * (1 - solarRatio/100) : CIRC;
+  const color = online ? ringColor(solarRatio) : '#ccc';
+
+  return {
+    solarRatio, gen, load, solar, soc, genOn,
+    html: `<div class="cmp-card ${online?'':'offline'}">
+      <div class="cmp-site">${site.name}</div>
+      <div class="ring-wrap">
+        <svg viewBox="0 0 100 100">
+          <circle class="bg" cx="50" cy="50" r="38"/>
+          <circle class="fg" cx="50" cy="50" r="38" stroke="${color}" stroke-dasharray="${CIRC.toFixed(1)}" stroke-dashoffset="${offset.toFixed(1)}"/>
+        </svg>
+        <div class="ring-pct" style="color:${online?color:'#aaa'}">${online?solarRatio+'%':'—'}</div>
+      </div>
+      <div class="ring-label">Solar ratio</div>
+
+      <div class="cmp-sep"></div>
+
+      <div class="cmp-metric">
+        <div class="lbl">Generator</div>
+        <div class="val" style="color:${genOn?'#ea580c':'#aaa'}">${online?(genOn?gen.toFixed(1)+' <span class="u">kW</span>':'Off'):'—'}</div>
+      </div>
+
+      <div class="cmp-metric">
+        <div class="lbl">Solar DC</div>
+        <div class="val" style="color:${solar>0.5?'#f59e0b':'#aaa'}">${online?solar.toFixed(1):'—'}<span class="u">kW</span></div>
+      </div>
+
+      <div class="cmp-metric">
+        <div class="lbl">Load</div>
+        <div class="val" style="color:${load>0.5?'#3b82f6':'#aaa'}">${online?load.toFixed(1):'—'}<span class="u">kW</span></div>
+      </div>
+
+      <div class="cmp-metric">
+        <div class="lbl">Battery SOC</div>
+        <div class="val">${online?Math.round(soc):'—'}<span class="u">%</span></div>
+        <div class="bar-wrap"><div class="bar-fill" style="width:${online?soc:0}%;background:${soc<20?'#ef4444':soc<50?'#f59e0b':'#22c55e'}"></div></div>
+      </div>
+
+      <div class="cmp-metric">
+        <div class="lbl">Battery</div>
+        <div class="val" style="color:${battColor};font-size:14px">${online?battStatus:'—'}</div>
+      </div>
+    </div>`
+  };
+}
+
+async function refresh(){
+  const results = await Promise.all(SITES.map(s => fetchSite(s)));
+  let html = '';
+  let totalSolar=0, totalGen=0, totalLoad=0, onlineCount=0;
+
+  const cards = SITES.map((site, i) => {
+    const card = buildCompareCard(site, results[i]);
+    if(results[i]){
+      totalSolar += card.solar;
+      totalGen += card.gen;
+      totalLoad += card.load;
+      onlineCount++;
+    }
+    return card;
+  });
+
+  cards.forEach(c => html += c.html);
+  document.getElementById('compare').innerHTML = html;
+
+  // Summary
+  const totalSupply = totalSolar + totalGen;
+  const avgSolarRatio = totalSupply > 0.5 ? Math.round((totalSolar / totalSupply) * 100) : 0;
+  const genRunning = cards.filter(c => c.genOn).length;
+
+  document.getElementById('summary').innerHTML = `
+    <div class="summary-title">Fleet summary — all sites combined</div>
+    <div class="summary-grid">
+      <div class="sum-box"><div class="lbl">Total solar</div><div class="val" style="color:#f59e0b">${totalSolar.toFixed(1)}<span class="u">kW</span></div></div>
+      <div class="sum-box"><div class="lbl">Total gen</div><div class="val" style="color:#ea580c">${totalGen.toFixed(1)}<span class="u">kW</span></div></div>
+      <div class="sum-box"><div class="lbl">Total load</div><div class="val" style="color:#3b82f6">${totalLoad.toFixed(1)}<span class="u">kW</span></div></div>
+      <div class="sum-box"><div class="lbl">Avg solar ratio</div><div class="val" style="color:${ringColor(avgSolarRatio)}">${avgSolarRatio}<span class="u">%</span></div></div>
+    </div>
+    <div style="display:flex;gap:16px;margin-top:12px;font-size:12px;color:#888">
+      <span>${onlineCount}/${SITES.length} sites online</span>
+      <span>${genRunning} gen running</span>
+    </div>`;
+}
+
+refresh();
+setInterval(refresh, 5000);
+</script>
+</body>
+</html>

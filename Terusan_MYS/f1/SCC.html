@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SCC - Terusan MOC</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-main:#f5f5f0;--bg-card:#ffffff;--bg-panel:#fafaf7;
+  --border-default:#e8e6df;--text-primary:#1a1a1a;--text-secondary:#888;--text-tertiary:#aaa;
+  --success:#22c55e;--warning:#f59e0b;
+  --radius-sm:6px;--radius-md:8px;--radius-lg:12px;
+  --font-sans:'DM Sans',system-ui,sans-serif;--font-mono:'DM Mono',monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;max-width:100vw;overflow-x:hidden}
+body{font-family:var(--font-sans);background:var(--bg-main);color:var(--text-primary);font-size:13px;line-height:1.5;padding:16px;min-height:100vh}
+.mono{font-family:var(--font-mono);font-feature-settings:"tnum" 1}
+
+.page{max-width:1400px;margin:0 auto}
+.grid-2{display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:14px}
+
+/* Summary card */
+.summary-card{
+  background:var(--bg-card);border:1px solid var(--border-default);border-radius:var(--radius-lg);
+  padding:16px;margin-bottom:14px;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+}
+.sum-left{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.sum-icon{
+  width:46px;height:46px;border-radius:10px;
+  background:rgba(245,158,11,0.12);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;color:var(--warning);
+}
+.sum-info .lbl{font-size:11px;font-weight:500;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.3px}
+.sum-info .title{font-size:14px;font-weight:600;margin-top:2px}
+.sum-info .sub{font-size:12px;color:var(--text-secondary);margin-top:2px}
+.sum-right{display:flex;gap:10px;flex-wrap:wrap}
+.sum-metric{background:var(--bg-panel);border-radius:var(--radius-sm);padding:8px 14px;min-width:110px}
+.sum-metric .lbl{font-size:10px;font-weight:500;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.3px}
+.sum-metric .val{font-family:var(--font-mono);font-size:18px;font-weight:700;margin-top:2px;color:var(--warning)}
+.sum-metric .val .u{font-size:11px;color:var(--text-secondary);margin-left:3px;font-weight:500}
+
+.card{background:var(--bg-card);border:1px solid var(--border-default);border-radius:var(--radius-lg);padding:16px;min-width:0;transition:border-color .2s}
+.card.active{border-color:#fde68a}
+.card-title{font-size:12px;font-weight:600;color:var(--text-primary);text-transform:uppercase;letter-spacing:.3px;margin:0 0 12px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.card-title .left{display:flex;align-items:center;gap:8px}
+.card-title .dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+
+.pill{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:10px;font-size:11px;font-weight:500}
+.pill-ok{background:rgba(245,158,11,.10);color:var(--warning)}
+.pill-idle{background:var(--bg-panel);color:var(--text-secondary)}
+.pill .dot{width:6px;height:6px;border-radius:50%;display:inline-block}
+.dot-on{background:var(--warning)}
+.dot-off{background:var(--text-tertiary)}
+
+/* Hero PV→Charge value */
+.hero{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  background:var(--bg-panel);border-radius:var(--radius-md);
+  padding:12px 14px;margin-bottom:12px;
+}
+.hero .lbl{font-size:11px;font-weight:500;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.3px}
+.hero .efficiency{font-size:11px;color:var(--text-secondary);margin-top:2px}
+.hero .val{font-family:var(--font-mono);font-size:22px;font-weight:700;color:var(--warning)}
+.hero .val .u{font-size:12px;color:var(--text-secondary);margin-left:3px;font-weight:500}
+
+.section-label{font-size:11px;font-weight:600;color:var(--text-primary);text-transform:uppercase;letter-spacing:.3px;padding:10px 0 6px;border-bottom:1px solid var(--border-default);margin:6px 0 8px}
+
+.kpi-row{display:grid;grid-template-columns:repeat(3, minmax(0, 1fr));gap:8px;margin-bottom:8px}
+.kpi-row.cols2{grid-template-columns:repeat(2, minmax(0, 1fr))}
+.kpi-row.cols4{grid-template-columns:repeat(4, minmax(0, 1fr))}
+.kpi-box{background:var(--bg-panel);border-radius:var(--radius-sm);padding:9px 11px;min-width:0;overflow:hidden}
+.kpi-box .lbl{font-size:10px;font-weight:500;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpi-box .val{font-family:var(--font-mono);font-size:15px;font-weight:600;margin-top:2px;white-space:nowrap}
+.kpi-box .val .u{font-size:10px;color:var(--text-secondary);margin-left:2px;font-weight:500}
+
+.energy-row{display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:8px;margin-top:6px}
+.energy-box{background:var(--bg-panel);border-radius:var(--radius-sm);padding:9px 11px;display:flex;justify-content:space-between;align-items:center;min-width:0}
+.energy-box .lbl{font-size:10px;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.energy-box .val{font-family:var(--font-mono);font-size:13px;font-weight:600;white-space:nowrap}
+.energy-box .val .u{font-size:10px;color:var(--text-secondary);margin-left:2px}
+
+.stamp{font-size:11px;color:var(--text-tertiary);display:flex;justify-content:space-between;padding:4px;margin-top:4px}
+.stamp .live{display:inline-flex;align-items:center;gap:6px;color:var(--success);font-weight:500}
+.stamp .live::before{content:"";width:6px;height:6px;background:var(--success);border-radius:50%;animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+@media(max-width:1024px){
+  .grid-2{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  body{padding:10px}
+  .card{padding:12px}
+  .summary-card{padding:12px}
+  .sum-metric{min-width:90px;padding:6px 10px}
+  .sum-metric .val{font-size:15px}
+  .hero{padding:10px 12px}
+  .hero .val{font-size:18px}
+  .kpi-row.cols4{grid-template-columns:repeat(2, minmax(0, 1fr))}
+  .energy-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Summary card -->
+  <div class="summary-card">
+    <div class="sum-left">
+      <div class="sum-icon">&#9728;</div>
+      <div class="sum-info">
+        <div class="lbl">Solar Charge Controllers</div>
+        <div class="title">SCC 1 + SCC 2 (DC-coupled solar)</div>
+        <div class="sub" id="sum-active">— units producing</div>
+      </div>
+    </div>
+    <div class="sum-right">
+      <div class="sum-metric"><div class="lbl">Total PV</div><div class="val mono"><span id="sum-pv">—</span><span class="u">kW</span></div></div>
+      <div class="sum-metric"><div class="lbl">Total charge</div><div class="val mono"><span id="sum-chg">—</span><span class="u">kW</span></div></div>
+      <div class="sum-metric"><div class="lbl">Today PV</div><div class="val mono"><span id="sum-today-pv">—</span><span class="u">kWh</span></div></div>
+      <div class="sum-metric"><div class="lbl">Today charge</div><div class="val mono"><span id="sum-today-chg">—</span><span class="u">kWh</span></div></div>
+    </div>
+  </div>
+
+  <!-- 2 SCC cards -->
+  <div class="grid-2" id="scc-grid">
+    <!-- rendered by JS -->
+  </div>
+
+  <div class="stamp">
+    <span class="live">Live · refreshes every 2s</span>
+    <span>Last update: <span id="last-update" class="mono" style="color:#1a1a1a">—</span></span>
+  </div>
+</div>
+
+<script>
+const XML_URL = 'Xml/Main_test.xml';   // production. Test: 'Xml/simulate.php'
+const ENERGYLOG_URL = 'Xml/Energylog.xml';
+const POLL_MS = 2000;
+const $ = id => document.getElementById(id);
+
+function num(xml, tag, d=2){
+  const el = xml.querySelector(tag); if(!el) return null;
+  const t = el.textContent.trim();
+  if(t==='' || t==='Err' || t==='err' || isNaN(parseFloat(t))) return null;
+  return Number(parseFloat(t).toFixed(d));
+}
+function str(xml, tag){
+  const el = xml.querySelector(tag);
+  return el ? el.textContent.trim() : '';
+}
+function fmt(v, d=2){ return v===null||v===undefined ? '—' : Number(v).toFixed(d); }
+
+function buildSccCard(xml, energyXml, n){
+  const p = 'SCC' + n + '_';
+  const v = (tag, d=2) => fmt(num(xml, p+tag, d), d);
+  const energyV = (tag, d=2) => fmt(num(energyXml, p+tag, d), d);
+
+  const pvP  = num(xml, p+'PV_Power_kW', 2) ?? 0;
+  const chgP = num(xml, p+'Chg_Power_kW', 2) ?? 0;
+  const active = pvP > 0.5;
+  const status = str(xml, p+'S_Status') || (active ? 'Running' : 'Idle');
+  // Efficiency PV → Charge
+  const eff = pvP > 0.5 ? Math.min(100, (chgP / pvP) * 100) : 0;
+
+  return `<div class="card${active ? ' active' : ''}">
+    <div class="card-title">
+      <span class="left">
+        <span class="dot" style="background:${active?'#f59e0b':'#aaa'}"></span>
+        SCC ${n}
+        <span style="color:#888;font-weight:500;letter-spacing:0;text-transform:none;font-size:11px">· Solar Charge Controller</span>
+      </span>
+      <span class="pill ${active?'pill-ok':'pill-idle'}">
+        <span class="dot ${active?'dot-on':'dot-off'}"></span>${active?'Producing':'Idle'}
+      </span>
+    </div>
+
+    <!-- Hero -->
+    <div class="hero">
+      <div>
+        <div class="lbl">PV → Battery</div>
+        <div class="efficiency">Conversion efficiency: ${active ? eff.toFixed(1) : '—'}%</div>
+      </div>
+      <div class="val mono">${fmt(chgP, 2)}<span class="u">kW</span></div>
+    </div>
+
+    <!-- PV Input -->
+    <div class="section-label">PV Input</div>
+    <div class="kpi-row">
+      <div class="kpi-box"><div class="lbl">PV voltage</div><div class="val mono">${v('PV_Voltage',1)}<span class="u">V</span></div></div>
+      <div class="kpi-box"><div class="lbl">PV current</div><div class="val mono">${v('PV_Current',2)}<span class="u">A</span></div></div>
+      <div class="kpi-box"><div class="lbl">PV power</div><div class="val mono" style="color:#f59e0b">${v('PV_Power_kW',2)}<span class="u">kW</span></div></div>
+    </div>
+
+    <!-- Charge Output -->
+    <div class="section-label">Charge Output (to battery)</div>
+    <div class="kpi-row">
+      <div class="kpi-box"><div class="lbl">Charge V</div><div class="val mono">${v('Chg_Voltage',1)}<span class="u">V</span></div></div>
+      <div class="kpi-box"><div class="lbl">Charge I</div><div class="val mono">${v('Chg_Current',2)}<span class="u">A</span></div></div>
+      <div class="kpi-box"><div class="lbl">Charge P</div><div class="val mono" style="color:#22c55e">${v('Chg_Power_kW',2)}<span class="u">kW</span></div></div>
+    </div>
+
+    <!-- Status / temps -->
+    <div class="section-label">Status</div>
+    <div class="kpi-row cols4">
+      <div class="kpi-box"><div class="lbl">Batt temp</div><div class="val mono">${v('Batt_Temp',1)}<span class="u">°C</span></div></div>
+      <div class="kpi-box"><div class="lbl">Heat sink</div><div class="val mono">${v('Heat_Sink_Temp',1)}<span class="u">°C</span></div></div>
+      <div class="kpi-box"><div class="lbl">Limit chg I</div><div class="val mono">${v('Limit_Chg_Current',1)}<span class="u">A</span></div></div>
+      <div class="kpi-box"><div class="lbl">VbCtrl GMX</div><div class="val mono">${v('VbCtrl_GMX',1)}</div></div>
+    </div>
+
+    <!-- Energy -->
+    <div class="section-label">Energy</div>
+    <div class="energy-row">
+      <div class="energy-box"><span class="lbl">Today PV</span><span class="val mono">${energyV('PV_kWh')}<span class="u">kWh</span></span></div>
+      <div class="energy-box"><span class="lbl">Todate PV</span><span class="val mono">${v('Todate_PV_kWh')}<span class="u">kWh</span></span></div>
+      <div class="energy-box"><span class="lbl">Today charge</span><span class="val mono">${energyV('Chg_kWh')}<span class="u">kWh</span></span></div>
+      <div class="energy-box"><span class="lbl">Todate charge</span><span class="val mono">${v('Todate_Chg_kWh')}<span class="u">kWh</span></span></div>
+      <div class="energy-box"><span class="lbl">Today Ah</span><span class="val mono">${v('Today_Chg_Ah',1)}<span class="u">Ah</span></span></div>
+      <div class="energy-box"><span class="lbl">Todate Ah</span><span class="val mono">${v('Todate_Chg_Ah',1)}<span class="u">Ah</span></span></div>
+    </div>
+  </div>`;
+}
+
+async function fetchAndRender(){
+  try{
+    const [mainRes, energyRes] = await Promise.all([
+      fetch(XML_URL + '?_=' + Date.now(), {cache:'no-store'}),
+      fetch(ENERGYLOG_URL + '?_=' + Date.now(), {cache:'no-store'})
+    ]);
+    if(!mainRes.ok) throw new Error('Main XML HTTP ' + mainRes.status);
+    if(!energyRes.ok) throw new Error('Energylog XML HTTP ' + energyRes.status);
+    const [mainText, energyText] = await Promise.all([mainRes.text(), energyRes.text()]);
+    const xml = new DOMParser().parseFromString(mainText, 'text/xml');
+    const energyXml = new DOMParser().parseFromString(energyText, 'text/xml');
+
+    // Render 2 SCC cards
+    $('scc-grid').innerHTML = buildSccCard(xml, energyXml, 1) + buildSccCard(xml, energyXml, 2);
+
+    // Summary totals
+    const pv1 = num(xml, 'SCC1_PV_Power_kW', 2) ?? 0;
+    const pv2 = num(xml, 'SCC2_PV_Power_kW', 2) ?? 0;
+    const chg1 = num(xml, 'SCC1_Chg_Power_kW', 2) ?? 0;
+    const chg2 = num(xml, 'SCC2_Chg_Power_kW', 2) ?? 0;
+    const todayPv1 = num(energyXml, 'SCC1_PV_kWh', 2) ?? 0;
+    const todayPv2 = num(energyXml, 'SCC2_PV_kWh', 2) ?? 0;
+    const todayChg1 = num(energyXml, 'SCC1_Chg_kWh', 2) ?? 0;
+    const todayChg2 = num(energyXml, 'SCC2_Chg_kWh', 2) ?? 0;
+    const activeCount = (pv1>0.5?1:0) + (pv2>0.5?1:0);
+
+    $('sum-pv').textContent = fmt(pv1+pv2, 2);
+    $('sum-chg').textContent = fmt(chg1+chg2, 2);
+    $('sum-today-pv').textContent = fmt(todayPv1+todayPv2, 2);
+    $('sum-today-chg').textContent = fmt(todayChg1+todayChg2, 2);
+    $('sum-active').textContent = activeCount + ' / 2 units producing';
+
+    const now = new Date(), pad = n => String(n).padStart(2,'0');
+    $('last-update').textContent = pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
+  }catch(e){
+    console.error('SCC fetch error:', e);
+    const lu = $('last-update');
+    if(lu){ lu.textContent = 'error: '+e.message; lu.style.color='#ef4444'; }
+  }
+}
+fetchAndRender();
+setInterval(fetchAndRender, POLL_MS);
+</script>
+</body>
+</html>

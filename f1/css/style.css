@@ -1,0 +1,891 @@
+
+
+body,
+#dataContent *{
+	font-family: 'Std-Book' !important;
+}
+
+html, body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+.gm-style-iw + div{
+	display: none;
+}
+.gm-style-iw{
+	word-wrap: break-word;
+	text-align:center;
+}
+
+.myStyle{
+	border: 1px solid #00d6d1;
+	background-color: #00d6d1;
+	color: #595959;
+}
+
+.myStyle > div:first-child > div:first-child{
+	border-top: 24px solid #00d6d1 !important;
+}
+
+.myStyle hr{
+	border-bottom: 1px solid #00d6d1;
+}
+
+@font-face{
+	font-family: 'Std-Book';
+	src: url(../fonts/62682_ITCFranklinGothicStd-Book.otf);
+}
+
+#headerIMG{
+	width: 100%;
+	padding: 0px 25% 15px 25%;
+}
+
+#contents{
+	position: fixed;
+	top:0;
+	bottom: 0;
+	right: 0;
+	left: 8%;
+	height: 100%;
+}
+#boxx{
+	margin: 0;
+  position: absolute;
+  top: 10%;
+  left: 20vw;
+  transform: translate(-50%, -50%);
+	}
+#contents > div{
+	position: relative;
+	width: 100%;
+	height: 100%;
+	display: table;
+}
+
+#dataMap,
+#menuBar2 li:not(#svgTitle){
+	display: none;
+}
+
+#menuBar2{
+	margin: 0;
+	padding: 0;
+}
+
+#menuBar2 li#svgTitle{
+	display: block;
+}
+
+#loaderOverlay{
+	z-index: 5000;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	background-color: rgba(0,0,0,0.5);
+}
+
+#loader{
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	z-index: 5000;
+	margin: -60px 0 0 -60px;
+	border: 16px solid #f3f3f3;
+	border-radius: 50%;
+	border-top: 16px solid rgba(84, 198, 255, 1);
+	width: 100px;
+	height: 100px;
+	-webkit-animation: spin 2s linear infinite;
+	animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+	0% { -webkit-transform: rotate(0deg); }
+	100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
+}
+
+#loginDiv{
+	width: 100%;
+	margin: 0 auto;
+	z-index: 4000;
+	background-color: rgba(0,0,0,0.5);
+}
+
+#loginContainer{
+	width: 100%;
+	position: absolute;
+	display: block;
+	margin:auto;
+	text-align: center;
+	background-color: f2f2f2;
+	z-index: 4000;
+	justify-content: center;
+	align-items: center;
+}
+
+#loginContent{
+	position: absolute;
+	display: block;
+	margin:auto;
+	text-align: center;
+	padding: 30px;
+	width: 30vw;
+	border-radius: 2px;
+	overflow: hidden;
+	background-color: #f2f2f2;
+}
+
+#loginHeader{
+	padding-top: 10px;
+	padding-bottom: 39px;
+	font-size: 30px;
+	font-weight: bold;
+	background-color: #23b5b4;
+	color: white;
+	width: 100%;
+	display: block;
+	text-align: center;
+}
+
+#loginForm{
+	width: 100%;
+	margin: 50px auto 40px auto;
+	text-align: center;
+}
+
+.loginGrpData{
+	position: relative;
+	width: 100%;
+	background-color: #bfbfbf;
+	margin-bottom: 16px;
+	border-radius: 2px;
+	z-index: 0;
+}
+
+.loginGrpData > input{
+	height: 50px;
+	border-radius: 2px;
+	font-size: 15px;
+	padding: 0px 35px;
+	width: 25vw;
+	background-color: #bfbfbf;
+	border: none;
+}
+
+.loginGrpData > input::placeholder{
+	color: #CCCCCC;
+	font-weight: bold;
+}
+.loginGrpData > input:focus{
+	outline: none;
+}
+
+#loginClose{
+	position: absolute;
+	top: 8px;
+	right: 15px;
+	color: white;
+	font-size: 30px;
+	cursor: pointer;
+}
+
+.userData{
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	color: #23b5b4;
+	border: 1px solid #23b5b4;
+	border-radius: 15px;
+	padding: 5px 10px;
+	cursor: pointer;
+	font-size: 18px;
+}
+
+.userData.shLogout > .user,
+.userData:not(.shLogout) > .logout{
+	display: none;
+}
+
+.alertIcon,
+.alertData{
+	display: none !important;
+}
+
+.emptyData .alertIcon{
+	display: block !important;
+	content: "\f06a";
+	font-family: FontAwesome;
+	display: block;
+	position: absolute;
+	color: #c80000;
+	z-index: 4002;
+	font-size: 16px;
+	top: 50%;
+	transform: translateY(-50%);
+	right: 16px;
+}
+
+.emptyData .alertData{
+	display: block !important;
+	position: absolute;
+	z-index: 4001;
+	max-width: 100%;
+	background-color: #fff;
+	border: 1px solid #c80000;
+	border-radius: 14px;
+	padding: 4px 25px 4px 10px;
+	top: 50%;
+	transform: translateY(-50%);
+	right: 10px;
+	color: #c80000;
+	font-size: 13px;
+	text-align: left;
+	opacity: 0;
+}
+
+#loginBtn{
+	font-size: 15px;
+	font-weight: bold;
+	background-color: #23b5b4;
+	color: white;
+	width: 100%;
+	display: block;
+	text-align: center;
+	border: none;
+	height: 50px;
+	margin-top: 5px;
+	border-radius: 2px;
+	cursor: pointer;	
+}
+
+.focus-input{
+	display: block;
+	position: absolute;
+	z-index: -1;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 50%;
+	transform: translateX(-50%);
+	border-radius: 31px;
+	background-color: #ebebeb;
+	pointer-events: none;
+	transition: all 0.4s;
+}
+
+ul#menuBar{
+	font-size: 1.2vw;
+	z-index: 1000;
+	list-style-type: none;
+	margin: 0;
+	padding: 20px 0px;
+	width: 20%;  // menu
+	background-color: black;
+	position: fixed;
+	top: 0;
+	left: 0;
+	height: 100%;
+	overflow: auto;
+}
+
+ul#menuBar li a,
+ul#menuBar2 li a{
+	display: block;
+	color: gray;
+	padding: 8px 15%;
+	text-decoration: none;
+}
+
+ul#menuBar li a.active,
+ul#menuBar2 li a.active{
+	font-weight: bold;
+	background-color: #404040;
+	color: #00d6d1;
+}
+
+ul#menuBar li a:hover:not(.active),
+ul#menuBar2 li a:hover:not(.active){
+	font-weight: bold;
+	background-color: #808080;
+	color: white;
+}
+
+#allPlant{
+	padding: 0px 10px;
+	display: flex;
+	align-items: center;
+}
+
+.pgTooltip{
+	display: none;
+	position: absolute;
+	background-color: black;
+	opacity: 0.8;
+	color: white;
+	top: -15px;
+	left: 50%;
+	transform: translateX(-50%);
+	height: 23px;
+	padding: 5px;
+	font-size: 12px;
+	border-radius: 5px;
+}
+
+.apBattRack{
+	color: gray;
+}
+
+#apPlantStat *{
+	font-size: 0.7vw;
+}
+
+.apInnerHeader{
+	font-size: 1vw;
+	height: 10%;
+	padding-top: 10px;
+	color: #2f5597;
+}
+
+.apDetail{
+	height: 80%;
+}
+
+.apDetail > div{
+	height: 100%;
+	display: flex;
+	align-items: center;
+}
+
+#allPlantData{
+	background-color: #f7f7f7;
+	padding: 5px 10px;
+	width: 100%;
+	text-align: center;
+}
+
+.apDataRow::after{
+	content: "";
+	clear: both;
+	display: table;
+}
+
+.apDataRow{
+	padding: 5px;
+}
+
+.apHeader{
+	background-color: #d6dce5;
+	font-size: 1.15vw;
+}
+
+select + select{
+	margin-left: 5px;
+}
+
+.apData + .apData{
+	padding-left: 5px;
+}
+
+#ui-datepicker-div,
+.apContent input,
+.apContent select{
+	font-size: 1vw;
+	text-align: center;
+}
+
+#plantSel{
+	font-size: 1vw;
+	margin-top: 10px;
+}
+
+#plantSel,
+.apContent input,
+.apContent select{
+	color: #23b5b4;
+	border: 1px solid gray;
+	border-radius: 5px;
+	background-color: #fafafa;
+}
+
+#apInstall,
+#apSiteDetail > span{
+	color: #23b5b4;
+	padding: 5px;
+}
+
+#ui-datepicker-div *{
+	color: #23b5b4;
+}
+
+.apGraph{
+	width: 90%;
+	padding-left: 10%;
+}
+
+.apContent{
+	font-size: 1vw;
+	padding: 5px 10px;
+	background-color: #fff;
+	border-radius: 10px;
+	height: 33vh;
+}
+
+[class*="col-"]{
+	float: left;
+}
+
+.col-1 {width: 8.33%;}
+.col-2 {width: 16.66%;}
+.col-3 {width: 25%;}
+.col-4 {width: 33.33%;}
+.col-5 {width: 41.66%;}
+.col-6 {width: 50%;}
+.col-7 {width: 58.33%;}
+.col-8 {width: 66.66%;}
+.col-9 {width: 75%;}
+.col-10 {width: 83.33%;}
+.col-11 {width: 91.66%;}
+.col-12 {width: 100%;}
+
+.col-apCol1{
+	position: relative;
+	width: 20%
+}
+.col-apCol2{width: 30%}
+.col-apCol3{width: 46.66%}
+
+.alignL{
+	text-align: left;
+}
+
+#plantStatTxt,
+#apPlant{
+	position: absolute;
+	top: -3vh;
+	width: 100%;
+}
+
+.apStat{
+	width: 1vw;
+	height: 1vw;
+	border-radius: 100%;
+	background-color: green;
+	display: inline-block;
+}
+
+.apStatRed{
+	background-color: #c80000;
+}
+
+.apStatGray{
+	background-color: gray;
+}
+
+#enginDiv{
+	position: relative;
+	width: 100%;
+	height: 90%;
+	display: flex;
+	justify-content: center;
+}
+
+#enginStatus,
+.progressBar{
+	padding-left: 2px;
+	padding-right: 5px;
+	position: relative;
+}
+
+#enginStatus > div > div{
+	position: absolute;
+	width: 90%;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.progress{
+	background-color: #f2f2f2;
+	padding: 10px 0px;
+}
+
+.progress > div{
+	background-color: #ed7d31;
+	padding: 5px;
+}
+
+#bTmpProgress{
+	background-color: #00b050;
+}
+
+.minPg{
+	position: absolute;
+	left: 0;
+}
+
+.maxPg{
+	position: absolute;
+	right: 0;
+}
+
+.divInline{
+	display: inline-block;
+}
+
+.marginB5VH{
+	margin-bottom: 5vh;
+}
+
+.marginAuto{
+	margin: auto;
+}
+
+.widthFit{
+	width: fit-content;
+}
+
+#dataContent{
+	height: 100%;
+	width: 100%;
+	display: table-row;
+}
+
+#dataContent > div{
+	height: 100%;
+	width: 100%;
+	overflow: auto;
+	position: relative;
+}
+
+#plantHeader{
+	z-index: 1;
+	width: 100%;
+	display: table-row;
+}
+
+#plantHeader > div:first-child{
+	padding: 10px 20px;
+	vertical-align: middle;
+	color:  #23b5b4;
+	font-weight: bold;
+	font-size: 30px;
+	z-index: 3;
+	border-bottom: 1px solid #23b5b4;
+	background-color: white;
+}
+
+.fullScreen{
+	width: 100%;
+	height: 100%;
+}
+
+#svgTable{
+	width: 100%;
+}
+
+#picSvg{
+	width: 80%;
+	height: 100%;
+	display: table-cell;
+}
+
+#picData{
+	padding-left: 5%;
+}
+
+#data{
+	height: 100%;
+	display: table-cell;
+	padding: 15px;
+	color: white;
+	border-radius: 20px;
+	background-color: #696969;
+	z-index: 2;
+	font-size: 1vw;
+}
+
+#pic{
+	width: 100%;
+}
+
+#pic > svg{
+	position: relative;
+	height: 100%; /*60vw;*/
+	width: 100%;
+	display: block;
+}
+
+.svgData{
+	font-size: 1vw;
+}
+
+#data > div > div{
+	margin: 0.8vw 1vw;
+}
+
+#data > div{
+	margin-top: 2vw;
+}
+
+#date{
+	margin-top: 0.5vw;
+	color: #00d6d1;
+}
+
+#pv{
+	color: #70ad47;
+}
+
+#ctrl{
+	color: #00b0f0;
+}
+
+#batt{
+	color: #ffbdbd;
+}
+
+#dg{
+	color: #ffc000;
+}
+
+/*phone*/
+@media screen and (max-width: 767px){
+	body{
+		width: 100%;
+	}
+	#svgElement table, #svgElement tbody, #svgElement tr, #svgElement td{
+		display: block;
+	}
+
+	.statEng,
+	.apData{
+		width: 100%;
+	}
+
+	#enginStatus .marginB5VH{
+		margin-bottom: 10px;
+	}
+
+	.statEng + .statEng{
+		margin-top: 20px;	
+	}
+
+	#ui-datepicker-div{
+		font-size: 16px;
+	}
+
+	#apPlant{
+		top: -4vh;
+	}
+
+	.marginB5VH{
+		margin-bottom: 50px;
+	}
+
+	.apStat{
+		width: 2vw;
+		height: 2vw;
+	}
+
+	#allPlant select{
+		font-size: 12px;
+		height: 16px;
+		padding-bottom: 0 !important;
+	}
+
+	#allPlant input{
+		font-size: 10px;
+		height: 16px;
+		padding-bottom: 0 !important;
+	}
+
+	#allPlant{
+		padding: 0;
+		display: block;
+	}
+
+	#allPlant *{
+		font-size: 2vw;
+	}
+
+	.apData + .apData{
+		padding-left: 0px;
+		padding-top: 10px;
+	}
+
+	.apContent{
+		height: 300px;
+	}
+
+	#loginContent{
+		width: 48vw;
+	}
+
+	.apHeader,
+	#plantHeader > div.userData{
+		display: none;
+	}
+
+	li > div.userData{
+		position: relative;
+		top: 0;
+		right: 0;
+	}
+
+	#picSvg{
+		width: 100%;
+		display: block;
+		position: relative;
+		top: 0;
+		left: 0;
+		transform: none;
+		height: auto;
+	}
+
+	#picData{
+		padding-left: 0;
+		margin-bottom: 30px;
+	}
+
+	#data{
+		display: block;
+		position: relative;
+		width: 80%;
+		top: 0px;
+		right: 0px;
+		margin: 0px auto 40px auto;
+	}
+
+	#contents.responsive #plantHeader{
+		height: 100%;
+		z-index: 10;
+	}
+
+	#contents.responsive #plantHeader > div:first-child{
+		height: 100%;
+		overflow: auto;
+		text-align: center;
+	}
+
+	#plantHeader > div:first-child{
+		font-size: 16px;
+		border: none;
+	}
+
+	#contents{
+		left: 0;
+	}
+	#menuBar2{
+		display: block !important;
+	}
+	#menuIcon{
+		cursor: pointer;
+		float: right;
+		display: block !important;
+		color: gray;
+	}
+
+	#contents.responsive #dataContent,
+	#menuBar2 li:not(.sTitle),
+	#menuBar{
+		display: none;
+	}
+
+	#contents.responsive #menuBar2 li.animateLi{
+		opacity: 0;
+		padding: 5px 10px !important;
+		float: none;
+		display: block !important;
+		animation: forwards fadeIn 0.9s 1;
+	}
+
+	@keyframes fadeIn{
+		0%{
+			opacity: 0;
+			transform: translate(-100px);
+		}
+		100%{
+			opacity: 1;
+			transform: translate(0px);
+		}
+	}
+	
+/*	#contents.responsive #menuBar2 li:not(#menuIcon){
+		padding: 5px 10px !important;
+		float: none;
+		display: block !important;
+	}
+*/	#dataContent{
+		bottom: 0px;
+		height: 92%;
+		width: 100%;
+		margin: auto;
+		overflow-y: auto;
+		overflow-x: hidden;
+	}
+
+	#dataContent > div#svgElement{
+		position: absolute;
+		top: 40px;
+		left: 0px;
+	}
+}
+
+/*tablet*/
+@media screen and (min-width: 768px) and (max-width: 992px){
+	
+	ul#menuBar{
+		/*font-size: 14px;*/
+		width: 10%;
+	}
+
+	#plantHeader > div:first-child{
+		font-size: 20px;
+	}
+
+	.userData{
+		top: 8px;
+		font-size: 12px;
+	}
+
+	#loginContent{
+		width: 36vw;
+	}
+
+	#contents{
+		left: 10%;
+	}
+
+	#data{
+		top: 30px;
+		height: auto;
+	}
+}
+
+@media only screen and (min-width: 1200px){
+	/*#pic > svg{
+		height: 50vw;
+	}
+	ul#menuBar{
+		font-size: 18px;
+	}*/
+}
+
+@media only screen and (min-width: 1921px){
+	/*#pic > svg{
+		height: 35vw;
+	}
+	ul#menuBar{
+		font-size: 20px;
+	}*/
+}

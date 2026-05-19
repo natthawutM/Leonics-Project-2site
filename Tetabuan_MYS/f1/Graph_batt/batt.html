@@ -1,0 +1,674 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script src="../SpryAssets/SpryTabbedPanels.js" type="text/javascript"></script>
+<script src="../SpryAssets/xpath.js" type="text/javascript"></script>
+<script src="../SpryAssets/SpryData.js" type="text/javascript"></script>
+<script src="../Scripts/swfobject_modified.js" type="text/javascript"></script>
+<link href="../boilerplate.css" rel="stylesheet" type="text/css">
+<link href="../css/Batt1_3.css" rel="stylesheet" type="text/css">
+<!--Load Xml------------------------------------------------------------------------------>
+<script type="text/javascript"> 
+url1 = '../xml2/Main.xml' + "?" + new Date().getTime();
+var Plant = new Spry.Data.XMLDataSet(url1,"Main",{method:"POST",useCache:false,loadInterval:2000});
+</script>
+<title>Untitled Document</title>
+<script src="SpryAssets/SpryTabbedPanels.js" type="text/javascript"></script>
+<link href="SpryAssets/SpryTabbedPanels.css" rel="stylesheet" type="text/css" />
+<style type="text/css"> 
+/* Mobile Layout: 480px and below. */
+    .TabbedPanelsTab {
+	font: bold 6px Arial, Helvetica, sans-serif;
+	background-color: #fff;
+	border-bottom: solid 1px #000;
+}
+    .TabbedPanelsTabHover {
+	background-color: #fff;
+}
+    .TabbedPanelsTabSelected {
+	background-color: #fff;
+}	
+	.TabbedPanelsContentGroup{
+	margin-left:0px;
+    width:98%;
+	height: 100%;
+	border: 1px solid black;
+}
+    .style1 {font-family: Arial, Helvetica, sans-serif;font-size: 6px;color: #000000;font-weight: bold;}
+	.style2 {font-family: Arial, Helvetica, sans-serif;font-size: 6px;color: #000000;font-weight: normal;}
+}
+@media only screen and (min-width: 481px) {
+	.TabbedPanelsTab {
+	font: bold 7px Arial, Helvetica, sans-serif;
+	background-color: #fff;
+	border-bottom: solid 1px #000;
+}
+    .TabbedPanelsTabHover {
+	background-color: #fff;
+}
+    .TabbedPanelsTabSelected {
+	background-color: #fff;
+}
+	.TabbedPanelsContentGroup{
+	margin-left:0px;
+    width:98%;
+	height: 100%;
+	border: 1px solid black;
+}
+    .style1 {font-family: Arial, Helvetica, sans-serif;font-size: 7px;color: #000000;font-weight: bold;}
+	.style2 {font-family: Arial, Helvetica, sans-serif;font-size: 7px;color: #000000;font-weight: normal;}
+}
+/* Tablet Layout: 481px to 768px. Inherits styles from: Mobile Layout. */
+@media only screen and (min-width: 550px) {
+	.TabbedPanelsTab {
+	font: bold 10px Arial, Helvetica, sans-serif;
+	background-color: #fff;
+	border-bottom: solid 1px #000;
+}
+    .TabbedPanelsTabHover {
+	background-color: #fff;
+}
+    .TabbedPanelsTabSelected {
+	background-color: #fff;
+}
+	.TabbedPanelsContentGroup{
+	margin-left:20px;
+    width:92%;
+	height: 100%;
+	border: 1px solid black;
+}
+    .style1 {font-family: Arial, Helvetica, sans-serif;font-size: 10px;color: #000000;font-weight: bold;}
+	.style2 {font-family: Arial, Helvetica, sans-serif;font-size: 10px;color: #000000;font-weight: normal;}
+}
+/* Desktop Layout: 769px to a max of 1232px.  Inherits styles from: Mobile Layout and Tablet Layout. */
+@media only screen and (min-width: 800px) {
+	.TabbedPanelsTab {
+	font: bold 11px Arial, Helvetica, sans-serif;
+	background-color: #fff;
+	border-bottom: solid 1px #000;
+}
+    .TabbedPanelsTabHover {
+	background-color: #fff;
+}
+    .TabbedPanelsTabSelected {
+	background-color: #fff;
+}
+	.TabbedPanelsContentGroup{
+	margin-left:0px;
+    width:90%;
+	height: 100%;
+	border: 1px solid black;
+}
+    .style1 {font-family: Arial, Helvetica, sans-serif;font-size: 11px;color: #000000;font-weight: bold;}
+	.style2 {font-family: Arial, Helvetica, sans-serif;font-size: 11px;color: #000000;font-weight: normal;}
+}
+@media only screen and (min-width: 900px) {
+	.TabbedPanelsTab {
+	font: bold 12px Arial, Helvetica, sans-serif;
+	background-color: #fff;
+	border-bottom: solid 1px #000;
+}
+    .TabbedPanelsTabHover {
+	background-color: #fff;
+}
+
+    .TabbedPanelsTabSelected {
+	background-color: #fff;
+}
+	.TabbedPanelsContentGroup{
+	margin-left:0px;
+    width:90%;
+	height: 100%;
+	border: 1px solid black;
+}
+    .style1 {font-family: Arial, Helvetica, sans-serif;font-size: 12px;color: #000000;font-weight: bold;}
+	.style2 {font-family: Arial, Helvetica, sans-serif;font-size: 12px;color: #000000;font-weight: normal;}
+}
+@media only screen and (min-width: 1300px) {
+	.TabbedPanelsTab {
+	font: bold 12px Arial, Helvetica, sans-serif;
+	background-color: #fff;
+	border-bottom: solid 1px #000;
+}
+    .TabbedPanelsTabHover {
+	background-color: #fff;
+}
+    .TabbedPanelsTabSelected {
+	background-color: #fff;
+}
+	.TabbedPanelsContentGroup{
+	margin-left:0px;
+    width:91%;
+	height: 100%;
+	border: 1px solid black;
+}
+    .style1 {font-family: Arial, Helvetica, sans-serif;font-size: 12px;color: #000000;font-weight: bold;}
+	.style2 {font-family: Arial, Helvetica, sans-serif;font-size: 12px;color: #000000;font-weight: normal;}
+}
+</style>
+</head>
+
+<body><br>
+<div id="TabbedPanels1" class="TabbedPanels">
+  <ul class="TabbedPanelsTabGroup">
+    <li class="TabbedPanelsTab" tabindex="0"><span class="style1">String#1</span></li>
+    <li class="TabbedPanelsTab" tabindex="0"><span class="style1">String#2</span></li>
+    <li class="TabbedPanelsTab" tabindex="0"><span class="style1">String#3</span></li>
+    <li class="TabbedPanelsTab" tabindex="0"><span class="style1">String#4</span></li>
+    <li class="TabbedPanelsTab" tabindex="0"><span class="style1">String#5</span></li>
+    <li class="TabbedPanelsTab" tabindex="0"><span class="style1">String#6</span></li>
+    <li class="TabbedPanelsTab" tabindex="0"><span class="style1">String#7</span></li>
+  </ul>
+  <div class="TabbedPanelsContentGroup">
+    <div class="TabbedPanelsContent">
+      <table width=100% border="0">       
+        <tr valign="top">
+          <td width="50%" height="160" valign="top"><iframe name="batt1-1" style="position:absolute; width:44%; height: 160px; z-index:1" src="String1-1.html" scrolling="no" frameborder="0"></iframe></td>
+          <td width="50%" height="160" valign="top"><iframe name="batt1-2" style="position:absolute; width:44%; height: 160px; z-index:1" src="String1-2.html" scrolling="no" frameborder="0"></iframe></td>
+        </tr> 
+        <tr valign="top">
+          <td width="50%" height="160" valign="top"><iframe name="batt1-3" style="position:absolute; width:44%; height: 160px; z-index:1" src="String1-3.html" scrolling="no" frameborder="0"></iframe></td>
+          <td width="50%" height="160" valign="top"><iframe name="batt1-4" style="position:absolute; width:44%; height: 160px; z-index:1" src="String1-4.html" scrolling="no" frameborder="0"></iframe></td>
+        </tr>
+        <tr valign="top">
+          <td width="50%" height="160" valign="top"><iframe name="batt1-5" style="position:absolute; width:44%; height: 160px; z-index:1" src="String1-5.html" scrolling="no" frameborder="0"></iframe></td>
+          <td width="50%" height="160" valign="top"><iframe name="batt1-6" style="position:absolute; width:44%; height: 160px; z-index:1" src="String1-6.html" scrolling="no" frameborder="0"></iframe></td>
+        </tr>
+        <tr valign="top">
+          <td width="50%" height="160" valign="top"><iframe name="batt1-7" style="position:absolute; width:44%; height: 160px; z-index:1" src="String1-7.html" scrolling="no" frameborder="0"></iframe></td>
+          <td width="50%" align="left" valign="top" class="style2" spry:region="Plant"> 
+           <table width="250" border="0">
+           <tr>
+            <td>
+         <br>
+         <br><span class="style1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String#1 Cell Batt</span>
+         <br><br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AVG. Battery V : &nbsp;{HVB1_Avg_V} V<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SOC : &nbsp;{HVB1_SOC} %<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Current : &nbsp;{HVB1_Batt_I} A<br>
+            </td> 
+             </tr>
+             <tr>
+              <td>
+              <script>
+                var S1_I1="{HVB1_Batt_I}";
+				var txt1="";
+				if(S1_I1>=0){
+					var txt1="Charging";
+				}else{
+					var txt1="Discharging";
+				}
+				var PicLimit11 = document.getElementById("txt_I1");
+				PicLimit11.innerHTML =txt1;
+                </script>
+                <!--div id="txt_I1"></div--> 
+                <table width="200" border="0">
+                  <td width="64%"class="style2" align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Status current :</td>
+                  <td width="36%" class="style2" align="left"><div id="txt_I1"></div></td>
+                </table>
+              </td>
+             </tr>
+           </table>
+          </td> 
+        </tr> 
+      </table><br>
+      <table width="616" border="0">
+            <tr><br>
+              <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+              <td class="style1">
+          Discharging <br>
+         <span class="style2"> Between AVG ± 0.06 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Green <br>                               
+        > AVG + 0.06  and  < AVG + 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Yellow <br>
+        < AVG - 0.06   and  > AVG - 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Yellow<br>
+        > AVG + 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Orange<br>
+        < AVG - 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Orange</span></td>
+          <td class="style1" style="border-left:#ccc; border-left-style:solid; ">
+          &nbsp;&nbsp;&nbsp;&nbsp;Charging <br>
+          <span class="style2">&nbsp;&nbsp;&nbsp;&nbsp;Between AVG ± 0.06 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Green         <br>                               
+        &nbsp;&nbsp;&nbsp;&nbsp;> AVG + 0.06  and  < AVG + 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Yellow <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;< AVG - 0.06   and  > AVG - 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Yellow<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;> AVG + 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Orange<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;< AVG - 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Orange</span></td>
+            </tr>
+          </table><br>
+    </div>
+    <div class="TabbedPanelsContent">
+    <table width=100% border="0">
+         <tr valign="top">
+          <td width="50%" height="160" valign="top"><iframe name="batt2-1" style="position:absolute; width:44%; height: 160px; z-index:1" src="String2-1.html" scrolling="no" frameborder="0"></iframe></td>
+          <td width="50%" height="160" valign="top"><iframe name="batt2-2" style="position:absolute; width:44%; height: 160px; z-index:1" src="String2-2.html" scrolling="no" frameborder="0"></iframe></td>
+        </tr> 
+        <tr valign="top">
+          <td width="50%" height="160" valign="top"><iframe name="batt2-3" style="position:absolute; width:44%; height: 160px; z-index:1" src="String2-3.html" scrolling="no" frameborder="0"></iframe></td>
+          <td width="50%" height="160" valign="top"><iframe name="batt2-4" style="position:absolute; width:44%; height: 160px; z-index:1" src="String2-4.html" scrolling="no" frameborder="0"></iframe></td>
+        </tr>
+        <tr valign="top">
+          <td width="50%" height="160" valign="top"><iframe name="batt2-5" style="position:absolute; width:44%; height: 160px; z-index:1" src="String2-5.html" scrolling="no" frameborder="0"></iframe></td>
+          <td width="50%" height="160" valign="top"><iframe name="batt2-6" style="position:absolute; width:44%; height: 160px; z-index:1" src="String2-6.html" scrolling="no" frameborder="0"></iframe></td>
+        </tr>
+        <tr valign="top">
+          <td width="50%" height="160" valign="top"><iframe name="batt2-7" style="position:absolute; width:44%; height: 160px; z-index:1" src="String2-7.html" scrolling="no" frameborder="0"></iframe></td>
+          <td width="50%" align="left" valign="top" class="style2" spry:region="Plant"> 
+           <table width="250" border="0">
+           <tr>
+            <td>
+         <br>
+         <br><span class="style1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String#2 Cell Batt</span>
+         <br><br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AVG. Battery V : &nbsp;{HVB2_Avg_V} V<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SOC : &nbsp;{HVB2_SOC} %<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Current : &nbsp;{HVB2_Batt_I} A<br>
+            </td> 
+             </tr>
+             <tr>
+              <td>
+              <script>
+                var S2_I1="{HVB2_Batt_I}";
+				var txt2="";
+				if(S2_I1>=0){
+					var txt2="Charging";
+				}else{
+					var txt2="Discharging";
+				}
+				var PicLimit12 = document.getElementById("txt_I2");
+				PicLimit12.innerHTML =txt2;
+                </script>
+                <!--div id="txt_I2"></div--> 
+                <table width="200" border="0">
+                  <td width="64%"class="style2" align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Status current :</td>
+                  <td width="36%" class="style2" align="left"><div id="txt_I2"></div></td>
+                </table>
+              </td>
+             </tr>
+           </table>
+          </td> 
+        </tr>
+        </table><br>
+      <table width="616" border="0">
+            <tr><br>
+              <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+              <td class="style1">
+          Discharging <br>
+         <span class="style2"> Between AVG ± 0.06 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Green <br>                               
+        > AVG + 0.06  and  < AVG + 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Yellow <br>
+        < AVG - 0.06   and  > AVG - 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Yellow<br>
+        > AVG + 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Orange<br>
+        < AVG - 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Orange</span></td>
+          <td class="style1" style="border-left:#ccc; border-left-style:solid; ">
+          &nbsp;&nbsp;&nbsp;&nbsp;Charging <br>
+          <span class="style2">&nbsp;&nbsp;&nbsp;&nbsp;Between AVG ± 0.06 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Green         <br>                               
+        &nbsp;&nbsp;&nbsp;&nbsp;> AVG + 0.06  and  < AVG + 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Yellow <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;< AVG - 0.06   and  > AVG - 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Yellow<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;> AVG + 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Orange<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;< AVG - 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Orange</span></td>
+            </tr>
+          </table><br>
+    </div>
+    <div class="TabbedPanelsContent">
+    <table width=100% border="0">
+         <tr valign="top">
+          <td width="50%" height="160" valign="top"><iframe name="batt3-1" style="position:absolute; width:44%; height: 160px; z-index:1" src="String3-1.html" scrolling="no" frameborder="0"></iframe></td>
+          <td width="50%" height="160" valign="top"><iframe name="batt3-2" style="position:absolute; width:44%; height: 160px; z-index:1" src="String3-2.html" scrolling="no" frameborder="0"></iframe></td>
+        </tr> 
+        <tr valign="top">
+          <td width="50%" height="160" valign="top"><iframe name="batt3-3" style="position:absolute; width:44%; height: 160px; z-index:1" src="String3-3.html" scrolling="no" frameborder="0"></iframe></td>
+          <td width="50%" height="160" valign="top"><iframe name="batt3-4" style="position:absolute; width:44%; height: 160px; z-index:1" src="String3-4.html" scrolling="no" frameborder="0"></iframe></td>
+        </tr>
+        <tr valign="top">
+          <td width="50%" height="160" valign="top"><iframe name="batt3-5" style="position:absolute; width:44%; height: 160px; z-index:1" src="String3-5.html" scrolling="no" frameborder="0"></iframe></td>
+          <td width="50%" height="160" valign="top"><iframe name="batt3-6" style="position:absolute; width:44%; height: 160px; z-index:1" src="String3-6.html" scrolling="no" frameborder="0"></iframe></td>
+        </tr>
+        <tr valign="top">
+          <td width="50%" height="160" valign="top"><iframe name="batt3-7" style="position:absolute; width:44%; height: 160px; z-index:1" src="String3-7.html" scrolling="no" frameborder="0"></iframe></td>
+          <td width="50%" align="left" valign="top" class="style2" spry:region="Plant"> 
+           <table width="250" border="0">
+           <tr>
+            <td>
+         <br>
+         <br><span class="style1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String#3 Cell Batt</span>
+         <br><br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AVG. Battery V : &nbsp;{HVB3_Avg_V} V<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SOC : &nbsp;{HVB3_SOC} %<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Current : &nbsp;{HVB3_Batt_I} A<br>
+            </td> 
+             </tr>
+             <tr>
+              <td>
+              <script>
+                var S3_I1="{HVB3_Batt_I}";
+				var txt3="";
+				if(S3_I1>=0){
+					var txt3="Charging";
+				}else{
+					var txt3="Discharging";
+				}
+				var PicLimit13 = document.getElementById("txt_I3");
+				PicLimit13.innerHTML =txt3;
+                </script>
+                <!--div id="txt_I3"></div-->
+                <table width="200" border="0">
+                  <td width="64%"class="style2" align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Status current :</td>
+                  <td width="36%" class="style2" align="left"><div id="txt_I3"></div></td>
+                </table>
+              </td>
+             </tr>
+           </table>
+          </td> 
+        </tr>
+       </table><br>
+      <table width="616" border="0">
+            <tr><br>
+              <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+              <td class="style1">
+          Discharging <br>
+         <span class="style2"> Between AVG ± 0.06 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Green <br>                               
+        > AVG + 0.06  and  < AVG + 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Yellow <br>
+        < AVG - 0.06   and  > AVG - 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Yellow<br>
+        > AVG + 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Orange<br>
+        < AVG - 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Orange</span></td>
+          <td class="style1" style="border-left:#ccc; border-left-style:solid; ">
+          &nbsp;&nbsp;&nbsp;&nbsp;Charging <br>
+          <span class="style2">&nbsp;&nbsp;&nbsp;&nbsp;Between AVG ± 0.06 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Green         <br>                               
+        &nbsp;&nbsp;&nbsp;&nbsp;> AVG + 0.06  and  < AVG + 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Yellow <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;< AVG - 0.06   and  > AVG - 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Yellow<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;> AVG + 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Orange<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;< AVG - 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Orange</span></td>
+            </tr>
+          </table><br>
+    </div>
+     <div class="TabbedPanelsContent">
+    <table width=100% border="0">
+         <tr valign="top">
+          <td width="50%" height="160" valign="top"><iframe name="batt4-1" style="position:absolute; width:44%; height: 160px; z-index:1" src="String4-1.html" scrolling="no" frameborder="0"></iframe></td>
+          <td width="50%" height="160" valign="top"><iframe name="batt4-2" style="position:absolute; width:44%; height: 160px; z-index:1" src="String4-2.html" scrolling="no" frameborder="0"></iframe></td>
+        </tr> 
+        <tr valign="top">
+          <td width="50%" height="160" valign="top"><iframe name="batt4-3" style="position:absolute; width:44%; height: 160px; z-index:1" src="String4-3.html" scrolling="no" frameborder="0"></iframe></td>
+          <td width="50%" height="160" valign="top"><iframe name="batt4-4" style="position:absolute; width:44%; height: 160px; z-index:1" src="String4-4.html" scrolling="no" frameborder="0"></iframe></td>
+        </tr>
+        <tr valign="top">
+          <td width="50%" height="160" valign="top"><iframe name="batt4-5" style="position:absolute; width:44%; height: 160px; z-index:1" src="String4-5.html" scrolling="no" frameborder="0"></iframe></td>
+          <td width="50%" height="160" valign="top"><iframe name="batt4-6" style="position:absolute; width:44%; height: 160px; z-index:1" src="String4-6.html" scrolling="no" frameborder="0"></iframe></td>
+        </tr>
+        <tr valign="top">
+          <td width="50%" height="160" valign="top"><iframe name="batt4-7" style="position:absolute; width:44%; height: 160px; z-index:1" src="String4-7.html" scrolling="no" frameborder="0"></iframe></td>
+          <td width="50%" align="left" valign="top" class="style2" spry:region="Plant"> 
+           <table width="250" border="0">
+           <tr>
+            <td>
+         <br>
+         <br><span class="style1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String#4 Cell Batt</span>
+         <br><br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AVG. Battery V : &nbsp;{HVB4_Avg_V} V<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SOC : &nbsp;{HVB4_SOC} %<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Current : &nbsp;{HVB4_Batt_I} A<br>
+            </td> 
+             </tr>
+             <tr>
+              <td>
+              <script>
+                var S4_I1="{HVB4_Batt_I}";
+				var txt4="";
+				if(S4_I1>=0){
+					var txt4="Charging";
+				}else{
+					var txt4="Discharging";
+				}
+				var PicLimit14 = document.getElementById("txt_I4");
+				PicLimit14.innerHTML =txt4;
+                </script>
+                <!--div id="txt_I2"></div--> 
+                <table width="200" border="0">
+                  <td width="64%"class="style2" align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Status current :</td>
+                  <td width="36%" class="style2" align="left"><div id="txt_I4"></div></td>
+                </table>
+              </td>
+             </tr>
+           </table>
+          </td> 
+        </tr>
+        </table><br>
+      <table width="616" border="0">
+            <tr><br>
+              <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+              <td class="style1">
+          Discharging <br>
+         <span class="style2"> Between AVG ± 0.06 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Green <br>                               
+        > AVG + 0.06  and  < AVG + 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Yellow <br>
+        < AVG - 0.06   and  > AVG - 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Yellow<br>
+        > AVG + 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Orange<br>
+        < AVG - 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Orange</span></td>
+          <td class="style1" style="border-left:#ccc; border-left-style:solid; ">
+          &nbsp;&nbsp;&nbsp;&nbsp;Charging <br>
+          <span class="style2">&nbsp;&nbsp;&nbsp;&nbsp;Between AVG ± 0.06 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Green         <br>                               
+        &nbsp;&nbsp;&nbsp;&nbsp;> AVG + 0.06  and  < AVG + 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Yellow <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;< AVG - 0.06   and  > AVG - 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Yellow<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;> AVG + 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Orange<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;< AVG - 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Orange</span></td>
+            </tr>
+          </table><br>
+    </div>
+    <div class="TabbedPanelsContent">
+    <table width=100% border="0">
+         <tr valign="top">
+          <td width="50%" height="160" valign="top"><iframe name="batt5-1" style="position:absolute; width:44%; height: 160px; z-index:1" src="String5-1.html" scrolling="no" frameborder="0"></iframe></td>
+          <td width="50%" height="160" valign="top"><iframe name="batt5-2" style="position:absolute; width:44%; height: 160px; z-index:1" src="String5-2.html" scrolling="no" frameborder="0"></iframe></td>
+        </tr> 
+        <tr valign="top">
+          <td width="50%" height="160" valign="top"><iframe name="batt5-3" style="position:absolute; width:44%; height: 160px; z-index:1" src="String5-3.html" scrolling="no" frameborder="0"></iframe></td>
+          <td width="50%" height="160" valign="top"><iframe name="batt5-4" style="position:absolute; width:44%; height: 160px; z-index:1" src="String5-4.html" scrolling="no" frameborder="0"></iframe></td>
+        </tr>
+        <tr valign="top">
+          <td width="50%" height="160" valign="top"><iframe name="batt5-5" style="position:absolute; width:44%; height: 160px; z-index:1" src="String5-5.html" scrolling="no" frameborder="0"></iframe></td>
+          <td width="50%" height="160" valign="top"><iframe name="batt5-6" style="position:absolute; width:44%; height: 160px; z-index:1" src="String5-6.html" scrolling="no" frameborder="0"></iframe></td>
+        </tr>
+        <tr valign="top">
+          <td width="50%" height="160" valign="top"><iframe name="batt2-7" style="position:absolute; width:44%; height: 160px; z-index:1" src="String5-7.html" scrolling="no" frameborder="0"></iframe></td>
+          <td width="50%" align="left" valign="top" class="style2" spry:region="Plant"> 
+           <table width="250" border="0">
+           <tr>
+            <td>
+         <br>
+         <br><span class="style1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String#5 Cell Batt</span>
+         <br><br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AVG. Battery V : &nbsp;{HVB5_Avg_V} V<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SOC : &nbsp;{HVB5_SOC} %<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Current : &nbsp;{HVB5_Batt_I} A<br>
+            </td> 
+             </tr>
+             <tr>
+              <td>
+              <script>
+                var S5_I1="{HVB5_Batt_I}";
+				var txt5="";
+				if(S5_I1>=0){
+					var txt5="Charging";
+				}else{
+					var txt5="Discharging";
+				}
+				var PicLimit15 = document.getElementById("txt_I5");
+				PicLimit15.innerHTML =txt5;
+                </script>
+                <!--div id="txt_I2"></div--> 
+                <table width="200" border="0">
+                  <td width="64%"class="style2" align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Status current :</td>
+                  <td width="36%" class="style2" align="left"><div id="txt_I5"></div></td>
+                </table>
+              </td>
+             </tr>
+           </table>
+          </td> 
+        </tr>
+        </table><br>
+      <table width="616" border="0">
+            <tr><br>
+              <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+              <td class="style1">
+          Discharging <br>
+         <span class="style2"> Between AVG ± 0.06 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Green <br>                               
+        > AVG + 0.06  and  < AVG + 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Yellow <br>
+        < AVG - 0.06   and  > AVG - 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Yellow<br>
+        > AVG + 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Orange<br>
+        < AVG - 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Orange</span></td>
+          <td class="style1" style="border-left:#ccc; border-left-style:solid; ">
+          &nbsp;&nbsp;&nbsp;&nbsp;Charging <br>
+          <span class="style2">&nbsp;&nbsp;&nbsp;&nbsp;Between AVG ± 0.06 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Green         <br>                               
+        &nbsp;&nbsp;&nbsp;&nbsp;> AVG + 0.06  and  < AVG + 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Yellow <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;< AVG - 0.06   and  > AVG - 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Yellow<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;> AVG + 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Orange<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;< AVG - 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Orange</span></td>
+            </tr>
+          </table><br>
+    </div>
+    <div class="TabbedPanelsContent">
+    <table width=100% border="0">
+         <tr valign="top">
+          <td width="50%" height="160" valign="top"><iframe name="batt6-1" style="position:absolute; width:44%; height: 160px; z-index:1" src="String6-1.html" scrolling="no" frameborder="0"></iframe></td>
+          <td width="50%" height="160" valign="top"><iframe name="batt6-2" style="position:absolute; width:44%; height: 160px; z-index:1" src="String6-2.html" scrolling="no" frameborder="0"></iframe></td>
+        </tr> 
+        <tr valign="top">
+          <td width="50%" height="160" valign="top"><iframe name="batt6-3" style="position:absolute; width:44%; height: 160px; z-index:1" src="String6-3.html" scrolling="no" frameborder="0"></iframe></td>
+          <td width="50%" height="160" valign="top"><iframe name="batt6-4" style="position:absolute; width:44%; height: 160px; z-index:1" src="String6-4.html" scrolling="no" frameborder="0"></iframe></td>
+        </tr>
+        <tr valign="top">
+          <td width="50%" height="160" valign="top"><iframe name="batt6-5" style="position:absolute; width:44%; height: 160px; z-index:1" src="String6-5.html" scrolling="no" frameborder="0"></iframe></td>
+          <td width="50%" height="160" valign="top"><iframe name="batt6-6" style="position:absolute; width:44%; height: 160px; z-index:1" src="String6-6.html" scrolling="no" frameborder="0"></iframe></td>
+        </tr>
+        <tr valign="top">
+          <td width="50%" height="160" valign="top"><iframe name="batt6-7" style="position:absolute; width:44%; height: 160px; z-index:1" src="String6-7.html" scrolling="no" frameborder="0"></iframe></td>
+          <td width="50%" align="left" valign="top" class="style2" spry:region="Plant"> 
+           <table width="250" border="0">
+           <tr>
+            <td>
+         <br>
+         <br><span class="style1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String#6 Cell Batt</span>
+         <br><br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AVG. Battery V : &nbsp;{HVB6_Avg_V} V<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SOC : &nbsp;{HVB6_SOC} %<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Current : &nbsp;{HVB6_Batt_I} A<br>
+            </td> 
+             </tr>
+             <tr>
+              <td>
+              <script>
+                var S6_I1="{HVB6_Batt_I}";
+				var txt6="";
+				if(S6_I1>=0){
+					var txt6="Charging";
+				}else{
+					var txt6="Discharging";
+				}
+				var PicLimit16 = document.getElementById("txt_I6");
+				PicLimit16.innerHTML =txt6;
+                </script>
+                <!--div id="txt_I2"></div--> 
+                <table width="200" border="0">
+                  <td width="64%"class="style2" align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Status current :</td>
+                  <td width="36%" class="style2" align="left"><div id="txt_I6"></div></td>
+                </table>
+              </td>
+             </tr>
+           </table>
+          </td> 
+        </tr>
+        </table><br>
+      <table width="616" border="0">
+            <tr><br>
+              <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+              <td class="style1">
+          Discharging <br>
+         <span class="style2"> Between AVG ± 0.06 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Green <br>                               
+        > AVG + 0.06  and  < AVG + 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Yellow <br>
+        < AVG - 0.06   and  > AVG - 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Yellow<br>
+        > AVG + 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Orange<br>
+        < AVG - 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Orange</span></td>
+          <td class="style1" style="border-left:#ccc; border-left-style:solid; ">
+          &nbsp;&nbsp;&nbsp;&nbsp;Charging <br>
+          <span class="style2">&nbsp;&nbsp;&nbsp;&nbsp;Between AVG ± 0.06 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Green         <br>                               
+        &nbsp;&nbsp;&nbsp;&nbsp;> AVG + 0.06  and  < AVG + 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Yellow <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;< AVG - 0.06   and  > AVG - 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Yellow<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;> AVG + 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Orange<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;< AVG - 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Orange</span></td>
+            </tr>
+          </table><br>
+    </div>
+    <div class="TabbedPanelsContent">
+    <table width=100% border="0">
+         <tr valign="top">
+          <td width="50%" height="160" valign="top"><iframe name="batt7-1" style="position:absolute; width:44%; height: 160px; z-index:1" src="String7-1.html" scrolling="no" frameborder="0"></iframe></td>
+          <td width="50%" height="160" valign="top"><iframe name="batt7-2" style="position:absolute; width:44%; height: 160px; z-index:1" src="String7-2.html" scrolling="no" frameborder="0"></iframe></td>
+        </tr> 
+        <tr valign="top">
+          <td width="50%" height="160" valign="top"><iframe name="batt7-3" style="position:absolute; width:44%; height: 160px; z-index:1" src="String7-3.html" scrolling="no" frameborder="0"></iframe></td>
+          <td width="50%" height="160" valign="top"><iframe name="batt7-4" style="position:absolute; width:44%; height: 160px; z-index:1" src="String7-4.html" scrolling="no" frameborder="0"></iframe></td>
+        </tr>
+        <tr valign="top">
+          <td width="50%" height="160" valign="top"><iframe name="batt7-5" style="position:absolute; width:44%; height: 160px; z-index:1" src="String7-5.html" scrolling="no" frameborder="0"></iframe></td>
+          <td width="50%" height="160" valign="top"><iframe name="batt7-6" style="position:absolute; width:44%; height: 160px; z-index:1" src="String7-6.html" scrolling="no" frameborder="0"></iframe></td>
+        </tr>
+        <tr valign="top">
+          <td width="50%" height="160" valign="top"><iframe name="batt7-7" style="position:absolute; width:44%; height: 160px; z-index:1" src="String7-7.html" scrolling="no" frameborder="0"></iframe></td>
+          <td width="50%" align="left" valign="top" class="style2" spry:region="Plant"> 
+           <table width="250" border="0">
+           <tr>
+            <td>
+         <br>
+         <br><span class="style1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String#7 Cell Batt</span>
+         <br><br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AVG. Battery V : &nbsp;{HVB7_Avg_V} V<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SOC : &nbsp;{HVB7_SOC} %<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Current : &nbsp;{HVB7_Batt_I} A<br>
+            </td> 
+             </tr>
+             <tr>
+              <td>
+              <script>
+                var S7_I1="{HVB7_Batt_I}";
+				var txt7="";
+				if(S7_I1>=0){
+					var txt7="Charging";
+				}else{
+					var txt7="Discharging";
+				}
+				var PicLimit17 = document.getElementById("txt_I7");
+				PicLimit17.innerHTML =txt7;
+                </script>
+                <!--div id="txt_I2"></div--> 
+                <table width="200" border="0">
+                  <td width="64%"class="style2" align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Status current :</td>
+                  <td width="36%" class="style2" align="left"><div id="txt_I7"></div></td>
+                </table>
+              </td>
+             </tr>
+           </table>
+          </td> 
+        </tr>
+       </table><br>
+      <table width="616" border="0">
+            <tr><br>
+              <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+              <td class="style1">
+          Discharging <br>
+         <span class="style2"> Between AVG ± 0.06 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Green <br>                               
+        > AVG + 0.06  and  < AVG + 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Yellow <br>
+        < AVG - 0.06   and  > AVG - 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Yellow<br>
+        > AVG + 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Orange<br>
+        < AVG - 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Orange</span></td>
+          <td class="style1" style="border-left:#ccc; border-left-style:solid; ">
+          &nbsp;&nbsp;&nbsp;&nbsp;Charging <br>
+          <span class="style2">&nbsp;&nbsp;&nbsp;&nbsp;Between AVG ± 0.06 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Green         <br>                               
+        &nbsp;&nbsp;&nbsp;&nbsp;> AVG + 0.06  and  < AVG + 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Yellow <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;< AVG - 0.06   and  > AVG - 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Yellow<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;> AVG + 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Orange<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;< AVG - 0.08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Orange</span></td>
+            </tr>
+          </table><br>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+var TabbedPanels1 = new Spry.Widget.TabbedPanels("TabbedPanels1");
+</script>
+</body>
+</html>
