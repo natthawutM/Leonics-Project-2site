@@ -83,8 +83,8 @@ h1{font-size:22px;font-weight:700;margin-bottom:4px}
 
 <script>
 const SITES = [
-  { id: 1, name: 'Tetabuan', loc: 'Sabah, Malaysia', path: '/BELB_Sabah/Tetabuan_MYS/f1/', proxyType: 'Tetabuan' },
-  { id: 2, name: 'Terusan', loc: 'Sabah, Malaysia', path: '/BELB_Sabah/Terusan_MYS/f1/', proxyType: 'Terusan' },
+  { id: 1, name: 'Tetabuan', loc: 'Sabah, Malaysia', path: 'http://www.leonics-moc.com:52080/BELB_Sabah/Tetabuan_MYS/f1/', proxyType: 'Tetabuan' },
+  { id: 2, name: 'Terusan', loc: 'Sabah, Malaysia', path: 'http://www.leonics-moc.com:52080/BELB_Sabah/Terusan_MYS/f1/', proxyType: 'Terusan' },
 ];
 
 function num(xml, tag){
