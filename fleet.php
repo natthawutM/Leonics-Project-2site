@@ -55,6 +55,7 @@ h1{font-size:22px;font-weight:700;margin-bottom:4px}
 .sc-pill{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500}
 .sc-dot{width:6px;height:6px;border-radius:50%}
 .sc-dot-ok{background:var(--success)}
+.sc-dot-stale{background:var(--warning)}
 .sc-dot-err{background:var(--danger)}
 .sc-time{font-size:11px;color:var(--hint);font-family:var(--mono)}
 @media(max-width:700px){.grid{grid-template-columns:1fr}.sc-kpis{grid-template-columns:repeat(2,1fr)}}
@@ -86,6 +87,9 @@ const SITES = [
   { id: 1, name: 'Tetabuan', loc: 'Sabah, Malaysia', path: 'http://www.leonics-moc.com:52080/BELB_Sabah/Tetabuan_MYS/f1/', proxyType: 'Tetabuan' },
   { id: 2, name: 'Terusan', loc: 'Sabah, Malaysia', path: 'http://www.leonics-moc.com:52080/BELB_Sabah/Terusan_MYS/f1/', proxyType: 'Terusan' },
 ];
+const LIVE_OK_SECONDS = 10;
+const LIVE_STALE_SECONDS = 120;
+const siteTimestampState = {};
 
 function num(xml, tag){
   const el = xml.querySelector(tag);
@@ -130,6 +134,51 @@ function hasXmlError(xml){
   return !!(err && err.textContent.trim());
 }
 
+function parseXmlDateTime(dateText, timeText){
+  const m = /^(\d{2})-([A-Za-z]{3})-(\d{2}|\d{4})$/.exec((dateText || '').trim());
+  const t = /^(\d{2}):(\d{2}):(\d{2})$/.exec((timeText || '').trim());
+  if(!m || !t) return null;
+
+  const months = {jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
+  const month = months[m[2].toLowerCase()];
+  if(month === undefined) return null;
+
+  let year = Number(m[3]);
+  if(m[3].length === 2) year += year >= 70 ? 1900 : 2000;
+
+  return new Date(year, month, Number(m[1]), Number(t[1]), Number(t[2]), Number(t[3]));
+}
+
+function resolveSiteState(site, metrics){
+  if(!metrics) return { level: 'offline', text: 'Offline', dotClass: 'sc-dot-err' };
+
+  const serverDate = parseXmlDateTime(metrics.dateServer, metrics.timeServer);
+  if(!serverDate || Number.isNaN(serverDate.getTime())){
+    return { level: 'offline', text: 'Offline', dotClass: 'sc-dot-err' };
+  }
+
+  const timestampKey = `${metrics.dateServer} ${metrics.timeServer}`;
+  const state = siteTimestampState[site.proxyType] || { lastKey: null, changedAt: 0 };
+  if(timestampKey !== state.lastKey){
+    state.lastKey = timestampKey;
+    state.changedAt = Date.now();
+  }else if(!state.changedAt){
+    state.changedAt = Date.now();
+  }
+  siteTimestampState[site.proxyType] = state;
+
+  const ageSec = Math.abs((Date.now() - serverDate.getTime()) / 1000);
+  const frozenSec = state.changedAt ? ((Date.now() - state.changedAt) / 1000) : 0;
+
+  if(ageSec <= LIVE_OK_SECONDS && frozenSec <= LIVE_OK_SECONDS){
+    return { level: 'online', text: 'Online', dotClass: 'sc-dot-ok' };
+  }
+  if(ageSec <= LIVE_STALE_SECONDS && frozenSec <= LIVE_STALE_SECONDS){
+    return { level: 'stale', text: 'Stale', dotClass: 'sc-dot-stale' };
+  }
+  return { level: 'offline', text: 'Offline', dotClass: 'sc-dot-err' };
+}
+
 function extractSiteMetrics(xml){
   if(!xml || hasXmlError(xml)) return null;
 
@@ -151,12 +200,14 @@ function extractSiteMetrics(xml){
     soc = socValues.length ? socValues.reduce((a, b) => a + b, 0) / socValues.length : null;
   }
 
+  const ds = xml.querySelector('DateServer');
   const ts = xml.querySelector('TimeServer');
   return {
     solar,
     gen,
     load,
     soc,
+    dateServer: ds ? ds.textContent.trim() : '',
     timeServer: ts ? ts.textContent.trim() : ''
   };
 }
@@ -179,19 +230,20 @@ async function fetchAlarm(site){
 
 function buildCard(site, data, alarm){
   const metrics = extractSiteMetrics(data);
-  const online = metrics !== null;
-  const solar = online ? metrics.solar : null;
-  const gen = online ? metrics.gen : null;
-  const load = online ? metrics.load : null;
-  const soc = online ? metrics.soc : null;
-  const timeStr = online && metrics.timeServer ? metrics.timeServer : '-';
+  const siteState = resolveSiteState(site, metrics);
+  const isOffline = siteState.level === 'offline';
+  const solar = metrics ? metrics.solar : null;
+  const gen = metrics ? metrics.gen : null;
+  const load = metrics ? metrics.load : null;
+  const soc = metrics ? metrics.soc : null;
+  const timeStr = metrics && metrics.timeServer ? metrics.timeServer : '-';
 
   const hasAlarm = alarm && alarm.count > 0;
   const alarmBadge = hasAlarm
     ? `<div style="background:#fef2f2;border:1px solid #fecaca;border-radius:6px;padding:5px 10px;margin-top:8px;font-size:11px;color:#b91c1c;display:flex;align-items:center;gap:6px"><span style="font-size:14px">&#9888;</span>${alarm.msg}</div>`
     : '';
 
-  return `<a class="site-card ${online?'':'offline'}" href="/BELB_Sabah/menu.html?site=${site.id}" target="_top">
+  return `<a class="site-card ${isOffline?'offline':''}" href="/BELB_Sabah/menu.html?site=${site.id}" target="_top">
     <div class="sc-top">
       <span class="sc-badge sc-badge-offgrid">Off-Grid</span>
       <span class="sc-type">Solar+Bat+Gen</span>
@@ -205,7 +257,7 @@ function buildCard(site, data, alarm){
       <div class="sc-kpi"><div class="lbl">SOC</div><div class="val" style="color:${soc !== null ? (soc < 20 ? '#ef4444' : soc < 50 ? '#f59e0b' : '#22c55e') : ''}">${soc !== null ? Math.round(soc) : '-'}<span class="u">%</span></div></div>
     </div>
     <div class="sc-status">
-      <div class="sc-pill"><span class="sc-dot ${online?'sc-dot-ok':'sc-dot-err'}"></span>${online?'Online':'Offline'}</div>
+      <div class="sc-pill"><span class="sc-dot ${siteState.dotClass}"></span>${siteState.text}</div>
       <div class="sc-time">${timeStr}</div>
     </div>
     ${alarmBadge}

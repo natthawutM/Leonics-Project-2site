@@ -352,7 +352,7 @@ function applyLiveState(serverDate){
 
 async function updateTimestamp(){
   try{
-    const res = await fetch('Xml/simulate.php?_=' + Date.now(), {cache:'no-store'});
+    const res = await fetch('Xml/Main.xml?_=' + Date.now(), {cache:'no-store'});
     if(!res.ok) return;
     const text = await res.text();
     const xml = new DOMParser().parseFromString(text, 'text/xml');
