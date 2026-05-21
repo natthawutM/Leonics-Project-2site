@@ -100,7 +100,7 @@ function fmt(v, d=1){
 }
 
 function buildProxyUrl(site, what){
-  const suffix = what === 'alarm' ? '&what=alarm' : '&what=main_test';
+  const suffix = what === 'alarm' ? '&what=alarm' : '&what=main';
   return `f1/proxy.php?type=${encodeURIComponent(site.proxyType)}${suffix}&_=${Date.now()}`;
 }
 

@@ -301,7 +301,7 @@ body{
   });
 })();
 
-// Live timestamp from Main_test.xml — updates every 2s
+// Live timestamp from Main.xml — updates every 2s
 const LIVE_OK_SECONDS = 10;
 const LIVE_STALE_SECONDS = 120;
 let lastTimestampKey = null;
@@ -352,7 +352,7 @@ function applyLiveState(serverDate){
 
 async function updateTimestamp(){
   try{
-    const res = await fetch('Xml/Main_test.xml?_=' + Date.now(), {cache:'no-store'});
+    const res = await fetch('Xml/Main.xml?_=' + Date.now(), {cache:'no-store'});
     if(!res.ok) return;
     const text = await res.text();
     const xml = new DOMParser().parseFromString(text, 'text/xml');
