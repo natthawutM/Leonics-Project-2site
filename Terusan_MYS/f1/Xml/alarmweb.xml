@@ -1,4 +1,10 @@
 <alarmWeb>
-<Count>0</Count>
-<AlarmRun>No active alarms</AlarmRun>
+<Count>6</Count>
+<Alarm id = "01">28/08/25 14:51:41 BDI No.1_Alarm ,Low battery</Alarm>
+<Alarm id = "02">28/08/25 14:51:41 BDI No.2_Alarm ,Low battery</Alarm>
+<Alarm id = "03">28/08/25 14:51:41 BDI No.1_Low Percent SOC  = 24 %</Alarm>
+<Alarm id = "04">28/08/25 14:51:41 BDI No.2_Low Percent SOC  = 24 %</Alarm>
+<Alarm id = "05">28/08/25 14:51:41 SCC No.1_Fault</Alarm>
+<Alarm id = "06">28/08/25 14:51:41 SCC No.2_Fault</Alarm>
+<AlarmRun>***28/08/25 14:51:41 BDI No.1_Alarm ,Low battery   **28/08/25 14:51:41 BDI No.2_Alarm ,Low battery   **28/08/25 14:51:41 BDI No.1_Low Percent SOC  = 24 %   **28/08/25 14:51:41 BDI No.2_Low Percent SOC  = 24 %   **28/08/25 14:51:41 SCC No.1_Fault   **28/08/25 14:51:41 SCC No.2_Fault   </AlarmRun>
 </alarmWeb>

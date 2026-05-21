@@ -3,34 +3,33 @@
 <TimeServer>14:58:50</TimeServer>
 <InstallDate>28-Aug-2025</InstallDate>
 <DatetimeHccu>20230202113013</DatetimeHccu>
-<!-- ============= BDI 1 ============= -->
 <DatetimeBDI1>20200805155551</DatetimeBDI1>
 <BDI1_BDI_Ctrl_Status>A090</BDI1_BDI_Ctrl_Status>
 <BDI1_BDI_Status210>0080500000F0</BDI1_BDI_Status210>
 <BDI1_BDI_percent_Load_L1>0.2</BDI1_BDI_percent_Load_L1>
 <BDI1_BDI_percent_Load_L2>0.3</BDI1_BDI_percent_Load_L2>
 <BDI1_BDI_percent_Load_L3>0.2</BDI1_BDI_percent_Load_L3>
-<BDI1_BDI_Voltage_L1>239.7</BDI1_BDI_Voltage_L1>
-<BDI1_BDI_Voltage_L2>239.8</BDI1_BDI_Voltage_L2>
-<BDI1_BDI_Voltage_L3>239.8</BDI1_BDI_Voltage_L3>
-<BDI1_BDI_Current_I1>0.3</BDI1_BDI_Current_I1>
-<BDI1_BDI_Current_I2>0.4</BDI1_BDI_Current_I2>
-<BDI1_BDI_Current_I3>0.3</BDI1_BDI_Current_I3>
+<BDI1_BDI_Voltage_L1>239.7</BDI1_BDI_Voltage_L1>**
+<BDI1_BDI_Voltage_L2>239.8</BDI1_BDI_Voltage_L2>**
+<BDI1_BDI_Voltage_L3>239.8</BDI1_BDI_Voltage_L3>**
+<BDI1_BDI_Current_I1>0.3</BDI1_BDI_Current_I1>**
+<BDI1_BDI_Current_I2>0.4</BDI1_BDI_Current_I2>**
+<BDI1_BDI_Current_I3>0.3</BDI1_BDI_Current_I3>**
 <BDI1_BDI_Total_Current_I>1.00</BDI1_BDI_Total_Current_I>
-<BDI1_BDI_Power_P1_kW>0.1</BDI1_BDI_Power_P1_kW>
-<BDI1_BDI_Power_P2_kW>0.2</BDI1_BDI_Power_P2_kW>
-<BDI1_BDI_Power_P3_kW>0.3</BDI1_BDI_Power_P3_kW>
+<BDI1_BDI_Power_P1_kW>0.1</BDI1_BDI_Power_P1_kW>**
+<BDI1_BDI_Power_P2_kW>0.2</BDI1_BDI_Power_P2_kW>**
+<BDI1_BDI_Power_P3_kW>0.3</BDI1_BDI_Power_P3_kW>**
 <BDI1_BDI_Total_Power_kW>0.60</BDI1_BDI_Total_Power_kW>
-<BDI1_BDI_Power_Q1_kVAr>0.1</BDI1_BDI_Power_Q1_kVAr>
-<BDI1_BDI_Power_Q2_kVAr>0.2</BDI1_BDI_Power_Q2_kVAr>
-<BDI1_BDI_Power_Q3_kVAr>0.1</BDI1_BDI_Power_Q3_kVAr>
+<BDI1_BDI_Power_Q1_kVAr>0.1</BDI1_BDI_Power_Q1_kVAr>**
+<BDI1_BDI_Power_Q2_kVAr>0.2</BDI1_BDI_Power_Q2_kVAr>**
+<BDI1_BDI_Power_Q3_kVAr>0.1</BDI1_BDI_Power_Q3_kVAr>**
 <BDI1_BDI_Total_Power_kVAr>0.40</BDI1_BDI_Total_Power_kVAr>
-<BDI1_BDI_Power_S1_kVA>0.07</BDI1_BDI_Power_S1_kVA>
-<BDI1_BDI_Power_S2_kVA>0.10</BDI1_BDI_Power_S2_kVA>
-<BDI1_BDI_Power_S3_kVA>0.07</BDI1_BDI_Power_S3_kVA>
+<BDI1_BDI_Power_S1_kVA>0.07</BDI1_BDI_Power_S1_kVA>**
+<BDI1_BDI_Power_S2_kVA>0.10</BDI1_BDI_Power_S2_kVA>**
+<BDI1_BDI_Power_S3_kVA>0.07</BDI1_BDI_Power_S3_kVA>**
 <BDI1_BDI_Total_Power_kVA>0.24</BDI1_BDI_Total_Power_kVA>
-<BDI1_BDI_Freq>49.99</BDI1_BDI_Freq>
-<BDI1_BDI_PF>0.99</BDI1_BDI_PF>
+<BDI1_BDI_Freq>49.99</BDI1_BDI_Freq>**
+<BDI1_BDI_PF>0.99</BDI1_BDI_PF>**
 <BDI1_ACin_Voltage_L1>0.3</BDI1_ACin_Voltage_L1>
 <BDI1_ACin_Voltage_L2>0.2</BDI1_ACin_Voltage_L2>
 <BDI1_ACin_Voltage_L3>0.1</BDI1_ACin_Voltage_L3>
@@ -73,15 +72,15 @@
 <BDI1_Load_Total_Power_kVA>0.00</BDI1_Load_Total_Power_kVA>
 <BDI1_Load_Freq>0.03</BDI1_Load_Freq>
 <BDI1_Load_PF>0.61</BDI1_Load_PF>
-<BDI1_BDI_Heat_Sink_Temp>63</BDI1_BDI_Heat_Sink_Temp>
-<BDI1_BDI_Batt_Voltage>2400.0</BDI1_BDI_Batt_Voltage>
-<BDI1_BDI_DC_Current>10.2</BDI1_BDI_DC_Current>
+<BDI1_BDI_Heat_Sink_Temp>63</BDI1_BDI_Heat_Sink_Temp> **
+<BDI1_BDI_Batt_Voltage>2400.0</BDI1_BDI_Batt_Voltage>**
+<BDI1_BDI_DC_Current>0.2</BDI1_BDI_DC_Current>**
 <BDI1_BDI_Ext_DC_Current>0.1</BDI1_BDI_Ext_DC_Current>
-<BDI1_BDI_Battery_Current>25.3</BDI1_BDI_Battery_Current>
-<BDI1_BDI_DC_Power_kW>-25.2</BDI1_BDI_DC_Power_kW>
+<BDI1_BDI_Battery_Current>0.3</BDI1_BDI_Battery_Current>**
+<BDI1_BDI_DC_Power_kW>0.2</BDI1_BDI_DC_Power_kW>**
 <BDI1_BDI_Ext_DC_kW>0.24</BDI1_BDI_Ext_DC_kW>
-<BDI1_BDI_Batt_kW>0.72</BDI1_BDI_Batt_kW>
-<BDI1_BDI_SOC>25</BDI1_BDI_SOC>
+<BDI1_BDI_Batt_kW>0.72</BDI1_BDI_Batt_kW>**
+<BDI1_BDI_SOC>24</BDI1_BDI_SOC>
 <BDI1_BDI_Batt_Temp>0</BDI1_BDI_Batt_Temp>
 <BDI1_BDI_Limit_DisChg_I>0.0</BDI1_BDI_Limit_DisChg_I>
 <BDI1_BDI_Limit_Chg_I>-2.5</BDI1_BDI_Limit_Chg_I>
@@ -97,11 +96,11 @@
 <BDI1_BDI_Input_signal0123>0000000000000000</BDI1_BDI_Input_signal0123>
 <BDI1_BDI_Output_signal01>00000000</BDI1_BDI_Output_signal01>
 <BDI1_BDI_Yest_Supply_AC_kWh>35</BDI1_BDI_Yest_Supply_AC_kWh>
-<BDI1_BDI_Today_Supply_AC_kWh>16</BDI1_BDI_Today_Supply_AC_kWh>
-<BDI1_BDI_Todate_Supply_AC_kWh>193</BDI1_BDI_Todate_Supply_AC_kWh>
+<BDI1_BDI_Today_Supply_AC_kWh>16</BDI1_BDI_Today_Supply_AC_kWh>**
+<BDI1_BDI_Todate_Supply_AC_kWh>193</BDI1_BDI_Todate_Supply_AC_kWh>**
 <BDI1_BDI_Yest_AC_Chg_kWh>37</BDI1_BDI_Yest_AC_Chg_kWh>
-<BDI1_BDI_Today_AC_Chg_kWh>18</BDI1_BDI_Today_AC_Chg_kWh>
-<BDI1_BDI_Todate_AC_Chg_kWh>197</BDI1_BDI_Todate_AC_Chg_kWh>
+<BDI1_BDI_Today_AC_Chg_kWh>18</BDI1_BDI_Today_AC_Chg_kWh>**
+<BDI1_BDI_Todate_AC_Chg_kWh>197</BDI1_BDI_Todate_AC_Chg_kWh>**
 <BDI1_BDI_Yest_Chg_DC_kWh>36</BDI1_BDI_Yest_Chg_DC_kWh>
 <BDI1_BDI_Today_Chg_DC_kWh>17</BDI1_BDI_Today_Chg_DC_kWh>
 <BDI1_BDI_Todate_Chg_DC_kWh>208</BDI1_BDI_Todate_Chg_DC_kWh>
@@ -129,7 +128,6 @@
 <BDI1_Todate_Batt_Chg_kWh>0.00</BDI1_Todate_Batt_Chg_kWh>
 <BDI1_Today_Batt_DisChg_kWh>0.29</BDI1_Today_Batt_DisChg_kWh>
 <BDI1_Todate_Batt_DisChg_kWh>0.29</BDI1_Todate_Batt_DisChg_kWh>
-<!-- ============= BDI 2 ============= -->
 <DatetimeBDI2>20200805155551</DatetimeBDI2>
 <BDI2_BDI_Ctrl_Status>A090</BDI2_BDI_Ctrl_Status>
 <BDI2_BDI_Status210>0080500000F0</BDI2_BDI_Status210>
@@ -203,11 +201,11 @@
 <BDI2_BDI_Batt_Voltage>2400.0</BDI2_BDI_Batt_Voltage>
 <BDI2_BDI_DC_Current>0.2</BDI2_BDI_DC_Current>
 <BDI2_BDI_Ext_DC_Current>0.1</BDI2_BDI_Ext_DC_Current>
-<BDI2_BDI_Battery_Current>10.3</BDI2_BDI_Battery_Current>
-<BDI2_BDI_DC_Power_kW>-20.2</BDI2_BDI_DC_Power_kW>
+<BDI2_BDI_Battery_Current>0.3</BDI2_BDI_Battery_Current>
+<BDI2_BDI_DC_Power_kW>0.2</BDI2_BDI_DC_Power_kW>
 <BDI2_BDI_Ext_DC_kW>0.24</BDI2_BDI_Ext_DC_kW>
 <BDI2_BDI_Batt_kW>0.72</BDI2_BDI_Batt_kW>
-<BDI2_BDI_SOC>50</BDI2_BDI_SOC>
+<BDI2_BDI_SOC>24</BDI2_BDI_SOC>
 <BDI2_BDI_Batt_Temp>0</BDI2_BDI_Batt_Temp>
 <BDI2_BDI_Limit_DisChg_I>0.0</BDI2_BDI_Limit_DisChg_I>
 <BDI2_BDI_Limit_Chg_I>-2.5</BDI2_BDI_Limit_Chg_I>
@@ -255,7 +253,6 @@
 <BDI2_Todate_Batt_Chg_kWh>0.00</BDI2_Todate_Batt_Chg_kWh>
 <BDI2_Today_Batt_DisChg_kWh>0.29</BDI2_Today_Batt_DisChg_kWh>
 <BDI2_Todate_Batt_DisChg_kWh>0.29</BDI2_Todate_Batt_DisChg_kWh>
-<!-- ============= SCC 1 ============= -->
 <DatetimeSCC1>202401041700</DatetimeSCC1>
 <SCC1_PV_Voltage>247.3</SCC1_PV_Voltage>
 <SCC1_PV_Current>25.2</SCC1_PV_Current>
@@ -267,8 +264,8 @@
 <SCC1_Heat_Sink_Temp>39</SCC1_Heat_Sink_Temp>
 <SCC1_Limit_Chg_Current>320.0</SCC1_Limit_Chg_Current>
 <SCC1_VbCtrl_GMX>250.0</SCC1_VbCtrl_GMX>
-<SCC1_Today_Chg_Ah>5.0</SCC1_Today_Chg_Ah>
-<SCC1_Today_Chg_kWh>11.10</SCC1_Today_Chg_kWh>
+<SCC1_Today_Chg_Ah>1.0</SCC1_Today_Chg_Ah>
+<SCC1_Today_Chg_kWh>2.10</SCC1_Today_Chg_kWh>
 <SCC1_Today_PV_kWh>2.20</SCC1_Today_PV_kWh>
 <SCC1_Todate_Chg_Ah>21</SCC1_Todate_Chg_Ah>
 <SCC1_Todate_Chg_kWh>5.3</SCC1_Todate_Chg_kWh>
@@ -276,7 +273,6 @@
 <SCC1_Day2Equ>0</SCC1_Day2Equ>
 <SCC1_Remain_Time>0</SCC1_Remain_Time>
 <SCC1_S_Status>0001A1790000</SCC1_S_Status>
-<!-- ============= SCC 2 ============= -->
 <DatetimeSCC2>202401041700</DatetimeSCC2>
 <SCC2_PV_Voltage>247.3</SCC2_PV_Voltage>
 <SCC2_PV_Current>25.2</SCC2_PV_Current>
@@ -297,7 +293,6 @@
 <SCC2_Day2Equ>0</SCC2_Day2Equ>
 <SCC2_Remain_Time>0</SCC2_Remain_Time>
 <SCC2_S_Status>0001A1790000</SCC2_S_Status>
-<!-- ============= Load PM ============= -->
 <Load_PM_Voltage_L1>227.93</Load_PM_Voltage_L1>
 <Load_PM_Voltage_L2>230.04</Load_PM_Voltage_L2>
 <Load_PM_Voltage_L3>229.89</Load_PM_Voltage_L3>
@@ -313,10 +308,10 @@
 <Load_PM_Power_Q1_kVAr>0.00</Load_PM_Power_Q1_kVAr>
 <Load_PM_Power_Q2_kVAr>-0.11</Load_PM_Power_Q2_kVAr>
 <Load_PM_Power_Q3_kVAr>0.00</Load_PM_Power_Q3_kVAr>
-<Load_PM_PF1>1.00</Load_PM_PF1>
-<Load_PM_PF2>1.00</Load_PM_PF2>
-<Load_PM_PF3>1.00</Load_PM_PF3>
-<Load_PM_Total_P_kW>552.46</Load_PM_Total_P_kW>
+<Load_PM_PF1>0.00</Load_PM_PF1>
+<Load_PM_PF2>0.00</Load_PM_PF2>
+<Load_PM_PF3>0.00</Load_PM_PF3>
+<Load_PM_Total_P_kW>6107.46</Load_PM_Total_P_kW>
 <Load_PM_Total_S_kVA>6.11</Load_PM_Total_S_kVA>
 <Load_PM_Total_Q_kVAr>0.00</Load_PM_Total_Q_kVAr>
 <Load_PM_Freq>50.00</Load_PM_Freq>
@@ -324,7 +319,6 @@
 <Load_PM_Export_kWh>0.00</Load_PM_Export_kWh>
 <Load_PM_Today_Import_kWh>42.80</Load_PM_Today_Import_kWh>
 <Load_PM_Today_Export_kWh>0.00</Load_PM_Today_Export_kWh>
-<!-- ============= Ctrl PM ============= -->
 <Ctrl_PM_Voltage_L1>227.93</Ctrl_PM_Voltage_L1>
 <Ctrl_PM_Voltage_L2>230.04</Ctrl_PM_Voltage_L2>
 <Ctrl_PM_Voltage_L3>229.89</Ctrl_PM_Voltage_L3>
@@ -337,12 +331,12 @@
 <Ctrl_PM_Power_S1_kVA>6.11</Ctrl_PM_Power_S1_kVA>
 <Ctrl_PM_Power_S2_kVA>6.33</Ctrl_PM_Power_S2_kVA>
 <Ctrl_PM_Power_S3_kVA>6.30</Ctrl_PM_Power_S3_kVA>
-<Ctrl_PM_Power_Q1_kVAr>2.00</Ctrl_PM_Power_Q1_kVAr>
+<Ctrl_PM_Power_Q1_kVAr>0.00</Ctrl_PM_Power_Q1_kVAr>
 <Ctrl_PM_Power_Q2_kVAr>-0.11</Ctrl_PM_Power_Q2_kVAr>
 <Ctrl_PM_Power_Q3_kVAr>0.00</Ctrl_PM_Power_Q3_kVAr>
-<Ctrl_PM_PF1>10.00</Ctrl_PM_PF1>
-<Ctrl_PM_PF2>2.00</Ctrl_PM_PF2>
-<Ctrl_PM_PF3>15.00</Ctrl_PM_PF3>
+<Ctrl_PM_PF1>0.00</Ctrl_PM_PF1>
+<Ctrl_PM_PF2>0.00</Ctrl_PM_PF2>
+<Ctrl_PM_PF3>0.00</Ctrl_PM_PF3>
 <Ctrl_PM_Total_P_kW>6107.46</Ctrl_PM_Total_P_kW>
 <Ctrl_PM_Total_S_kVA>6.11</Ctrl_PM_Total_S_kVA>
 <Ctrl_PM_Total_Q_kVAr>0.00</Ctrl_PM_Total_Q_kVAr>
@@ -351,7 +345,6 @@
 <Ctrl_PM_Export_kWh>0.00</Ctrl_PM_Export_kWh>
 <Ctrl_PM_Today_Import_kWh>42.80</Ctrl_PM_Today_Import_kWh>
 <Ctrl_PM_Today_Export_kWh>0.00</Ctrl_PM_Today_Export_kWh>
-<!-- ============= GCI 1 ============= -->
 <GCI1_PV1_Voltage>705.10</GCI1_PV1_Voltage>
 <GCI1_PV2_Voltage>709.60</GCI1_PV2_Voltage>
 <GCI1_PV3_Voltage>706.90</GCI1_PV3_Voltage>
@@ -389,7 +382,6 @@
 <GCI1_Today_AC_kWh>189.60</GCI1_Today_AC_kWh>
 <GCI1_Today_PV_kWh>1.51</GCI1_Today_PV_kWh>
 <GCI1_Todate_PV_kWh>1.50</GCI1_Todate_PV_kWh>
-<!-- ============= GCI 2 ============= -->
 <GCI2_PV1_Voltage>705.10</GCI2_PV1_Voltage>
 <GCI2_PV2_Voltage>709.60</GCI2_PV2_Voltage>
 <GCI2_PV3_Voltage>706.90</GCI2_PV3_Voltage>
@@ -427,7 +419,6 @@
 <GCI2_Today_AC_kWh>189.60</GCI2_Today_AC_kWh>
 <GCI2_Today_PV_kWh>1.51</GCI2_Today_PV_kWh>
 <GCI2_Todate_PV_kWh>1.50</GCI2_Todate_PV_kWh>
-<!-- ============= GCI 3 ============= -->
 <GCI3_PV1_Voltage>705.10</GCI3_PV1_Voltage>
 <GCI3_PV2_Voltage>709.60</GCI3_PV2_Voltage>
 <GCI3_PV3_Voltage>706.90</GCI3_PV3_Voltage>
@@ -465,7 +456,6 @@
 <GCI3_Today_AC_kWh>189.60</GCI3_Today_AC_kWh>
 <GCI3_Today_PV_kWh>1.51</GCI3_Today_PV_kWh>
 <GCI3_Todate_PV_kWh>1.50</GCI3_Todate_PV_kWh>
-<!-- ============= GCI 4 / GCI Sum ============= -->
 <GCI4_PV1_Voltage>705.10</GCI4_PV1_Voltage>
 <GCI4_PV2_Voltage>709.60</GCI4_PV2_Voltage>
 <GCI4_PV3_Voltage>706.90</GCI4_PV3_Voltage>
@@ -510,16 +500,15 @@
 <PV_kW>26.8</PV_kW>
 <PV_kWh>762.8</PV_kWh>
 <DatetimeSCU>20250828135813</DatetimeSCU>
-<!-- ============= Generator 1 ============= -->
-<Gen1_Power_factor>1.000</Gen1_Power_factor>
-<Gen1_Total_Power_kW>2.000</Gen1_Total_Power_kW>
-<Gen1_I1>0.000</Gen1_I1>
-<Gen1_I2>0.000</Gen1_I2>
-<Gen1_I3>0.000</Gen1_I3>
-<Gen1_V1n>0.0</Gen1_V1n>
-<Gen1_V2n>0.0</Gen1_V2n>
-<Gen1_V3n>0.0</Gen1_V3n>
-<Gen1_Total_ReactivePower_kVA>0.000</Gen1_Total_ReactivePower_kVA>
+<Gen1_Power_factor>1.000</Gen1_Power_factor>**
+<Gen1_Total_Power_kW>0.000</Gen1_Total_Power_kW>**
+<Gen1_I1>0.000</Gen1_I1>**
+<Gen1_I2>0.000</Gen1_I2>**
+<Gen1_I3>0.000</Gen1_I3>**
+<Gen1_V1n>0.0</Gen1_V1n>**
+<Gen1_V2n>0.0</Gen1_V2n>**
+<Gen1_V3n>0.0</Gen1_V3n>**
+<Gen1_Total_ReactivePower_kVA>0.000</Gen1_Total_ReactivePower_kVA>**
 <Gen1_Analog1_percent>70.99</Gen1_Analog1_percent>
 <Gen1_Analog2_percent>75.29</Gen1_Analog2_percent>
 <Gen1_Analog3_percent>0.00</Gen1_Analog3_percent>
@@ -531,11 +520,10 @@
 <Gen1_Run_hour_h>538.48</Gen1_Run_hour_h>
 <Gen1_State_Input8>0400</Gen1_State_Input8>
 <Gen1_Engine>1111</Gen1_Engine>
-<Gen1_Today_kWh>51150.00</Gen1_Today_kWh>
-<Gen1_Today_Run_hour_h>538.48</Gen1_Today_Run_hour_h>
-<!-- ============= Generator 2 ============= -->
+<Gen1_Today_kWh>51150.00</Gen1_Today_kWh>**
+<Gen1_Today_Run_hour_h>538.48</Gen1_Today_Run_hour_h>*
 <Gen2_Power_factor>1.000</Gen2_Power_factor>
-<Gen2_Total_Power_kW>10.000</Gen2_Total_Power_kW>
+<Gen2_Total_Power_kW>0.000</Gen2_Total_Power_kW>
 <Gen2_I1>0.000</Gen2_I1>
 <Gen2_I2>0.000</Gen2_I2>
 <Gen2_I3>0.000</Gen2_I3>
@@ -556,7 +544,6 @@
 <Gen2_Engine>1111</Gen2_Engine>
 <Gen2_Today_kWh>141390.00</Gen2_Today_kWh>
 <Gen2_Today_Run_hour_h>1193.55</Gen2_Today_Run_hour_h>
-<!-- ============= Meteorological / Calculated ============= -->
 <analog1>234567</analog1>
 <Tmod>45.4</Tmod>
 <Tamb>45.6</Tamb>

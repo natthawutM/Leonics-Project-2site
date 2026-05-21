@@ -1013,25 +1013,33 @@
         <div class="kpi-label"><span class="kpi-icon bg-solar"></span>Solar Total</div>
         <div class="kpi-value c-solar"><span id="k-solar">—</span><span class="kpi-unit">kW</span></div>
         <div class="kpi-sub" id="k-solar-sub">PV production</div>
-        <div class="kpi-bar"><div class="kpi-bar-fill bg-solar" id="k-solar-bar" style="width:0%"></div></div>
+        <div class="kpi-bar">
+          <div class="kpi-bar-fill bg-solar" id="k-solar-bar" style="width:0%"></div>
+        </div>
       </div>
       <div class="kpi">
         <div class="kpi-label"><span class="kpi-icon bg-grid"></span>Generators</div>
         <div class="kpi-value c-grid"><span id="k-grid">—</span><span class="kpi-unit">kW</span></div>
         <div class="kpi-sub" id="k-grid-sub">Diesel production</div>
-        <div class="kpi-bar"><div class="kpi-bar-fill bg-grid" id="k-grid-bar" style="width:0%"></div></div>
+        <div class="kpi-bar">
+          <div class="kpi-bar-fill bg-grid" id="k-grid-bar" style="width:0%"></div>
+        </div>
       </div>
       <div class="kpi">
         <div class="kpi-label"><span class="kpi-icon bg-load"></span>Load</div>
         <div class="kpi-value c-load"><span id="k-load">—</span><span class="kpi-unit">kW</span></div>
         <div class="kpi-sub" id="k-load-sub">Consumption</div>
-        <div class="kpi-bar"><div class="kpi-bar-fill bg-load" id="k-load-bar" style="width:0%"></div></div>
+        <div class="kpi-bar">
+          <div class="kpi-bar-fill bg-load" id="k-load-bar" style="width:0%"></div>
+        </div>
       </div>
       <div class="kpi">
         <div class="kpi-label"><span class="kpi-icon bg-batt"></span>Battery</div>
         <div class="kpi-value c-batt"><span id="k-batt">—</span><span class="kpi-unit">kW</span></div>
         <div class="kpi-sub" id="k-batt-sub">Charge/Discharge</div>
-        <div class="kpi-bar"><div class="kpi-bar-fill bg-batt" id="k-batt-bar" style="width:0%"></div></div>
+        <div class="kpi-bar">
+          <div class="kpi-bar-fill bg-batt" id="k-batt-bar" style="width:0%"></div>
+        </div>
       </div>
     </div>
 
@@ -1308,8 +1316,8 @@
     /* ============================================================
        XML data layer — Tetabuan
        ============================================================ */
-    const XML_URL = 'Xml/simulate.php';   // primary live data
-    const XML_FALLBACK_URL = 'Xml2/mockxml2.xml'; // fallback/mock data for Err/0 values
+    const XML_URL = 'Xml/Main.xml';   // primary live data
+    const XML_FALLBACK_URL = 'Xml2/Main.xml'; // fallback/mock data for Err/0 values
     const POLL_MS = 2000;
     const KPI_BAR_SCALE_KW = 50;
 

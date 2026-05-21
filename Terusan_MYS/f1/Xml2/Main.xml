@@ -3189,7 +3189,7 @@
 <MBMS2_calIn1_2>0</MBMS2_calIn1_2>
 <Today_Max_Batt_V>0.0</Today_Max_Batt_V>
 <Today_Min_Batt_V>0.0</Today_Min_Batt_V>
-<Batt_Avg_Voltage>10.0</Batt_Avg_Voltage>
+<Batt_Avg_Voltage>0.0</Batt_Avg_Voltage>
 <MBMS1_Today_Max_Batt_V>0.0</MBMS1_Today_Max_Batt_V>
 <MBMS1_Today_Min_Batt_V>0.0</MBMS1_Today_Min_Batt_V>
 <MBMS1_Batt_Avg_Voltage>0.0</MBMS1_Batt_Avg_Voltage>
@@ -3199,12 +3199,12 @@
 <Batt_Sum_Current>-2.80</Batt_Sum_Current>
 <MBMS1_Batt_Sum_Current>1.60</MBMS1_Batt_Sum_Current>
 <MBMS2_Batt_Sum_Current>1.20</MBMS2_Batt_Sum_Current>
-<Batt_Sum_Power_kW>10.77</Batt_Sum_Power_kW>
+<Batt_Sum_Power_kW>0.77</Batt_Sum_Power_kW>
 <MBMS1_Batt_Sum_Power_kW>0.44</MBMS1_Batt_Sum_Power_kW>
 <MBMS2_Batt_Sum_Power_kW>0.33</MBMS2_Batt_Sum_Power_kW>
 <Today_Max_Batt_SOC>100.0</Today_Max_Batt_SOC>
 <Today_Min_Batt_SOC>100.0</Today_Min_Batt_SOC>
-<Batt_Avg_SOC>20.0</Batt_Avg_SOC>
+<Batt_Avg_SOC>100.0</Batt_Avg_SOC>
 <MBMS1_Today_Max_Batt_SOC>100.0</MBMS1_Today_Max_Batt_SOC>
 <MBMS1_Today_Min_Batt_SOC>100.0</MBMS1_Today_Min_Batt_SOC>
 <MBMS1_Batt_Avg_SOC>100.0</MBMS1_Batt_Avg_SOC>
