@@ -1,9 +1,9 @@
 <?php
 // ============================================================
-// Power Graph — Terusan
-// Queries: terusan_mys (PV, Gen, Load, Ctrl, Irradiance)
-//          terusanbattery_mys (Batt voltage, SOC)
-// Uses mysql_* (PHP 5.x).
+// Power Graph (Test version for PHP 7+) — Tetabuan
+// Queries: tetabuan_mys (PV, Gen, Load, Ctrl, Irradiance)
+//          tetabuanbattery_mys (Batt voltage, SOC)
+// Uses mysqli_* (PHP 7.x / 8.x).
 // ============================================================
 if($_POST==NULL){
     $date1_=date('Y-m-d');
@@ -25,8 +25,15 @@ if(!isset($m_2)){
 }
 
 // ── DB1: main data (PV, Gen, Load, Ctrl, Irr) ──
-include("../Includes/DBConn.php");
-$link1 = connectToDB1();
+$hostdb = 'localhost';
+$userdb = 'root';
+$passdb = '';
+$namedb = 'tetabuan_mys';
+
+$link1 = mysqli_connect($hostdb, $userdb, $passdb, $namedb);
+if (!$link1) {
+    die("Connection failed (DB1): " . mysqli_connect_error());
+}
 
 if($_POST==NULL){
     $latestSql = "SELECT DATE(MAX(DatetimeLocal)) AS latest_date
@@ -36,8 +43,8 @@ if($_POST==NULL){
                      OR COALESCE(Load_PM_Total_P_kW,0) > 0
                      OR COALESCE(Ctrl_PM_Total_P_kW,0) > 0
                      OR COALESCE(Irradiance_W_m2,0) > 0";
-    $latestQuery = mysql_query($latestSql);
-    if($latestQuery && ($latestRow = mysql_fetch_array($latestQuery)) && !empty($latestRow['latest_date'])){
+    $latestQuery = mysqli_query($link1, $latestSql);
+    if($latestQuery && ($latestRow = mysqli_fetch_array($latestQuery, MYSQLI_ASSOC)) && !empty($latestRow['latest_date'])){
         $date1_ = $latestRow['latest_date'];
         $y_1 = substr($date1_, 0, 4);
         $m_1 = substr($date1_, 5, 2);
@@ -51,14 +58,14 @@ $sql1 = "SELECT DatetimeLocal,PV_kW,Gen_kW,Load_PM_Total_P_kW,Ctrl_PM_Total_P_kW
          FROM graph
          WHERE year(DatetimeLocal)=$y_1 AND month(DatetimeLocal)=$m_1 AND day(DatetimeLocal)=$d_1
          ORDER BY DatetimeLocal ASC";
-$q1 = mysql_query($sql1) or die("Query error (DB1): " . mysql_error());
+$q1 = mysqli_query($link1, $sql1) or die("Query error (DB1): " . mysqli_error($link1));
 
 $nnPv=$nnGen=$nnLoad=$nnCtrl=$nnIrr="";
 $maxPv=$maxGen=$maxLoad=$maxIrr=0;
 $totalPoints=0;
 $meaningfulPoints=0;
 
-while($r = mysql_fetch_array($q1)){
+while($r = mysqli_fetch_array($q1, MYSQLI_ASSOC)){
     $Y=substr($r['DatetimeLocal'],0,4);
     $M=substr($r['DatetimeLocal'],5,2);
     $D=substr($r['DatetimeLocal'],8,2);
@@ -88,21 +95,20 @@ while($r = mysql_fetch_array($q1)){
     $nnIrr .="[$ts,$ir],";
     $totalPoints++;
 }
-mysql_close($link1);
+mysqli_close($link1);
 
 // ── DB2: battery data (Voltage, SOC) — graceful: skip if DB missing ──
 $nnBattV=$nnSoc="";
 $lastSoc=null;
-include_once("../Includes/DBConn2.php");
-$link2 = function_exists('connectToDB2') ? @connectToDB2() : false;
+$link2 = @mysqli_connect('localhost','root','', 'tetabuanbattery_mys');
 if($link2){
     $sql2 = "SELECT DatetimeLocal,Batt_Avg_Voltage,Batt_Avg_SOC
              FROM graph
              WHERE year(DatetimeLocal)=$y_1 AND month(DatetimeLocal)=$m_1 AND day(DatetimeLocal)=$d_1
              ORDER BY DatetimeLocal ASC";
-    $q2 = @mysql_query($sql2, $link2);
+    $q2 = @mysqli_query($link2, $sql2);
     if($q2){
-        while($r = mysql_fetch_array($q2)){
+        while($r = mysqli_fetch_array($q2, MYSQLI_ASSOC)){
             $Y=substr($r['DatetimeLocal'],0,4);
             $M=substr($r['DatetimeLocal'],5,2);
             $D=substr($r['DatetimeLocal'],8,2);
@@ -121,7 +127,7 @@ if($link2){
             }
         }
     }
-    @mysql_close($link2);
+    @mysqli_close($link2);
 }
 
 $dateLabel = $d_1."-".$m_2."-".$y_1;
@@ -228,12 +234,12 @@ $hasChartData = $totalPoints > 0 && $meaningfulPoints > 0;
 
 <div class="wrap">
   <div class="card">
-    <div class="card-title"><span class="dot"></span>Power Graph · Terusan</div>
+    <div class="card-title"><span class="dot"></span>Power Graph · Tetabuan</div>
 
     <div class="toolbar">
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
         <span class="label">Date</span>
-        <form method="POST" action="All.php" id="dateform" style="display:flex;gap:8px;align-items:center">
+        <form method="POST" action="All_test.php" id="dateform" style="display:flex;gap:8px;align-items:center">
           <input type="date" id="datepick" name="datepick" value="<?php echo $dateValue; ?>" />
           <input type="hidden" name="d" id="hd" value="<?php echo $d_1; ?>" />
           <input type="hidden" name="m" id="hm" value="<?php echo $m_1; ?>" />

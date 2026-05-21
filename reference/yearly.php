@@ -1,68 +1,80 @@
 <?php
-// ============================================================
-// Monthly Energy Report — Terusan
-// Daily energy bars from `terusan_mys.energylog` table.
-// Uses mysql_* (PHP 5.x).
-// ============================================================
+$name="";
+$Genn="";
+$Loadn="";
+$PVn="";
+$Irrn="";
 if($_POST==NULL){
-    $m_1 = date('m');
-    $y_1 = date('Y');
+	$date1_=date( 'Y' );
+	$y_1=date('Y');
 }else{
-    $m_1 = $_POST["m"];
-    $y_1 = $_POST["y"];
+	$y_1=$_POST["y"];
+	$date1_=$y_1;
+	
 }
-$months=array('01'=>'Jan','02'=>'Feb','03'=>'Mar','04'=>'Apr','05'=>'May','06'=>'Jun','07'=>'Jul','08'=>'Aug','09'=>'Sep','10'=>'Oct','11'=>'Nov','12'=>'Dec');
-$m_2 = isset($months[$m_1]) ? $months[$m_1] : $m_1;
-$daysInMonth = cal_days_in_month(CAL_GREGORIAN, (int)$m_1, (int)$y_1);
-$date_name = $m_2." ".$y_1;
+$date_name=$y_1;
+//-------------------- connect data base ---------------------------
 
-// ── DB query ──
-include("../Includes/DBConn.php");
-$link = connectToDB1();
-
-$sql = "SELECT DatetimeLocal, Gen_kWh, Load_kWh, PV_kWh, Irrt_kWh_m2
-        FROM energylog
-        WHERE year(DatetimeLocal)='$y_1' AND month(DatetimeLocal)='$m_1'
-        ORDER BY DatetimeLocal ASC";
-$q = mysql_query($sql) or die("Query error: ".mysql_error());
-
-$rows = array();
-while($r = mysql_fetch_array($q)){
-    $rows[] = array(
-        'date' => substr($r['DatetimeLocal'],0,10),
-        'gen'  => (float)$r['Gen_kWh'],
-        'load' => (float)$r['Load_kWh'],
-        'pv'   => (float)$r['PV_kWh'],
-        'irr'  => (float)$r['Irrt_kWh_m2'],
-    );
+ mysql_connect ("localhost","root","")
+or die ("can not connect to your hosting");
+mysql_select_db ("jambongan")or die ("can not connect to your database");
+	//$strSQL = "SELECT DatetimeServer,Grid_kWh,Load_kWh,PV_kWh,Yr FROM energylog_table where year(DatetimeServer)='$y_1'    order by DatetimeServer asc";
+	
+	$strSQL = "SELECT DatetimeLocal,Gen_kWh,Load_kWh,PV_kWh,Irradiation_kWh_m2 FROM energylog where year(DatetimeLocal)='$y_1'  order by DatetimeLocal asc";
+			$objQuery = mysql_query($strSQL) or die("query error".mysql_error());
+			//print $strSQL;
+			$i=0;
+			$num_row=mysql_num_rows($objQuery);
+			while($objResult = mysql_fetch_array($objQuery))
+			{
+				$dateTimeServer[$i]=$objResult['DatetimeLocal'];
+				$dateH_[$i]=substr($objResult['DatetimeLocal'],0,7);
+				$Gen[$i]=$objResult['Gen_kWh'];
+				$Load[$i]=$objResult['Load_kWh'];
+				$PV[$i]=$objResult['PV_kWh'];
+				$Irr[$i]=$objResult['Irradiation_kWh_m2'];
+				//print $dateH_[$i]."<br>";
+				$i++;
+		} 
+for($i=1;$i<=12;$i++){
+	$Gen1[$i]=0;
+	$PV1[$i]=0;
+	$Load1[$i]=0;
+	$Irr1[$i]=0;
+	$name1[$i]=$i;
+	if($i<10){
+	    $date_n=$y_1."-0".$i;
+	}else{
+	    $date_n=$y_1."-".$i;
+	}
+	for($k=0;$k<$num_row;$k++){
+		//print $date_n."==".$dateH_[$k]."<br>";
+		if($date_n==$dateH_[$k]){
+			$Gen1[$i]=$Gen1[$i]+$Gen[$k];			
+			$PV1[$i]=$PV1[$i]+$PV[$k];
+			$Load1[$i]=$Load1[$i]+$Load[$k];
+			$Irr1[$i]=$Irr1[$i]+$Irr[$k];
+			
+		}else{
+			$Gen1[$i]=$Gen1[$i];			
+			$PV1[$i]=$PV1[$i];
+			$Load1[$i]=$Load1[$i];
+			$Irr1[$i]=$Irr1[$i];
+			
+		}
+	}
+	$name.=$name1[$i].",";
+	$Genn.=$Gen1[$i].",";
+	$PVn.=$PV1[$i].",";
+	$Loadn.=$Load1[$i].",";
+	$Irrn.=$Irr1[$i].",";
+	
+	
 }
-mysql_close($link);
-
-// Aggregate per day
-$labels=$Genn=$PVn=$Loadn=$Irrn="";
-$totalGen=$totalPV=$totalLoad=$totalIrr=0;
-
-for($i=1; $i<=$daysInMonth; $i++){
-    $date_n = $y_1."-".$m_1."-".str_pad($i, 2, '0', STR_PAD_LEFT);
-    $g=$p=$l=$ir=0;
-    foreach($rows as $row){
-        if($row['date'] == $date_n){
-            $g  += $row['gen'];
-            $p  += $row['pv'];
-            $l  += $row['load'];
-            $ir += $row['irr'];
-        }
-    }
-    $labels .= $i.",";
-    $Genn   .= round($g,2).",";
-    $PVn    .= round($p,2).",";
-    $Loadn  .= round($l,2).",";
-    $Irrn   .= round($ir,2).",";
-    $totalGen += $g; $totalPV += $p; $totalLoad += $l; $totalIrr += $ir;
-}
-$totalSupply = $totalGen + $totalPV;
-$solarRatio = $totalSupply > 0 ? round($totalPV / $totalSupply * 100, 1) : 0;
-$avgDayPV   = $daysInMonth > 0 ? round($totalPV / $daysInMonth, 1) : 0;
+$total_PV = array_sum($PV1);
+$total_Gen = array_sum($Gen1);
+$total_Load = array_sum($Load1);
+$total_Irr = array_sum($Irr1);
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -148,43 +160,38 @@ $avgDayPV   = $daysInMonth > 0 ? round($totalPV / $daysInMonth, 1) : 0;
 
 <div class="wrap">
   <div class="card">
-    <div class="card-title"><span class="dot"></span>Daily Energy System Report Graph · Terusan</div>
+    <div class="card-title"><span class="dot"></span>Monthly Energy System Report Graph</div>
 
     <div class="toolbar">
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-        <form method="POST" action="monthly.php" id="dateform" style="display:flex;gap:8px;align-items:center">
-          <span class="label">Month</span>
-          <select name="m" id="m">
-            <?php foreach($months as $k=>$v){
-              echo '<option value="'.$k.'"'.($k==$m_1?' selected':'').'>'.$v.'</option>';
-            } ?>
-          </select>
+        <form method="POST" action="yearly.php" id="dateform" style="display:flex;gap:8px;align-items:center">
           <span class="label">Year</span>
           <select name="y" id="y">
-            <?php for($i=2020;$i<=date('Y');$i++){
-              echo '<option value="'.$i.'"'.($i==$y_1?' selected':'').'>'.$i.'</option>';
-            } ?>
+            <option value="<?php print $y_1; ?>"><?php print $y_1; ?></option>
+            <?php for($i=2025;$i<=date('Y');$i++){?>
+            <option value="<?php print $i;?>"><?php print $i;?></option>
+            <?php }?>
           </select>
           <button type="submit">Apply</button>
         </form>
       </div>
-      <div class="range-info">Showing <?php echo $date_name; ?></div>
+      <div class="range-info">Showing Year <?php echo $date_name; ?></div>
     </div>
 
     <div id="chart-container"></div>
 
     <div class="legend-grid">
-      <div class="lg-tile"><span class="swatch" style="background:#ef4444"></span><div><div class="name" style="color:#ef4444">Solar (kWh)</div><div class="desc"><?php echo number_format($totalPV, 2); ?> kWh</div></div></div>
-      <div class="lg-tile"><span class="swatch" style="background:#8b5cf6"></span><div><div class="name" style="color:#8b5cf6">Gen (kWh)</div><div class="desc"><?php echo number_format($totalGen, 2); ?> kWh</div></div></div>
-      <div class="lg-tile"><span class="swatch" style="background:#06b6d4"></span><div><div class="name" style="color:#06b6d4">Load (kWh)</div><div class="desc"><?php echo number_format($totalLoad, 2); ?> kWh</div></div></div>
-      <div class="lg-tile"><span class="swatch" style="background:#f59e0b"></span><div><div class="name" style="color:#f59e0b">Irradiation (kWh/m2)</div><div class="desc"><?php echo number_format($totalIrr, 2); ?> kWh/m²</div></div></div>
+      <div class="lg-tile"><span class="swatch" style="background:#ef4444"></span><div><div class="name" style="color:#ef4444">PV (kWh)</div><div class="desc"><?php echo number_format($total_PV, 2); ?> kWh</div></div></div>
+      <div class="lg-tile"><span class="swatch" style="background:#8b5cf6"></span><div><div class="name" style="color:#8b5cf6">Gen (kWh)</div><div class="desc"><?php echo number_format($total_Gen, 2); ?> kWh</div></div></div>
+      <div class="lg-tile"><span class="swatch" style="background:#06b6d4"></span><div><div class="name" style="color:#06b6d4">Load (kWh)</div><div class="desc"><?php echo number_format($total_Load, 2); ?> kWh</div></div></div>
+      <div class="lg-tile"><span class="swatch" style="background:#f59e0b"></span><div><div class="name" style="color:#f59e0b">Irradiation (kWh/m2)</div><div class="desc"><?php echo number_format($total_Irr, 2); ?> kWh/m²</div></div></div>
     </div>
   </div>
 </div>
 
-<script src="/highstock/js/jquery.min.js"></script>
-<script src="/highstock/js/highstock.js"></script>
-<script src="/highstock/js/modules/exporting.js"></script>
+<script src="../../../highstock/js/jquery.min.js"></script>
+<script src="../../../highstock/js/highstock.js"></script>
+<script src="../../../highstock/js/modules/exporting.js"></script>
 
 <script type="text/javascript">
 var chart;
@@ -203,7 +210,7 @@ $(document).ready(function() {
     subtitle: { text: '' },
 
     xAxis: {
-        categories: [<?php echo rtrim($labels,',');?>],
+        categories: [<?php print substr($name, 0, strlen($name)-1);?>],
         lineColor: '#e8e6df',
         tickColor: '#e8e6df',
         labels: { style: { color: '#888', fontFamily: "'DM Mono'" } }
@@ -216,6 +223,8 @@ $(document).ready(function() {
         opposite: false
     }, {
         title: { text: null },
+        max: 150,
+        tickInterval: 50,
         labels: { format: '{value} kWh/m2', style: { color: '#f59e0b', fontFamily: "'DM Mono'" } },
         gridLineColor: 'transparent',
         opposite: true
@@ -230,7 +239,7 @@ $(document).ready(function() {
         shadow: { color: 'rgba(0,0,0,0.08)', width: 6, opacity: 0.6 },
         style: { color: '#1a1a1a', fontFamily: "'DM Sans'", fontSize: '12px' },
         valueDecimals: 2,
-        headerFormat: '<span style="font-family:DM Mono;color:#888;font-size:11px">Day {point.key}</span><br/>'
+        headerFormat: '<span style="font-family:DM Mono;color:#888;font-size:11px">Month {point.key}</span><br/>'
     },
 
     legend: { enabled: false },
@@ -249,29 +258,29 @@ $(document).ready(function() {
     },
 
     series: [{
-        type: 'column',
-        name: 'Solar',
+        type: 'spline',
+        name: 'PV',
         color: '#ef4444',
-        data: [<?php echo rtrim($PVn,',');?>],
+        data: [<?php print substr($PVn, 0, strlen($PVn)-1);?>],
         tooltip: { valueSuffix: ' kWh' }
     }, {
-        type: 'column',
+        type: 'spline',
         name: 'Gen',
         color: '#8b5cf6',
-        data: [<?php echo rtrim($Genn,',');?>],
+        data: [<?php print substr($Genn, 0, strlen($Genn)-1);?>],
         tooltip: { valueSuffix: ' kWh' }
     }, {
         type: 'spline',
         name: 'Load',
         color: '#06b6d4',
-        data: [<?php echo rtrim($Loadn,',');?>],
+        data: [<?php print substr($Loadn, 0, strlen($Loadn)-1);?>],
         tooltip: { valueSuffix: ' kWh' }
     }, {
         type: 'spline',
-        name: 'Irradiation',
+        name: 'Irrt',
         color: '#f59e0b',
         yAxis: 1,
-        data: [<?php echo rtrim($Irrn,',');?>],
+        data: [<?php print substr($Irrn, 0, strlen($Irrn)-1);?>],
         tooltip: { valueSuffix: ' kWh/m2' }
     }]
   });

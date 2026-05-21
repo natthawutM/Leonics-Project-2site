@@ -64,101 +64,123 @@ $avgMonthPV = round($totalPV / 12, 1);
 
 // CO2 saved estimate (1 kWh PV = ~0.5 kg CO2 saved vs grid)
 $co2Saved = round($totalPV * 0.5, 1);
+$hasChartData = $totalSupply > 0 || $totalLoad > 0;
 ?>
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE HTML>
+<html>
 <head>
-<meta charset="utf-8">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Yearly Energy — Terusan MOC</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-*{box-sizing:border-box}
-html,body{margin:0;padding:0;max-width:100vw;overflow-x:hidden}
-body{padding:16px;font-family:'DM Sans',system-ui,sans-serif;background:#f5f5f0;color:#1a1a1a;font-size:13px}
-.wrap{max-width:1200px;margin:0 auto}
-.card{background:#fff;border:1px solid #e8e6df;border-radius:12px;padding:16px;margin-bottom:12px}
-.card-title{font-size:11px;font-weight:500;color:#888;text-transform:uppercase;letter-spacing:.3px;margin:0 0 12px;display:flex;align-items:center;gap:8px}
-.card-title .dot{width:6px;height:6px;border-radius:50%;display:inline-block}
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="../css/log.css" rel="stylesheet" type="text/css">
+  <style type="text/css">
+  :root {
+    --bg-main:#f5f5f0;
+    --bg-card:#fff;
+    --bg-panel:#fafaf7;
+    --border-default:#e8e6df;
+    --text-primary:#1a1a1a;
+    --text-secondary:#888;
+    --text-tertiary:#aaa;
+    --info:#3b82f6;
+    --cyan:#06b6d4;
+    --purple:#8b5cf6;
+    --warning:#f59e0b;
+    --danger:#ef4444;
+    --success:#10b981;
+    --radius-md:8px;
+    --radius-lg:12px;
+    --font-sans:'DM Sans',system-ui,-apple-system,sans-serif;
+    --font-mono:'DM Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:var(--font-sans);background:var(--bg-main);color:var(--text-primary);font-size:13px;line-height:1.5;padding:16px;min-height:100vh}
+  .wrap{max-width:1400px;margin:0 auto}
+  .card{background:var(--bg-card);border:1px solid var(--border-default);border-radius:var(--radius-lg);padding:16px}
+  .card-title{font-size:11px;font-weight:500;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.3px;margin:0 0 12px;display:flex;align-items:center;gap:8px}
+  .card-title .dot{width:6px;height:6px;border-radius:50%;background:var(--cyan)}
 
-.kpi-row{display:grid;grid-template-columns:repeat(5, minmax(0,1fr));gap:8px;margin-bottom:16px}
-.kpi-box{background:#fafaf7;border-radius:6px;padding:10px 12px;min-width:0;overflow:hidden}
-.kpi-box .lbl{font-size:10px;font-weight:500;color:#888;text-transform:uppercase;letter-spacing:.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.kpi-box .val{font-family:'DM Mono',monospace;font-size:18px;font-weight:600;margin-top:2px;white-space:nowrap}
-.kpi-box .val .u{font-size:11px;color:#888;margin-left:2px;font-weight:500}
-.kpi-box .sub{font-size:10px;color:#aaa;margin-top:1px}
+  .toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--bg-panel)}
+  .toolbar .label{font-size:11px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.3px;font-weight:500;margin-right:6px}
+  .toolbar select{
+    font-family:var(--font-sans);font-size:13px;padding:7px 12px;
+    border:1px solid var(--border-default);border-radius:var(--radius-md);
+    background:#fff;color:var(--text-primary);
+  }
+  .toolbar button{
+    font-family:var(--font-sans);font-size:13px;font-weight:500;
+    padding:7px 16px;border:none;border-radius:var(--radius-md);
+    background:var(--text-primary);color:#fff;cursor:pointer;transition:background .15s;
+  }
+  .toolbar button:hover{background:#333}
+  .range-info{font-size:12px;color:var(--text-secondary);font-family:var(--font-mono)}
 
-.date-row{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
-.date-row select,.date-row button{font-family:'DM Sans',sans-serif;font-size:13px;padding:7px 12px;border:1px solid #e8e6df;border-radius:8px;background:#fff;color:#1a1a1a}
-.date-row button{background:#1a1a1a;color:#fff;border:none;cursor:pointer;font-weight:500}
-.date-row button:hover{background:#333}
-.date-row .quick{display:inline-flex;gap:4px;margin-left:auto}
-.date-row .quick button{background:#fff;color:#666;border:1px solid #e8e6df;font-weight:400;padding:6px 10px;font-size:12px}
-.date-row .quick button:hover{background:#fafaf7;color:#1a1a1a}
+  #chart-container{width:100%;height:380px;min-width:0}
+  .no-data{
+    text-align:center;padding:60px 20px;color:var(--text-secondary);font-size:14px;
+  }
+  .no-data .icon{font-size:30px;color:var(--text-tertiary);margin-bottom:8px}
 
-#chart-container{width:100%;height:380px}
-.no-data{text-align:center;padding:50px 20px;color:#888;font-size:14px}
-.no-data .icon{font-size:30px;color:#ccc;margin-bottom:8px}
+  /* legend tiles below chart */
+  .legend-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:14px}
+  .lg-tile{background:var(--bg-panel);border-radius:var(--radius-md);padding:10px 12px;display:flex;align-items:center;gap:10px}
+  .lg-tile .swatch{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+  .lg-tile .name{font-size:11px;color:var(--text-secondary);font-weight:500;text-transform:uppercase;letter-spacing:0.3px}
+  .lg-tile .desc{font-size:11px;color:var(--text-tertiary);margin-top:2px}
 
-@media(max-width:768px){
-  .kpi-row{grid-template-columns:repeat(3, minmax(0,1fr))}
-}
-@media(max-width:600px){
-  body{padding:10px}
-  .card{padding:12px}
-  .kpi-row{grid-template-columns:repeat(2, minmax(0,1fr))}
-  #chart-container{height:280px}
-  .date-row .quick{margin-left:0;width:100%}
-}
-</style>
+  @media (max-width:992px){
+    .legend-grid{grid-template-columns:repeat(3,1fr)}
+  }
+  @media (max-width:768px){
+    body{padding:12px}
+    #chart-container{height:320px}
+    .legend-grid{grid-template-columns:repeat(2,1fr)}
+    .toolbar{flex-direction:column;align-items:stretch}
+  }
+  @media (max-width:480px){
+    body{padding:10px}
+    .card(padding:12px;border-radius:10px}
+    #chart-container{height:280px}
+    .legend-grid{grid-template-columns:1fr}
+  }
+
+  /* Highcharts overrides for cleaner look */
+  .highcharts-background{fill:transparent}
+  .highcharts-grid-line{stroke:var(--border-default)}
+  .highcharts-axis-line{stroke:var(--border-default)}
+  .highcharts-tick{stroke:var(--border-default)}
+  .highcharts-axis-labels text{font-family:var(--font-mono) !important;font-size:11px !important;fill:var(--text-secondary) !important}
+  .highcharts-legend-item text{font-family:var(--font-sans) !important;font-size:12px !important;fill:var(--text-primary) !important}
+  .highcharts-tooltip{font-family:var(--font-sans) !important}
+  </style>
 </head>
 <body>
+
 <div class="wrap">
   <div class="card">
-    <div class="card-title"><span class="dot" style="background:#3b82f6"></span>Yearly Energy Report — <?php echo $y_1;?></div>
+    <div class="card-title"><span class="dot"></span>Yearly Energy System Report Graph · Terusan</div>
 
-    <div class="kpi-row">
-      <div class="kpi-box">
-        <div class="lbl">Solar total</div>
-        <div class="val" style="color:#f59e0b"><?php echo number_format($totalPV,1);?><span class="u">kWh</span></div>
-        <div class="sub">avg <?php echo $avgMonthPV;?> kWh/mo</div>
+    <div class="toolbar">
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <form method="POST" action="yearly.php" id="dateform" style="display:flex;gap:8px;align-items:center">
+          <span class="label">Year</span>
+          <select name="y" id="y">
+            <?php for($i=2020;$i<=date('Y');$i++){
+              echo '<option value="'.$i.'"'.($i==$y_1?' selected':'').'>'.$i.'</option>';
+            } ?>
+          </select>
+          <button type="submit">Apply</button>
+        </form>
+        <div style="display:inline-flex;gap:4px;">
+          <button type="button" id="btnPrev" style="font-family:var(--font-sans);font-size:13px;font-weight:500;padding:7px 12px;border:none;border-radius:var(--radius-md);background:var(--bg-panel);border:1px solid var(--border-default);color:var(--text-primary);cursor:pointer;">‹ Prev year</button>
+          <button type="button" id="btnThis" style="font-family:var(--font-sans);font-size:13px;font-weight:500;padding:7px 12px;border:none;border-radius:var(--radius-md);background:var(--bg-panel);border:1px solid var(--border-default);color:var(--text-primary);cursor:pointer;">This year</button>
+          <button type="button" id="btnNext" style="font-family:var(--font-sans);font-size:13px;font-weight:500;padding:7px 12px;border:none;border-radius:var(--radius-md);background:var(--bg-panel);border:1px solid var(--border-default);color:var(--text-primary);cursor:pointer;">Next year ›</button>
+        </div>
       </div>
-      <div class="kpi-box">
-        <div class="lbl">Gen total</div>
-        <div class="val" style="color:#ea580c"><?php echo number_format($totalGen,1);?><span class="u">kWh</span></div>
-      </div>
-      <div class="kpi-box">
-        <div class="lbl">Load total</div>
-        <div class="val" style="color:#3b82f6"><?php echo number_format($totalLoad,1);?><span class="u">kWh</span></div>
-      </div>
-      <div class="kpi-box">
-        <div class="lbl">Solar ratio</div>
-        <div class="val" style="color:#22c55e"><?php echo $solarRatio;?><span class="u">%</span></div>
-        <div class="sub">PV / (PV+Gen)</div>
-      </div>
-      <div class="kpi-box">
-        <div class="lbl">CO₂ saved</div>
-        <div class="val" style="color:#06b6d4"><?php echo number_format($co2Saved,1);?><span class="u">kg</span></div>
-        <div class="sub"><?php echo $peakMonthName ? 'peak: '.$peakMonthName : '—';?></div>
-      </div>
+      <div class="range-info">Showing <?php echo $y_1; ?></div>
     </div>
 
-    <form method="POST" action="yearly.php" class="date-row">
-      <select name="y">
-        <?php for($i=2020;$i<=date('Y');$i++){
-          echo '<option value="'.$i.'"'.($i==$y_1?' selected':'').'>'.$i.'</option>';
-        } ?>
-      </select>
-      <button type="submit">Go</button>
-      <div class="quick">
-        <button type="button" id="btnPrev">‹ Prev year</button>
-        <button type="button" id="btnThis">This year</button>
-        <button type="button" id="btnNext">Next year ›</button>
-      </div>
-    </form>
-
-    <?php if($totalSupply == 0 && $totalLoad == 0): ?>
+    <?php if(!$hasChartData): ?>
       <div class="no-data">
         <div class="icon">&#9888;</div>
         <div>No energy data for <?php echo $y_1;?></div>
@@ -166,67 +188,119 @@ body{padding:16px;font-family:'DM Sans',system-ui,sans-serif;background:#f5f5f0;
     <?php else: ?>
       <div id="chart-container"></div>
     <?php endif; ?>
+
+    <div class="legend-grid">
+      <div class="lg-tile"><span class="swatch" style="background:#ef4444"></span><div><div class="name" style="color:#ef4444">Solar (kWh)</div><div class="desc"><?php echo number_format($totalPV, 0); ?> kWh</div></div></div>
+      <div class="lg-tile"><span class="swatch" style="background:#8b5cf6"></span><div><div class="name" style="color:#8b5cf6">Gen (kWh)</div><div class="desc"><?php echo number_format($totalGen, 0); ?> kWh</div></div></div>
+      <div class="lg-tile"><span class="swatch" style="background:#06b6d4"></span><div><div class="name" style="color:#06b6d4">Load (kWh)</div><div class="desc"><?php echo number_format($totalLoad, 0); ?> kWh</div></div></div>
+      <div class="lg-tile"><span class="swatch" style="background:#f59e0b"></span><div><div class="name" style="color:#f59e0b">Irradiation (kWh/m2)</div><div class="desc"><?php echo number_format($totalIrr, 1); ?> kWh/m²</div></div></div>
+      <div class="lg-tile"><span class="swatch" style="background:#10b981"></span><div><div class="name" style="color:#10b981">CO₂ Saved</div><div class="desc"><?php echo number_format($co2Saved, 0); ?> kg</div></div></div>
+    </div>
   </div>
 </div>
 
-<?php if($totalSupply > 0 || $totalLoad > 0): ?>
-<script src="/highchart/code/highcharts.js"></script>
-<script>
-function showChartError(message){
-  var el = document.getElementById('chart-container');
-  if(!el) return;
-  el.innerHTML = '<div style="padding:24px;color:#b91c1c;font:13px DM Sans, sans-serif">Chart render error: ' + String(message) + '</div>';
-}
+<?php if($hasChartData): ?>
+<script src="/highstock/js/jquery.min.js"></script>
+<script src="/highstock/js/highstock.js"></script>
+<script src="/highstock/js/modules/exporting.js"></script>
 
-if(!window.Highcharts){
-  showChartError('Highcharts library not loaded');
-} else {
-try {
-new Highcharts.Chart({
-  chart:{renderTo:'chart-container',backgroundColor:'transparent',style:{fontFamily:'DM Sans, system-ui, sans-serif'}},
-  credits:{enabled:false},
-  title:{text:null},
-  xAxis:{
-    categories:[<?php echo rtrim($labels,',');?>],
-    title:{text:'Month of <?php echo $y_1;?>',style:{color:'#666'}},
-    gridLineColor:'#e8e6df', lineColor:'#cfd6df',
-    labels:{style:{color:'#666',fontSize:'11px'}}
-  },
-  yAxis:[
-    {min:0, title:{text:'Energy (kWh)',style:{color:'#666'}},
-     labels:{format:'{value}',style:{color:'#666',fontSize:'11px'}},
-     gridLineColor:'#e8e6df'},
-    {min:0, title:{text:'Irradiation (kWh/m²)',style:{color:'#f9c66b'}},
-     labels:{format:'{value}',style:{color:'#f9c66b',fontSize:'11px'}},
-     opposite:true, gridLineColor:'transparent'}
-  ],
-  tooltip:{shared:true, style:{fontFamily:'DM Mono, monospace',fontSize:'12px'}},
-  legend:{itemStyle:{fontFamily:'DM Sans',fontSize:'12px',color:'#444'},itemHoverStyle:{color:'#1a1a1a'}},
-  plotOptions:{
-    column:{pointPadding:0.05, borderWidth:0, borderRadius:3, groupPadding:0.12},
-    spline:{lineWidth:2, marker:{enabled:false}}
-  },
-  series:[
-    {type:'column', name:'Solar (kWh)',  data:[<?php echo rtrim($PVn,',');?>],   color:'#f59e0b'},
-    {type:'column', name:'Gen (kWh)',    data:[<?php echo rtrim($Genn,',');?>],  color:'#ea580c'},
-    {type:'spline', name:'Load (kWh)',   data:[<?php echo rtrim($Loadn,',');?>], color:'#3b82f6', lineWidth:2.5},
-    {type:'spline', name:'Irradiation (kWh/m²)', data:[<?php echo rtrim($Irrn,',');?>],
-     color:'#f9c66b', yAxis:1, lineWidth:1.5, dashStyle:'Dot', visible:false}
-  ],
-  exporting:{enabled:true, buttons:{contextButton:{menuItems:['downloadPNG','downloadCSV','downloadXLS']}}}
+<script type="text/javascript">
+var chart;
+$(document).ready(function() {
+  chart = new Highcharts.Chart({
+    chart: {
+        renderTo: 'chart-container',
+        zoomType: 'x',
+        backgroundColor: 'transparent',
+        style: { fontFamily: "'DM Sans', sans-serif" },
+        spacing: [16, 8, 10, 8]
+    },
+    credits: { enabled: false },
+    exporting: { enabled: false },
+    title: { text: '' },
+    subtitle: { text: '' },
+
+    xAxis: {
+        categories: [<?php echo rtrim($labels,',');?>],
+        lineColor: '#e8e6df',
+        tickColor: '#e8e6df',
+        labels: { style: { color: '#888', fontFamily: "'DM Mono'" } }
+    },
+
+    yAxis: [{
+        title: { text: null },
+        labels: { format: '{value} kWh', style: { color: '#888', fontFamily: "'DM Mono'" } },
+        gridLineColor: '#e8e6df',
+        opposite: false
+    }, {
+        title: { text: null },
+        labels: { format: '{value} kWh/m2', style: { color: '#f59e0b', fontFamily: "'DM Mono'" } },
+        gridLineColor: 'transparent',
+        opposite: true
+    }],
+
+    tooltip: {
+        shared: true,
+        backgroundColor: '#fff',
+        borderColor: '#e8e6df',
+        borderRadius: 8,
+        borderWidth: 1,
+        shadow: { color: 'rgba(0,0,0,0.08)', width: 6, opacity: 0.6 },
+        style: { color: '#1a1a1a', fontFamily: "'DM Sans'", fontSize: '12px' },
+        valueDecimals: 1,
+        headerFormat: '<span style="font-family:DM Mono;color:#888;font-size:11px">{point.key}</span><br/>'
+    },
+
+    legend: { enabled: false },
+
+    plotOptions: {
+        column: {
+            pointPadding: 0.1,
+            borderWidth: 0,
+            borderRadius: 3
+        },
+        spline: {
+            lineWidth: 2,
+            marker: { enabled: false },
+            states: { hover: { lineWidth: 3 } }
+        }
+    },
+
+    series: [{
+        type: 'column',
+        name: 'Solar',
+        color: '#ef4444',
+        data: [<?php echo rtrim($PVn,',');?>],
+        tooltip: { valueSuffix: ' kWh' }
+    }, {
+        type: 'column',
+        name: 'Gen',
+        color: '#8b5cf6',
+        data: [<?php echo rtrim($Genn,',');?>],
+        tooltip: { valueSuffix: ' kWh' }
+    }, {
+        type: 'spline',
+        name: 'Load',
+        color: '#06b6d4',
+        data: [<?php echo rtrim($Loadn,',');?>],
+        tooltip: { valueSuffix: ' kWh' }
+    }, {
+        type: 'spline',
+        name: 'Irradiation',
+        color: '#f59e0b',
+        yAxis: 1,
+        data: [<?php echo rtrim($Irrn,',');?>],
+        tooltip: { valueSuffix: ' kWh/m2' }
+    }]
+  });
 });
-} catch (err) {
-  showChartError(err && err.message ? err.message : err);
-}
-}
 </script>
 <?php endif; ?>
 
 <script>
 function reload(y){
-  const f = document.querySelector('form.date-row');
-  f.querySelector('[name=y]').value = y;
-  f.submit();
+  document.getElementById('y').value = y;
+  document.getElementById('dateform').submit();
 }
 const curY = parseInt('<?php echo $y_1;?>');
 document.getElementById('btnThis').addEventListener('click', () => reload(new Date().getFullYear()));

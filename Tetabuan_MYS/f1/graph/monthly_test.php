@@ -1,70 +1,75 @@
 <?php
 // ============================================================
-// Yearly Energy Report — Tetabuan
-// Monthly energy bars from `tetabuan_mys.energylog` table.
-// Uses mysql_* (PHP 5.x).
+// Monthly Energy Report (Test version for PHP 7+) — Tetabuan
+// Daily energy bars from `tetabuan_mys.energylog` table.
+// Uses mysqli_* (PHP 7.x / 8.x).
 // ============================================================
 if($_POST==NULL){
+    $m_1 = date('m');
     $y_1 = date('Y');
 }else{
+    $m_1 = $_POST["m"];
     $y_1 = $_POST["y"];
 }
-$months_full = array(1=>'January',2=>'February',3=>'March',4=>'April',5=>'May',6=>'June',7=>'July',8=>'August',9=>'September',10=>'October',11=>'November',12=>'December');
-$months_short = array(1=>'Jan',2=>'Feb',3=>'Mar',4=>'Apr',5=>'May',6=>'Jun',7=>'Jul',8=>'Aug',9=>'Sep',10=>'Oct',11=>'Nov',12=>'Dec');
+$months=array('01'=>'Jan','02'=>'Feb','03'=>'Mar','04'=>'Apr','05'=>'May','06'=>'Jun','07'=>'Jul','08'=>'Aug','09'=>'Sep','10'=>'Oct','11'=>'Nov','12'=>'Dec');
+$m_2 = isset($months[$m_1]) ? $months[$m_1] : $m_1;
+$daysInMonth = cal_days_in_month(CAL_GREGORIAN, (int)$m_1, (int)$y_1);
+$date_name = $m_2." ".$y_1;
 
-// ── DB query ──
-include("../Includes/DBConn.php");
-$link = connectToDB1();
+// ── DB query (mysqli version) ──
+$hostdb = 'localhost';
+$userdb = 'root';
+$passdb = '';
+$namedb = 'tetabuan_mys';
+
+$link = mysqli_connect($hostdb, $userdb, $passdb, $namedb);
+if (!$link) {
+    die("Connection failed: " . mysqli_connect_error());
+}
 
 $sql = "SELECT DatetimeLocal, Gen_kWh, Load_kWh, PV_kWh, Irrt_kWh_m2
         FROM energylog
-        WHERE year(DatetimeLocal)='$y_1'
+        WHERE year(DatetimeLocal)='$y_1' AND month(DatetimeLocal)='$m_1'
         ORDER BY DatetimeLocal ASC";
-$q = mysql_query($sql) or die("Query error: ".mysql_error());
+$q = mysqli_query($link, $sql) or die("Query error: ".mysqli_error($link));
 
 $rows = array();
-while($r = mysql_fetch_array($q)){
+while($r = mysqli_fetch_array($q, MYSQLI_ASSOC)){
     $rows[] = array(
-        'month' => (int)substr($r['DatetimeLocal'],5,2),
-        'gen'   => (float)$r['Gen_kWh'],
-        'load'  => (float)$r['Load_kWh'],
-        'pv'    => (float)$r['PV_kWh'],
-        'irr'   => (float)$r['Irrt_kWh_m2'],
+        'date' => substr($r['DatetimeLocal'],0,10),
+        'gen'  => (float)$r['Gen_kWh'],
+        'load' => (float)$r['Load_kWh'],
+        'pv'   => (float)$r['PV_kWh'],
+        'irr'  => (float)$r['Irrt_kWh_m2'],
     );
 }
-mysql_close($link);
+mysqli_close($link);
 
-// Aggregate per month (1..12)
+// Aggregate per day
 $labels=$Genn=$PVn=$Loadn=$Irrn="";
 $totalGen=$totalPV=$totalLoad=$totalIrr=0;
-$peakMonthPV=0; $peakMonthName='';
 
-for($m=1; $m<=12; $m++){
+for($i=1; $i<=$daysInMonth; $i++){
+    $date_n = $y_1."-".$m_1."-".str_pad($i, 2, '0', STR_PAD_LEFT);
     $g=$p=$l=$ir=0;
     foreach($rows as $row){
-        if($row['month'] == $m){
+        if($row['date'] == $date_n){
             $g  += $row['gen'];
             $p  += $row['pv'];
             $l  += $row['load'];
             $ir += $row['irr'];
         }
     }
-    if($p > $peakMonthPV){ $peakMonthPV = $p; $peakMonthName = $months_short[$m]; }
-
-    $labels .= "'".$months_short[$m]."',";
-    $Genn   .= round($g,1).",";
-    $PVn    .= round($p,1).",";
-    $Loadn  .= round($l,1).",";
+    $labels .= $i.",";
+    $Genn   .= round($g,2).",";
+    $PVn    .= round($p,2).",";
+    $Loadn  .= round($l,2).",";
     $Irrn   .= round($ir,2).",";
     $totalGen += $g; $totalPV += $p; $totalLoad += $l; $totalIrr += $ir;
 }
 $totalSupply = $totalGen + $totalPV;
 $solarRatio = $totalSupply > 0 ? round($totalPV / $totalSupply * 100, 1) : 0;
-$avgMonthPV = round($totalPV / 12, 1);
-
-// CO2 saved estimate (1 kWh PV = ~0.5 kg CO2 saved vs grid)
-$co2Saved = round($totalPV * 0.5, 1);
-$hasChartData = $totalSupply > 0 || $totalLoad > 0;
+$avgDayPV   = $daysInMonth > 0 ? round($totalPV / $daysInMonth, 1) : 0;
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -86,7 +91,6 @@ $hasChartData = $totalSupply > 0 || $totalLoad > 0;
     --purple:#8b5cf6;
     --warning:#f59e0b;
     --danger:#ef4444;
-    --success:#10b981;
     --radius-md:8px;
     --radius-lg:12px;
     --font-sans:'DM Sans',system-ui,-apple-system,sans-serif;
@@ -116,21 +120,14 @@ $hasChartData = $totalSupply > 0 || $totalLoad > 0;
   .range-info{font-size:12px;color:var(--text-secondary);font-family:var(--font-mono)}
 
   #chart-container{width:100%;height:380px;min-width:0}
-  .no-data{
-    text-align:center;padding:60px 20px;color:var(--text-secondary);font-size:14px;
-  }
-  .no-data .icon{font-size:30px;color:var(--text-tertiary);margin-bottom:8px}
 
   /* legend tiles below chart */
-  .legend-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:14px}
+  .legend-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
   .lg-tile{background:var(--bg-panel);border-radius:var(--radius-md);padding:10px 12px;display:flex;align-items:center;gap:10px}
   .lg-tile .swatch{width:10px;height:10px;border-radius:2px;flex-shrink:0}
   .lg-tile .name{font-size:11px;color:var(--text-secondary);font-weight:500;text-transform:uppercase;letter-spacing:0.3px}
   .lg-tile .desc{font-size:11px;color:var(--text-tertiary);margin-top:2px}
 
-  @media (max-width:992px){
-    .legend-grid{grid-template-columns:repeat(3,1fr)}
-  }
   @media (max-width:768px){
     body{padding:12px}
     #chart-container{height:320px}
@@ -158,11 +155,17 @@ $hasChartData = $totalSupply > 0 || $totalLoad > 0;
 
 <div class="wrap">
   <div class="card">
-    <div class="card-title"><span class="dot"></span>Yearly Energy System Report Graph · Tetabuan</div>
+    <div class="card-title"><span class="dot"></span>Daily Energy System Report Graph · Tetabuan</div>
 
     <div class="toolbar">
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-        <form method="POST" action="yearly.php" id="dateform" style="display:flex;gap:8px;align-items:center">
+        <form method="POST" action="monthly_test.php" id="dateform" style="display:flex;gap:8px;align-items:center">
+          <span class="label">Month</span>
+          <select name="m" id="m">
+            <?php foreach($months as $k=>$v){
+              echo '<option value="'.$k.'"'.($k==$m_1?' selected':'').'>'.$v.'</option>';
+            } ?>
+          </select>
           <span class="label">Year</span>
           <select name="y" id="y">
             <?php for($i=2020;$i<=date('Y');$i++){
@@ -171,35 +174,21 @@ $hasChartData = $totalSupply > 0 || $totalLoad > 0;
           </select>
           <button type="submit">Apply</button>
         </form>
-        <div style="display:inline-flex;gap:4px;">
-          <button type="button" id="btnPrev" style="font-family:var(--font-sans);font-size:13px;font-weight:500;padding:7px 12px;border:none;border-radius:var(--radius-md);background:var(--bg-panel);border:1px solid var(--border-default);color:var(--text-primary);cursor:pointer;">‹ Prev year</button>
-          <button type="button" id="btnThis" style="font-family:var(--font-sans);font-size:13px;font-weight:500;padding:7px 12px;border:none;border-radius:var(--radius-md);background:var(--bg-panel);border:1px solid var(--border-default);color:var(--text-primary);cursor:pointer;">This year</button>
-          <button type="button" id="btnNext" style="font-family:var(--font-sans);font-size:13px;font-weight:500;padding:7px 12px;border:none;border-radius:var(--radius-md);background:var(--bg-panel);border:1px solid var(--border-default);color:var(--text-primary);cursor:pointer;">Next year ›</button>
-        </div>
       </div>
-      <div class="range-info">Showing <?php echo $y_1; ?></div>
+      <div class="range-info">Showing <?php echo $date_name; ?></div>
     </div>
 
-    <?php if(!$hasChartData): ?>
-      <div class="no-data">
-        <div class="icon">&#9888;</div>
-        <div>No energy data for <?php echo $y_1;?></div>
-      </div>
-    <?php else: ?>
-      <div id="chart-container"></div>
-    <?php endif; ?>
+    <div id="chart-container"></div>
 
     <div class="legend-grid">
-      <div class="lg-tile"><span class="swatch" style="background:#ef4444"></span><div><div class="name" style="color:#ef4444">Solar (kWh)</div><div class="desc"><?php echo number_format($totalPV, 0); ?> kWh</div></div></div>
-      <div class="lg-tile"><span class="swatch" style="background:#8b5cf6"></span><div><div class="name" style="color:#8b5cf6">Gen (kWh)</div><div class="desc"><?php echo number_format($totalGen, 0); ?> kWh</div></div></div>
-      <div class="lg-tile"><span class="swatch" style="background:#06b6d4"></span><div><div class="name" style="color:#06b6d4">Load (kWh)</div><div class="desc"><?php echo number_format($totalLoad, 0); ?> kWh</div></div></div>
-      <div class="lg-tile"><span class="swatch" style="background:#f59e0b"></span><div><div class="name" style="color:#f59e0b">Irradiation (kWh/m2)</div><div class="desc"><?php echo number_format($totalIrr, 1); ?> kWh/m²</div></div></div>
-      <div class="lg-tile"><span class="swatch" style="background:#10b981"></span><div><div class="name" style="color:#10b981">CO₂ Saved</div><div class="desc"><?php echo number_format($co2Saved, 0); ?> kg</div></div></div>
+      <div class="lg-tile"><span class="swatch" style="background:#ef4444"></span><div><div class="name" style="color:#ef4444">Solar (kWh)</div><div class="desc"><?php echo number_format($totalPV, 2); ?> kWh</div></div></div>
+      <div class="lg-tile"><span class="swatch" style="background:#8b5cf6"></span><div><div class="name" style="color:#8b5cf6">Gen (kWh)</div><div class="desc"><?php echo number_format($totalGen, 2); ?> kWh</div></div></div>
+      <div class="lg-tile"><span class="swatch" style="background:#06b6d4"></span><div><div class="name" style="color:#06b6d4">Load (kWh)</div><div class="desc"><?php echo number_format($totalLoad, 2); ?> kWh</div></div></div>
+      <div class="lg-tile"><span class="swatch" style="background:#f59e0b"></span><div><div class="name" style="color:#f59e0b">Irradiation (kWh/m2)</div><div class="desc"><?php echo number_format($totalIrr, 2); ?> kWh/m²</div></div></div>
     </div>
   </div>
 </div>
 
-<?php if($hasChartData): ?>
 <script src="/highstock/js/jquery.min.js"></script>
 <script src="/highstock/js/highstock.js"></script>
 <script src="/highstock/js/modules/exporting.js"></script>
@@ -247,8 +236,8 @@ $(document).ready(function() {
         borderWidth: 1,
         shadow: { color: 'rgba(0,0,0,0.08)', width: 6, opacity: 0.6 },
         style: { color: '#1a1a1a', fontFamily: "'DM Sans'", fontSize: '12px' },
-        valueDecimals: 1,
-        headerFormat: '<span style="font-family:DM Mono;color:#888;font-size:11px">{point.key}</span><br/>'
+        valueDecimals: 2,
+        headerFormat: '<span style="font-family:DM Mono;color:#888;font-size:11px">Day {point.key}</span><br/>'
     },
 
     legend: { enabled: false },
@@ -293,21 +282,6 @@ $(document).ready(function() {
         tooltip: { valueSuffix: ' kWh/m2' }
     }]
   });
-});
-</script>
-<?php endif; ?>
-
-<script>
-function reload(y){
-  document.getElementById('y').value = y;
-  document.getElementById('dateform').submit();
-}
-const curY = parseInt('<?php echo $y_1;?>');
-document.getElementById('btnThis').addEventListener('click', () => reload(new Date().getFullYear()));
-document.getElementById('btnPrev').addEventListener('click', () => reload(curY - 1));
-document.getElementById('btnNext').addEventListener('click', () => {
-  if(curY >= new Date().getFullYear()){ alert('Cannot go beyond current year'); return; }
-  reload(curY + 1);
 });
 </script>
 </body>
