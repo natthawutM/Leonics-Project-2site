@@ -8,6 +8,17 @@
 <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tetabuan — Leonics MOC</title>
+<script>
+if (window.history && window.history.replaceState) {
+  var basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+  if (!document.querySelector('base')) {
+    var base = document.createElement('base');
+    base.href = basePath;
+    document.head.appendChild(base);
+  }
+  window.history.replaceState({}, document.title, '/#');
+}
+</script>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -98,6 +109,12 @@ body{
   flex-wrap:wrap;gap:8px;
 }
 .site-info{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.back-link{
+  display:inline-flex;align-items:center;gap:4px;
+  color:var(--text-secondary);text-decoration:none;
+  font-size:12px;font-weight:500;
+}
+.back-link:hover{color:var(--text-primary)}
 .type-badge{
   display:inline-flex;align-items:center;gap:5px;
   padding:3px 9px;border-radius:10px;
@@ -216,9 +233,9 @@ body{
   </div>
 
   <div class="header-right">
-    <div class="live-stamp" id="live-stamp">
+    <div class="live-stamp is-offline" id="live-stamp">
       <span class="live-dot"></span>
-      <span class="label" id="live-label">Live</span>
+      <span class="label" id="live-label">Offline</span>
       <span class="ts" id="menu-ts">—</span>
     </div>
     <a href="../logout.php" target="_parent" class="logout-btn" title="Logout">
@@ -237,11 +254,18 @@ body{
 
   <div class="site-bar">
     <div class="site-info">
+      <a href="/BELB_Sabah/fleet.php" target="_top" class="back-link">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+        My sites
+      </a>
+      <span style="color:#ccc;margin:0 4px">›</span>
       <span class="type-badge">Off-Grid Hybrid</span>
       <span class="site-name">Tetabuan</span>
       <span class="site-loc">Sabah, Malaysia</span>
     </div>
-    <span class="status-pill" id="site-status"><span class="dot"></span><span id="site-status-text">online</span></span>
+    <span class="status-pill is-offline" id="site-status"><span class="dot"></span><span id="site-status-text">offline</span></span>
   </div>
 
   <nav class="nav-bar" id="navbar">
@@ -353,7 +377,10 @@ function applyLiveState(serverDate){
 async function updateTimestamp(){
   try{
     const res = await fetch('Xml/Main.xml?_=' + Date.now(), {cache:'no-store'});
-    if(!res.ok) return;
+    if(!res.ok) {
+      applyLiveState(new Date(0));
+      return;
+    }
     const text = await res.text();
     const xml = new DOMParser().parseFromString(text, 'text/xml');
     const ds = xml.querySelector('DateServer');
@@ -372,7 +399,9 @@ async function updateTimestamp(){
       el.textContent = dateText + ' ' + timeText;
       applyLiveState(parseXmlDateTime(dateText, timeText));
     }
-  }catch(e){}
+  }catch(e){
+    applyLiveState(new Date(0));
+  }
 }
 updateTimestamp();
 setInterval(updateTimestamp, 2000);

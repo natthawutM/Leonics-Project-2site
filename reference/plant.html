@@ -1,0 +1,2365 @@
+<!doctype html>
+<!-- v3 layout &mdash; clean BDI icons + 3 bottom cards -->
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard &mdash; Jambongan MOC</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #f5f5f0;
+      --bg-card: #ffffff;
+      --bg-panel: #fafaf7;
+      --bg-hover: #f5f5f0;
+      --border-default: #e8e6df;
+      --border-hover: #ccc;
+      --border-active: #3b82f6;
+      --text-primary: #1a1a1a;
+      --text-secondary: #888;
+      --text-tertiary: #aaa;
+      --success: #22c55e;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --info: #3b82f6;
+      --purple: #8b5cf6;
+      --orange: #ea580c;
+      --cyan: #06b6d4;
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+      --font-sans: 'DM Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'DM Mono', ui-monospace, monospace;
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      max-width: 100vw;
+      overflow-x: hidden
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-main);
+      color: var(--text-primary);
+      font-size: 13px;
+      line-height: 1.5;
+      padding: 16px;
+      min-height: 100vh;
+    }
+
+    @media (max-width: 640px) {
+      body {
+        min-height: unset;
+        padding-bottom: 8px;
+      }
+    }
+
+    .mono {
+      font-family: var(--font-mono);
+      font-feature-settings: "tnum" 1, "zero" 1
+    }
+
+    /* ---------- LAYOUT ---------- */
+    .dash {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      max-width: 100%;
+      margin: 0 auto;
+    }
+
+    @media (max-width: 1100px) {
+      .dash {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .dash {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .col {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-width: 0
+    }
+
+    .full {
+      grid-column: 1 / -1
+    }
+
+    /* ---------- CARD ---------- */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+    }
+
+    .card-title {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      margin: 0 0 12px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-title .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      display: inline-block
+    }
+
+    /* ---------- KPI STRIP ---------- */
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 0;
+    }
+
+    .kpi {
+      background: var(--bg-card);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-lg);
+      padding: 14px 16px;
+      position: relative;
+      overflow: hidden;
+      min-width: 0;
+    }
+
+    .kpi-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .kpi-icon {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      display: inline-block
+    }
+
+    .kpi-value {
+      font-family: var(--font-mono);
+      font-size: 26px;
+      font-weight: 600;
+      margin-top: 4px;
+      letter-spacing: -0.5px;
+    }
+
+    .kpi-unit {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-left: 4px
+    }
+
+    .kpi-sub {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-top: 4px
+    }
+
+    .kpi-bar {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      height: 3px;
+      width: 100%;
+      background: var(--border-default);
+    }
+
+    .kpi-bar-fill {
+      height: 100%;
+      transition: width .6s ease
+    }
+
+    .c-solar {
+      color: var(--warning)
+    }
+
+    .c-grid {
+      color: var(--info)
+    }
+
+    .c-batt {
+      color: var(--purple)
+    }
+
+    .c-load {
+      color: #16a34a
+    }
+
+    .c-gen {
+      color: var(--orange)
+    }
+
+    .bg-solar {
+      background: var(--warning)
+    }
+
+    .bg-grid {
+      background: var(--info)
+    }
+
+    .bg-batt {
+      background: var(--purple)
+    }
+
+    .bg-load {
+      background: #16a34a
+    }
+
+    .bg-gen {
+      background: var(--orange)
+    }
+
+    /* ---------- POWER FLOW DIAGRAM (full-width, landscape) ---------- */
+    .flow-card {
+      grid-column: 1 / -1;
+      background: var(--bg-card);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+    }
+
+    .flow-wrap {
+      background: #ffffff;
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      margin-top: 4px;
+      overflow-x: auto;
+    }
+
+    .flow-wrap svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* Mobile stacked cards */
+    @keyframes pfblink {
+
+      0%,
+      100% {
+        opacity: .2
+      }
+
+      50% {
+        opacity: 1
+      }
+    }
+
+    .flow-dot {
+      display: inline-block;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: currentColor;
+      animation: pfblink 1.2s infinite;
+    }
+
+    .flow-dot:nth-child(2) {
+      animation-delay: .2s
+    }
+
+    .flow-dot:nth-child(3) {
+      animation-delay: .4s
+    }
+
+    .mpf-card {
+      background: #fff;
+      border: 1px solid var(--border-default);
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+
+    .mpf-ic {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 18px;
+      font-weight: 500
+    }
+
+    .mpf-body {
+      flex: 1;
+      min-width: 0
+    }
+
+    .mpf-l {
+      font-size: 10px;
+      color: var(--text-secondary);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: .3px
+    }
+
+    .mpf-v {
+      font-size: 15px;
+      font-weight: 600;
+      font-family: var(--font-mono);
+      color: var(--text-primary);
+      margin-top: 1px
+    }
+
+    .mpf-sub {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 1px
+    }
+
+    .mpf-arr {
+      text-align: center;
+      margin: 3px 0;
+      font-size: 11px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px
+    }
+
+    .mpf-section {
+      font-size: 10px;
+      font-weight: 600;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin: 10px 0 4px;
+      padding: 0 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .mpf-section::before,
+    .mpf-section::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--border-default)
+    }
+
+    .mpf-flow-arrow {
+      text-align: center;
+      margin: 6px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .mpf-flow-arrow .arr-line {
+      flex: 1;
+      height: 2px;
+      background: currentColor;
+      opacity: 0.3;
+      max-width: 40px
+    }
+
+    .mpf-flow-arrow .arr-tri {
+      font-size: 14px
+    }
+
+    /* ---------- METRIC ROWS ---------- */
+    .metric-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px
+    }
+
+    .metric-box {
+      background: var(--bg-panel);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      min-width: 0;
+      overflow: hidden
+    }
+
+    .metric-box .lbl {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.3px
+    }
+
+    .metric-box .val {
+      font-family: var(--font-mono);
+      font-size: 16px;
+      font-weight: 600;
+      margin-top: 2px
+    }
+
+    .metric-box .val .u {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-left: 2px;
+      font-weight: 500
+    }
+
+    /* 3-phase table */
+    .phase-table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-top: 4px;
+    }
+
+    .phase-table {
+      width: 100%;
+      min-width: 280px;
+      border-collapse: collapse;
+    }
+
+    .phase-table th {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      text-align: right;
+      padding: 6px 8px;
+      border-bottom: 1px solid var(--border-default);
+    }
+
+    .phase-table th:first-child {
+      text-align: left
+    }
+
+    .phase-table td {
+      font-family: var(--font-mono);
+      font-size: 15px;
+      font-weight: 500;
+      padding: 10px 8px;
+      text-align: right;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .inner-wrap {
+      background: var(--bg-panel);
+      border-radius: var(--radius-md);
+      padding: 8px 12px;
+      margin-top: 8px;
+    }
+
+    .phase-table td:first-child {
+      font-family: var(--font-sans);
+      text-align: left;
+      font-weight: 500;
+      color: var(--text-primary);
+      font-size: 12px
+    }
+
+    .phase-table tr:last-child td {
+      border-bottom: none
+    }
+
+    .phase-chip {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 2px;
+      margin-right: 6px;
+      vertical-align: middle
+    }
+
+    /* status pills */
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 8px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 500
+    }
+
+    .pill-ok {
+      background: rgba(34, 197, 94, 0.1);
+      color: var(--success)
+    }
+
+    .pill-warn {
+      background: rgba(245, 158, 11, 0.12);
+      color: var(--warning)
+    }
+
+    .pill-err {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--danger)
+    }
+
+    .pill-batt {
+      background: rgba(139, 92, 246, 0.12);
+      color: var(--purple)
+    }
+
+    .pill-neutral {
+      background: var(--bg-panel);
+      color: var(--text-secondary)
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      display: inline-block
+    }
+
+    .dot-ok {
+      background: var(--success)
+    }
+
+    .dot-warn {
+      background: var(--warning)
+    }
+
+    .dot-err {
+      background: var(--danger)
+    }
+
+    .dot-batt {
+      background: var(--purple)
+    }
+
+    .dot-off {
+      background: var(--text-tertiary)
+    }
+
+    .gen-row {
+      background: var(--bg-panel);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      margin-bottom: 8px;
+    }
+
+    .gen-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .gen-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .gen-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .gen-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .gen-item .lbl {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .gen-item .val {
+      font-family: var(--font-mono);
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .gen-item .u {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-left: 2px;
+    }
+
+    .weather-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px
+    }
+
+    .w-tile {
+      background: var(--bg-panel);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between
+    }
+
+    .w-tile .l {
+      font-size: 11px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.3px
+    }
+
+    .w-tile .r {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 600
+    }
+
+    .batt-vis {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 6px
+    }
+
+    .batt-shell {
+      flex: 1;
+      height: 28px;
+      border: 2px solid var(--text-primary);
+      border-radius: 6px;
+      position: relative;
+      padding: 3px;
+      overflow: hidden;
+    }
+
+    .batt-shell::after {
+      content: "";
+      position: absolute;
+      right: -6px;
+      top: 8px;
+      width: 4px;
+      height: 12px;
+      background: var(--text-primary);
+      border-radius: 0 2px 2px 0;
+    }
+
+    .batt-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width .6s ease, background .3s
+    }
+
+    .batt-pct {
+      font-family: var(--font-mono);
+      font-size: 15px;
+      font-weight: 600;
+      min-width: 54px;
+      text-align: right
+    }
+
+    .irrad-meter {
+      position: relative;
+      height: 10px;
+      background: var(--bg-panel);
+      border-radius: 5px;
+      overflow: hidden;
+      margin-top: 4px
+    }
+
+    .irrad-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--warning) 0%, #f97316 100%);
+      border-radius: 5px;
+      transition: width .6s ease
+    }
+
+    .stamp {
+      font-size: 11px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 4px 0;
+      margin-top: 16px;
+      border-top: 1px solid var(--border-default);
+      transition: color .3s;
+    }
+
+    .stamp.is-live {
+      color: var(--success);
+    }
+
+    .stamp.is-offline {
+      color: var(--danger);
+    }
+
+    .stamp .live {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600;
+    }
+
+    .stamp .live::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      background: currentColor;
+      border-radius: 50%;
+      animation: pulse 1.6s ease-in-out infinite;
+    }
+
+    .stamp .offline {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600;
+    }
+
+    .stamp .offline::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      background: currentColor;
+      border-radius: 50%;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1)
+      }
+
+      50% {
+        opacity: .4;
+        transform: scale(.8)
+      }
+    }
+
+    /* ---------- FLOW LOADERS (Mobile) ---------- */
+    .loader3 {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 2px 0 6px;
+      height: 16px;
+      transition: opacity 0.5s ease;
+    }
+
+    .loader3.inactive {
+      opacity: 0.1;
+    }
+
+    .loader3.inactive .circle1 {
+      animation: none;
+      transform: scale(0.7);
+    }
+
+    .circle1 {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      margin: 0 3px;
+      background-color: currentColor;
+      animation: circle1 1s ease-in-out infinite;
+    }
+
+    .circle1:nth-of-type(2) {
+      animation-delay: 0.15s;
+    }
+
+    .circle1:nth-of-type(3) {
+      animation-delay: 0.3s;
+    }
+
+    .circle1:nth-of-type(4) {
+      animation-delay: 0.45s;
+    }
+
+    .circle1:nth-of-type(5) {
+      animation-delay: 0.6s;
+    }
+
+    .circle1:nth-of-type(6) {
+      animation-delay: 0.75s;
+    }
+
+    @keyframes circle1 {
+
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+
+      50% {
+        transform: scale(1.45);
+        opacity: 0.4;
+      }
+    }
+
+    #powerflow-host svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .loading .kpi-value,
+    .loading .metric-box .val,
+    .loading .v,
+    .loading .r,
+    .loading .batt-pct {
+      color: transparent;
+      background: var(--bg-panel);
+      border-radius: 4px;
+    }
+
+    /* GCI mini-grid 2x2 */
+    .gci-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 6px
+    }
+
+    .gci-cell {
+      background: var(--bg-panel);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      min-width: 0;
+      overflow: hidden
+    }
+
+    .gci-cell .lbl {
+      font-size: 10px;
+      color: var(--text-secondary);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center
+    }
+
+    .gci-cell .val {
+      font-family: var(--font-mono);
+      font-size: 15px;
+      font-weight: 600;
+      margin-top: 2px
+    }
+
+    .gci-cell .val .u {
+      font-size: 11px;
+      color: var(--text-secondary);
+      font-weight: 500;
+      margin-left: 2px
+    }
+
+    .gci-cell.active {
+      background: var(--bg-panel);
+    }
+
+    /* ---------- RESPONSIVE ---------- */
+    /* Remove forced 2-column rule to let auto-fit handle it more fluidly */
+
+    @media (max-width: 1024px) {
+      body {
+        padding: 12px;
+        overflow-x: hidden;
+      }
+
+      .dash {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .kpi-strip {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .kpi-value {
+        font-size: 22px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 8px;
+        overflow-x: hidden;
+      }
+
+      .dash {
+        gap: 8px;
+      }
+
+      .card {
+        padding: 12px;
+        border-radius: 12px;
+      }
+
+      .card-title {
+        margin-bottom: 8px;
+        font-size: 10px;
+      }
+
+      .kpi-strip {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      /* 4 in a row to fit all */
+      .kpi {
+        padding: 8px 8px
+      }
+
+      .kpi-label {
+        font-size: 9px;
+        letter-spacing: 0.1px;
+        gap: 4px
+      }
+
+      .kpi-icon {
+        width: 8px;
+        height: 8px
+      }
+
+      .kpi-value {
+        font-size: 15px;
+        margin-top: 2px
+      }
+
+      .kpi-unit {
+        font-size: 10px;
+        margin-left: 2px
+      }
+
+      .kpi-sub {
+        font-size: 9px;
+        margin-top: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis
+      }
+
+      .phase-table th,
+      .phase-table td {
+        padding: 5px 3px;
+        font-size: 11px
+      }
+
+      .phase-table th:nth-child(5),
+      .phase-table td:nth-child(5) {
+        display: none
+      }
+
+      .metric-row {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 5px
+      }
+
+      .metric-box {
+        padding: 7px 8px
+      }
+
+      .metric-box .val {
+        font-size: 13px
+      }
+
+      .metric-box .lbl {
+        font-size: 9px
+      }
+
+      .weather-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 5px
+      }
+
+      .w-tile {
+        padding: 7px 9px
+      }
+
+      .w-tile .l {
+        font-size: 9px
+      }
+
+      .w-tile .r {
+        font-size: 12px
+      }
+
+      .batt-shell {
+        height: 22px
+      }
+
+      .batt-pct {
+        font-size: 13px;
+        min-width: 40px
+      }
+
+      .gen-row {
+        padding: 7px 9px
+      }
+
+      .flow-wrap {
+        padding: 6px
+      }
+
+      .mpf-card {
+        padding: 8px 10px;
+        margin-bottom: 4px
+      }
+
+      .mpf-ic {
+        width: 32px;
+        height: 32px;
+        font-size: 15px
+      }
+
+      .mpf-l {
+        font-size: 9px
+      }
+
+      .mpf-v {
+        font-size: 13px
+      }
+
+      .mpf-sub {
+        font-size: 10px
+      }
+
+      .stamp {
+        flex-wrap: wrap;
+        gap: 4px;
+        font-size: 10px
+      }
+
+      .gci-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 5px
+      }
+
+      .gci-cell {
+        padding: 7px 9px
+      }
+
+      .gci-cell .lbl {
+        font-size: 9px
+      }
+
+      .gci-cell .val {
+        font-size: 13px
+      }
+    }
+
+    @media (max-width: 420px) {
+
+      /* Very small phones &mdash; even tighter */
+      body {
+        padding: 6px;
+        min-height: unset;
+      }
+
+      .card {
+        padding: 9px
+      }
+
+      .card-title {
+        font-size: 9px;
+        margin-bottom: 6px
+      }
+
+      .kpi-strip {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 4px
+      }
+
+      .kpi {
+        padding: 6px 6px
+      }
+
+      .kpi-value {
+        font-size: 13px
+      }
+
+      .kpi-label {
+        font-size: 8px;
+        gap: 3px
+      }
+
+      .kpi-sub {
+        font-size: 8px
+      }
+
+      .metric-box {
+        padding: 6px 7px
+      }
+
+      .metric-box .val {
+        font-size: 12px
+      }
+
+      .metric-box .lbl {
+        font-size: 8px
+      }
+    }
+  </style>
+</head>
+
+<body class="">
+
+  <div class="dash">
+
+    <!-- ==================== KPI STRIP ==================== -->
+    <div class="kpi-strip full">
+      <div class="kpi">
+        <div class="kpi-label"><span class="kpi-icon bg-solar"></span>Solar Total</div>
+        <div class="kpi-value c-solar"><span id="k-solar">&mdash;</span><span class="kpi-unit">kW</span></div>
+        <div class="kpi-sub"><span id="k-solar-sub">PV production</span></div>
+        <div class="kpi-bar">
+          <div class="kpi-bar-fill bg-solar" id="k-solar-bar" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label"><span class="kpi-icon bg-grid"></span>Diesel Generators</div>
+        <div class="kpi-value c-grid"><span id="k-grid">&mdash;</span><span class="kpi-unit">kW</span></div>
+        <div class="kpi-sub" id="k-grid-sub">GEN-1 / GEN-2</div>
+        <div class="kpi-bar">
+          <div class="kpi-bar-fill bg-grid" id="k-grid-bar" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label"><span class="kpi-icon bg-load"></span>Load</div>
+        <div class="kpi-value c-load"><span id="k-load">&mdash;</span><span class="kpi-unit">kW</span></div>
+        <div class="kpi-sub" id="k-load-sub">Total consumption</div>
+        <div class="kpi-bar">
+          <div class="kpi-bar-fill bg-load" id="k-load-bar" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label"><span class="kpi-icon bg-batt"></span>Battery </div>
+        <div class="kpi-value c-batt"><span id="k-batt">&mdash;</span><span class="kpi-unit">kW</span></div>
+        <div class="kpi-sub" id="k-batt-sub">Charge / discharge</div>
+        <div class="kpi-bar">
+          <div class="kpi-bar-fill bg-batt" id="k-batt-bar" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TODAY ENERGY -->
+    <div class="kpi-strip full" id="energy-strip" style="margin-top:-4px">
+      <div class="kpi">
+        <div class="kpi-label"><span class="kpi-icon bg-solar"></span>Today Solar</div>
+        <div class="kpi-value c-solar" style="font-size:20px"><span id="e-solar">&mdash;</span><span
+            class="kpi-unit">kWh</span></div>
+        <div class="kpi-sub" id="e-solar-sub">Production today</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label"><span class="kpi-icon bg-grid"></span>Today Gen</div>
+        <div class="kpi-value c-grid" style="font-size:20px"><span id="e-gen">&mdash;</span><span
+            class="kpi-unit">kWh</span>
+        </div>
+        <div class="kpi-sub" id="e-gen-sub">Generator today</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label"><span class="kpi-icon bg-load"></span>Today Load</div>
+        <div class="kpi-value c-load" style="font-size:20px"><span id="e-load">&mdash;</span><span
+            class="kpi-unit">kWh</span>
+        </div>
+        <div class="kpi-sub" id="e-load-sub">Consumption today</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label"><span class="kpi-icon" style="background:#22c55e"></span>Solar Ratio</div>
+        <div class="kpi-value" style="font-size:20px;color:#22c55e"><span id="e-ratio">&mdash;</span><span
+            class="kpi-unit">%</span></div>
+        <div class="kpi-sub" id="e-co2">CO&#8322; saved: &mdash; kg</div>
+      </div>
+    </div>
+
+    <!-- ==================== POWER FLOW (Main Card) ==================== -->
+    <div class="card" style="grid-column: 1 / -1;">
+      <div class="card-title">
+        <span class="dot" style="background: var(--success)"></span>
+        Power Flow &mdash; Jambongan
+      </div>
+      <div id="powerflow-host"></div>
+    </div>
+
+    <!-- ==================== DEVICE CARDS ==================== -->
+
+    <!-- Column 1: Battery + GCI -->
+    <div class="col">
+      <div class="card">
+        <div class="card-title"><span class="dot" style="background:#8b5cf6"></span><span id="b-label">BATTERY Storage
+            (BDI)</span>
+        </div>
+        <div class="batt-vis">
+          <div class="batt-shell">
+            <div id="batt-fill" class="batt-fill" style="width:0%;background:#8b5cf6"></div>
+          </div>
+          <div id="batt-pct" class="batt-pct c-batt">&mdash;</div>
+        </div>
+        <div class="metric-row" style="margin-top:12px">
+          <div class="metric-box">
+            <div class="lbl">Voltage</div>
+            <div class="val mono"><span id="b-v">&mdash;</span><span class="u">V</span></div>
+          </div>
+          <div class="metric-box">
+            <div class="lbl">Current</div>
+            <div class="val mono"><span id="b-i">&mdash;</span><span class="u">A</span></div>
+          </div>
+          <div class="metric-box">
+            <div class="lbl">DC Power</div>
+            <div class="val mono c-batt"><span id="b-p">&mdash;</span><span class="u">kW</span></div>
+          </div>
+        </div>
+        <div style="margin-top:10px;display:flex;justify-content:space-between;align-items:center">
+          <span id="b-status" class="pill pill-neutral"><span class="dot dot-off"></span>Idle</span>
+          <span id="b-sub" style="font-size:11px;color:#aaa">BDI1: &mdash; &middot; BDI2: &mdash; &middot; BDI3: &mdash;
+            kW</span>
+        </div>
+      </div>
+
+
+
+      <div class="card">
+        <div class="card-title"><span class="dot" style="background:#f59e0b"></span>Solar AC (GCI 1 &amp; 2)</div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px">
+          <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.3px">Total Inverter Output
+          </div>
+          <div class="mono c-solar" style="font-size:18px;font-weight:600"><span id="gci-sum">&mdash;</span><span
+              style="font-size:12px;color:#888">&nbsp;kW</span></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div class="metric-box">
+            <div class="lbl">GCI 1 - PV</div>
+            <div class="val mono">
+              <span id="gci1-pv">&mdash;</span><span class="u">V</span>
+            </div>
+          </div>
+          <div class="metric-box">
+            <div class="lbl">GCI 1 - AC</div>
+            <div class="val mono">
+              <span id="gci1-ac">&mdash;</span><span class="u">kW</span>
+            </div>
+          </div>
+          <div class="metric-box">
+            <div class="lbl">GCI 2 - PV</div>
+            <div class="val mono">
+              <span id="gci2-pv">&mdash;</span><span class="u">V</span>
+            </div>
+          </div>
+          <div class="metric-box">
+            <div class="lbl">GCI 2 - AC</div>
+            <div class="val mono">
+              <span id="gci2-ac">&mdash;</span><span class="u">kW</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot" style="background:#06b6d4"></span>Weather &amp; environment</div>
+        <div class="weather-grid">
+          <div class="w-tile"><span class="l">Module temp</span><span class="r mono"><span
+                id="w-tmod">&mdash;</span>&deg;C</span>
+          </div>
+          <div class="w-tile"><span class="l">Ambient</span><span class="r mono"><span
+                id="w-tamb">&mdash;</span>&deg;C</span>
+          </div>
+          <div class="w-tile"><span class="l">Humidity</span><span class="r mono"><span id="w-rh">&mdash;</span>%</span>
+          </div>
+          <div class="w-tile"><span class="l">Today Irr.</span><span class="r mono"><span id="w-irrkwh">&mdash;</span>
+              <span id="unit-irr-day">kWh/m&sup2;</span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Column 2: SCC + Load -->
+    <div class="col">
+      <div class="card">
+        <div class="card-title"><span class="dot" style="background:#f59e0b"></span>Solar DC (SCC 1 + SCC 2)</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="metric-box">
+            <div class="lbl">SCC 1 &mdash; PV</div>
+            <div class="val mono c-solar"><span id="scc1-pv">&mdash;</span><span class="u">kW</span></div>
+          </div>
+          <div class="metric-box">
+            <div class="lbl">SCC 1 &mdash; Charge</div>
+            <div class="val mono"><span id="scc1-chg">&mdash;</span><span class="u">kW</span></div>
+          </div>
+          <div class="metric-box">
+            <div class="lbl">SCC 2 &mdash; PV</div>
+            <div class="val mono c-solar"><span id="scc2-pv">&mdash;</span><span class="u">kW</span></div>
+          </div>
+          <div class="metric-box">
+            <div class="lbl">SCC 2 &mdash; Charge</div>
+            <div class="val mono"><span id="scc2-chg">&mdash;</span><span class="u">kW</span></div>
+          </div>
+        </div>
+        <div style="margin-top:12px">
+          <div
+            style="display:flex;justify-content:space-between;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.3px">
+            <span>Irradiance</span>
+            <span class="mono" style="color:#1a1a1a"><span id="s-rad">&mdash;</span> <span
+                id="unit-irr-live">W/m&sup2;</span></span>
+          </div>
+          <div class="irrad-meter">
+            <div id="s-rad-bar" class="irrad-fill" style="width:0%"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot" style="background:#1a1a1a"></span>Load &mdash; 3-phase meter</div>
+        <div class="phase-table-wrap">
+          <table class="phase-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>V</th>
+                <th>I (A)</th>
+                <th>P (kW)</th>
+                <th>PF</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="phase-chip" style="background:#ef4444"></span>L1</td>
+                <td id="ld-v1">&mdash;</td>
+                <td id="ld-i1">&mdash;</td>
+                <td id="ld-p1">&mdash;</td>
+                <td id="ld-pf1">&mdash;</td>
+              </tr>
+              <tr>
+                <td><span class="phase-chip" style="background:#f59e0b"></span>L2</td>
+                <td id="ld-v2">&mdash;</td>
+                <td id="ld-i2">&mdash;</td>
+                <td id="ld-p2">&mdash;</td>
+                <td id="ld-pf2">&mdash;</td>
+              </tr>
+              <tr>
+                <td><span class="phase-chip" style="background:#3b82f6"></span>L3</td>
+                <td id="ld-v3">&mdash;</td>
+                <td id="ld-i3">&mdash;</td>
+                <td id="ld-p3">&mdash;</td>
+                <td id="ld-pf3">&mdash;</td>
+              </tr>
+              <tr>
+                <td style="font-weight:600">Total</td>
+                <td>&mdash;</td>
+                <td id="ld-it" style="font-weight:600">&mdash;</td>
+                <td id="ld-pt" style="font-weight:600">&mdash;</td>
+                <td id="ld-pft" style="font-weight:600">&mdash;</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Column 3: Generator + Weather + AC Input -->
+    <div class="col">
+      <div class="card">
+        <div class="card-title"><span class="dot" style="background:#ea580c"></span>Diesel generators</div>
+        <div class="gen-row">
+          <div class="gen-header">
+            <div class="gen-name">Generator 1</div>
+            <span id="g1-pill" class="pill pill-neutral"><span class="dot dot-off"></span>&mdash;</span>
+          </div>
+          <div class="gen-grid">
+            <div class="gen-item">
+              <div class="lbl">BATTERY</div>
+              <div class="val"><span id="g1-bv" class="mono">&mdash;</span><span class="u">v</span></div>
+            </div>
+            <div class="gen-item">
+              <div class="lbl">RUN TIME</div>
+              <div class="val"><span id="g1-hr" class="mono">&mdash;</span><span class="u">hr</span></div>
+            </div>
+            <div class="gen-item">
+              <div class="lbl">NO. CALL GEN</div>
+              <div class="val"><span id="g1-call" class="mono">&mdash;</span><span class="u">/Mth.</span></div>
+            </div>
+            <div class="gen-item">
+              <div class="lbl">POWER</div>
+              <div class="val"><span id="g1-p" class="mono">&mdash;</span><span class="u">kW</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="gen-row">
+          <div class="gen-header">
+            <div class="gen-name">Generator 2</div>
+            <span id="g2-pill" class="pill pill-neutral"><span class="dot dot-off"></span>&mdash;</span>
+          </div>
+          <div class="gen-grid">
+            <div class="gen-item">
+              <div class="lbl">BATTERY</div>
+              <div class="val"><span id="g2-bv" class="mono">&mdash;</span><span class="u">v</span></div>
+            </div>
+            <div class="gen-item">
+              <div class="lbl">RUN TIME</div>
+              <div class="val"><span id="g2-hr" class="mono">&mdash;</span><span class="u">hr</span></div>
+            </div>
+            <div class="gen-item">
+              <div class="lbl">NO. CALL GEN</div>
+              <div class="val"><span id="g2-call" class="mono">&mdash;</span><span class="u">/Mth.</span></div>
+            </div>
+            <div class="gen-item">
+              <div class="lbl">POWER</div>
+              <div class="val"><span id="g2-p" class="mono">&mdash;</span><span class="u">kW</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot" style="background:#3b82f6"></span>AC INPUT (Generators)</div>
+        <div class="inner-wrap">
+          <div class="phase-table-wrap">
+            <table class="phase-table">
+              <thead>
+                <tr>
+                  <th style="color:#111; font-size:14px; font-weight:500; text-align:left; text-transform:none">
+                    Generator 1</th>
+                  <th>V</th>
+                  <th>I (A)</th>
+                  <th>P (kW)</th>
+                  <th>PF</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="phase-chip" style="background:#ef4444"></span>L1</td>
+                  <td id="ac-v1">&mdash;</td>
+                  <td id="ac-i1">&mdash;</td>
+                  <td id="ac-p1">&mdash;</td>
+                  <td id="ac-pf1">&mdash;</td>
+                </tr>
+                <tr>
+                  <td><span class="phase-chip" style="background:#f59e0b"></span>L2</td>
+                  <td id="ac-v2">&mdash;</td>
+                  <td id="ac-i2">&mdash;</td>
+                  <td id="ac-p2">&mdash;</td>
+                  <td id="ac-pf2">&mdash;</td>
+                </tr>
+                <tr>
+                  <td><span class="phase-chip" style="background:#3b82f6"></span>L3</td>
+                  <td id="ac-v3">&mdash;</td>
+                  <td id="ac-i3">&mdash;</td>
+                  <td id="ac-p3">&mdash;</td>
+                  <td id="ac-pf3">&mdash;</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:600">Total</td>
+                  <td style="font-weight:600">&mdash;</td>
+                  <td id="ac-it" style="font-weight:600">&mdash;</td>
+                  <td id="ac-pt" style="font-weight:600">&mdash;</td>
+                  <td id="ac-pftot" style="font-weight:600">&mdash;</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="inner-wrap">
+          <div class="phase-table-wrap">
+            <table class="phase-table">
+              <thead>
+                <tr>
+                  <th style="color:#111; font-size:14px; font-weight:500; text-align:left; text-transform:none">
+                    Generator 2</th>
+                  <th>V</th>
+                  <th>I (A)</th>
+                  <th>P (kW)</th>
+                  <th>PF</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="phase-chip" style="background:#ef4444"></span>L1</td>
+                  <td id="ac2-v1">&mdash;</td>
+                  <td id="ac2-i1">&mdash;</td>
+                  <td id="ac2-p1">&mdash;</td>
+                  <td id="ac2-pf1">&mdash;</td>
+                </tr>
+                <tr>
+                  <td><span class="phase-chip" style="background:#f59e0b"></span>L2</td>
+                  <td id="ac2-v2">&mdash;</td>
+                  <td id="ac2-i2">&mdash;</td>
+                  <td id="ac2-p2">&mdash;</td>
+                  <td id="ac2-pf2">&mdash;</td>
+                </tr>
+                <tr>
+                  <td><span class="phase-chip" style="background:#3b82f6"></span>L3</td>
+                  <td id="ac2-v3">&mdash;</td>
+                  <td id="ac2-i3">&mdash;</td>
+                  <td id="ac2-p3">&mdash;</td>
+                  <td id="ac2-pf3">&mdash;</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:600">Total</td>
+                  <td style="font-weight:600">&mdash;</td>
+                  <td id="ac2-it" style="font-weight:600">&mdash;</td>
+                  <td id="ac2-pt" style="font-weight:600">&mdash;</td>
+                  <td id="ac2-pftot" style="font-weight:600">&mdash;</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+  </div><!-- /dash -->
+
+  <div id="status-stamp" class="stamp">
+    <span id="live-indicator" class="live">Live Monitoring Fleet</span>
+    <span>Last update: <span id="last-update" class="mono"></span></span>
+  </div>
+
+  <script>
+    /* ============================================================
+       XML data layer &mdash; Jambongan
+       ============================================================ */
+    const XML_URL = 'Xml/Main.xml';   // primary live data
+    const XML_FALLBACK_URL = null; // single file source
+    const POLL_MS = 2000;
+    const KPI_BAR_SCALE_KW = 50;
+
+    const $ = (id) => document.getElementById(id);
+    const SUBSCRIPT_2 = '\u2082';
+    const SUPERSCRIPT_2 = '\u00b2';
+    const LABEL_CO2 = `CO${SUBSCRIPT_2}`;
+    const UNIT_W_M2 = `W/m${SUPERSCRIPT_2}`;
+    const UNIT_KWH_M2 = `kWh/m${SUPERSCRIPT_2}`;
+    const irrDayUnitEl = $('unit-irr-day');
+    if (irrDayUnitEl) irrDayUnitEl.textContent = UNIT_KWH_M2;
+    const irrLiveUnitEl = $('unit-irr-live');
+    if (irrLiveUnitEl) irrLiveUnitEl.textContent = UNIT_W_M2;
+
+    function num(xml, tag, decimals = 2) {
+      if (!xml) return null;
+      const el = xml.getElementsByTagName(tag)[0];
+      if (!el) return null;
+      const t = el.textContent.trim();
+      if (t === '' || t === 'err' || isNaN(parseFloat(t))) return null;
+      return Number(parseFloat(t).toFixed(decimals));
+    }
+    function parseXmlDate(d, t) {
+      if (!d || !t) return null;
+      const p = d.split('-');
+      if (p.length !== 3) return null;
+      const day = parseInt(p[0]);
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const month = months.indexOf(p[1]);
+      let year = parseInt(p[2]);
+      if (year < 100) year += 2000;
+      const tp = t.split(':');
+      return new Date(year, month, day, parseInt(tp[0] || 0), parseInt(tp[1] || 0), parseInt(tp[2] || 0));
+    }
+    function str(xml, tag) {
+      const el = xml.querySelector(tag);
+      return el ? el.textContent.trim() : '';
+    }
+    function isInvalidXmlValue(v) {
+      const t = (v ?? '').toString().trim();
+      return t === '' || /^err(?:time)?$/i.test(t) || /^0(?:\.0+)?$/i.test(t);
+    }
+    function fmt(v, decimals = 2) {
+      if (v === null || v === undefined || isNaN(Number(v))) return '0.0';
+      return Number(v).toFixed(decimals);
+    }
+    function setText(id, v) { const el = $(id); if (el) el.textContent = v; }
+    function setVal(id, v, decimals = 2) { setText(id, fmt(v, decimals)); }
+
+    function fmtW(kW) {
+      if (kW === null || kW === undefined || isNaN(kW)) return '0.0 kW';
+      const v = Number(kW);
+      if (Math.abs(v) >= 10) return v.toFixed(1) + ' kW';
+      return v.toFixed(2) + ' kW';
+    }
+
+    /* =====================================================================
+       POWER FLOW RENDERER &mdash; landscape full-width SVG
+       Layout (1500&mdash;620):
+         y=70:  Gen1, Gen2 (left)  GCI1 GCI2 (top of 2x2)
+         y=165: -                  GCI3 GCI4 (bot of 2x2)
+         y=290:  AC BUS  HOME (right)
+         y=400: BDI1 BDI2 (between AC and DC bus)
+         y=520:  DC BUS  Battery, SCC1, SCC2
+       ===================================================================== */
+    const PowerFlow = {
+      _pid: 0,
+      render(data) {
+        const host = document.getElementById('powerflow-host');
+        if (!host) return;
+        host.innerHTML = (window.innerWidth < 640) ? this.renderMobile(data) : this.renderDesktop(data);
+      },
+      renderDesktop(data) {
+        try {
+          const self = this;
+          const acJuncX = 597.5;
+          self._pid = 0;
+
+          // Standardized height for all cards — matching Lingkabau_S1
+          const cardW = 280, cardH = 160;
+          const topY = 100, busY = 250, midY = 400, dcY = 550, botY = 700;
+          const colX = [160, 455, 750, 1045];
+
+          const cGen = { x: colX[0], y: topY, w: cardW, h: cardH };
+          const cWeather = { x: colX[1], y: topY, w: cardW, h: cardH };
+          const cGci = { x: colX[2], y: topY, w: cardW, h: cardH };
+          const cLoad = { x: colX[3], y: topY, w: cardW, h: cardH };
+
+          const cBdi1 = { x: colX[1], y: midY, w: cardW, h: cardH };
+          const cBdi2 = { x: colX[2], y: midY, w: cardW, h: cardH };
+
+          const cScc1 = { x: colX[0], y: botY, w: cardW, h: cardH };
+          const cEss1 = { x: colX[1], y: botY, w: cardW, h: cardH };
+          const cEss2 = { x: colX[2], y: botY, w: cardW, h: cardH };
+          const cScc2 = { x: colX[3], y: botY, w: cardW, h: cardH };
+
+          // Vertical Connections (Centered as per latest request)
+          const genConnX = cGen.x;
+          const gciConnX = cGci.x;
+          const loadConnX = cLoad.x;
+
+          const g1P = data.gen1_power || 0;
+          const g2P = data.gen2_power || 0;
+          const gTot = g1P + g2P;
+          const gciTot = (data.gci1_power || 0) + (data.gci2_power || 0);
+          const bdiData = [];
+          for (let i = 1; i <= 6; i++) {
+            bdiData[i] = {
+              ac: data[`bdi${i}_p1_kw`] || 0,
+              dc: data[`bdi${i}_dc_kw`] || 0,
+              curr: data[`bdi${i}_batt_i`] || 0,
+              soc: data[`bdi${i}_soc`] || 0
+            };
+          }
+          const bdi1TotalDC = data.bdi1_power || 0;
+          const bdi2TotalDC = data.bdi2_power || 0;
+          const ess1P = data.ess1_power || 0;
+          const ess2P = data.ess2_power || 0;
+          const scc1P = data.scc1_power || 0, scc2P = data.scc2_power || 0;
+          const ldP = data.load_power || 0;
+
+          const bdi1Charging = bdi1TotalDC < -0.5, bdi1Discharging = bdi1TotalDC > 0.5;
+          const bdi2Charging = bdi2TotalDC < -0.5, bdi2Discharging = bdi2TotalDC > 0.5;
+
+          const ln = (x1, y1, x2, y2, w = 1.7, op = 0.62, col = "#94a3b8") => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${col}" stroke-width="${w}" opacity="${op}" stroke-linecap="round"/>`;
+          const fNum = (n) => (typeof n === 'number' && !isNaN(n)) ? n.toFixed(1) : '0.0';
+
+          const FLOW_DOT_DURATION = 2.85;
+          const FLOW_DOT_PATTERN = [0.00, 0.07, 0.14, 0.21, 1.43, 1.50, 1.57, 1.64];
+          const flowClockSec = Date.now() / 1000;
+          const dotMarkup = (id, col, begin, i) => {
+            const lead = i % 4 === 0;
+            const coreR = lead ? 4.4 : 3.2;
+            return `<circle r="${coreR}" fill="${col}" opacity="0"><animateMotion dur="${FLOW_DOT_DURATION}s" begin="${begin}" repeatCount="indefinite"><mpath href="#${id}"/></animateMotion><animate attributeName="opacity" values="0;.38;.98;.42;0" dur="${FLOW_DOT_DURATION}s" begin="${begin}" repeatCount="indefinite"/><animate attributeName="r" values="${coreR * 0.8};${coreR};${coreR * 0.92};${coreR * 0.72}" dur="${FLOW_DOT_DURATION}s" begin="${begin}" repeatCount="indefinite"/></circle>`;
+          };
+
+          const dots = (x1, y1, x2, y2, col, del) => {
+            const id = 'fp' + (++self._pid) + '_' + Math.round(Math.random() * 9999);
+            const pd = `M${fNum(x1)},${fNum(y1)} L${fNum(x2)},${fNum(y2)}`;
+            let s = `<path id="${id}" d="${pd}" fill="none" stroke="none"/>`;
+            FLOW_DOT_PATTERN.forEach((phase, i) => {
+              const begin = `-${(((flowClockSec - (del + phase)) % FLOW_DOT_DURATION + FLOW_DOT_DURATION) % FLOW_DOT_DURATION).toFixed(3)}s`;
+              s += dotMarkup(id, col, begin, i);
+            });
+            return s;
+          };
+
+          const routeDots = (points, col, del) => {
+            if (!points || points.length < 2) return '';
+            const id = 'fp' + (++self._pid) + '_' + Math.round(Math.random() * 9999);
+            const pd = points.map((p, idx) => `${idx === 0 ? 'M' : 'L'}${fNum(p.x)},${fNum(p.y)}`).join(' ');
+            let s = `<path id="${id}" d="${pd}" fill="none" stroke="none"/>`;
+            FLOW_DOT_PATTERN.forEach((phase, i) => {
+              const begin = `-${(((flowClockSec - (del + phase)) % FLOW_DOT_DURATION + FLOW_DOT_DURATION) % FLOW_DOT_DURATION).toFixed(3)}s`;
+              s += dotMarkup(id, col, begin, i);
+            });
+            return s;
+          };
+
+          const rail = (x1, y1, x2, y2, col, w = 4.2, op = 0.12) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${col}" stroke-width="${w}" opacity="${op}" stroke-linecap="round"/>`;
+
+          const routeRail = (points, col, w = 4.6, op = 0.12) => {
+            if (!points || points.length < 2) return '';
+            const pd = points.map((p, idx) => `${idx === 0 ? 'M' : 'L'}${fNum(p.x)},${fNum(p.y)}`).join(' ');
+            return `<path d="${pd}" fill="none" stroke="${col}" stroke-width="${w}" opacity="${op}" stroke-linecap="round" stroke-linejoin="round"/>`;
+          };
+
+          const card = (c, opts) => {
+            const { title, iconSym, iconColor, mainLabel, mainValue, mainUnit, subRows, subGrid, valueColor, isNodeX, nodeXGrid } = opts;
+            const x = c.x - c.w / 2, y = c.y - c.h / 2;
+            let s = `<rect x="${x}" y="${y}" width="${c.w}" height="${c.h}" rx="16" fill="#fff" stroke="${iconColor}" stroke-opacity="0.25" stroke-width="1.2" filter="drop-shadow(0 2px 4px rgba(0,0,0,0.02))"/>`;
+            s += `<rect x="${x}" y="${y}" width="${c.w}" height="${c.h}" rx="16" fill="${iconColor}05"/>`;
+
+            if (isNodeX) {
+              s += `<rect x="${x + 12}" y="${y + 12}" width="28" height="28" rx="8" fill="${iconColor}15" stroke="${iconColor}" stroke-opacity="0.2" stroke-width="1"/>`;
+              s += `<text x="${x + 26}" y="${y + 31}" text-anchor="middle" font-size="16" fill="${iconColor}">&#8644;</text>`;
+              const nodeNum = title.replace(/NODE\s*X/i, '').trim();
+              s += `<image x="${x + 48}" y="${y + 15}" height="20" width="80" href="images/nodex-menu.png" preserveAspectRatio="xMinYMid meet"/>`;
+              s += `<text x="${x + 48 + 82}" y="${y + 32}" font-size="15" font-weight="600" fill="#1e293b" font-family="DM Sans, sans-serif" letter-spacing="0.3">${nodeNum}</text>`;
+              s += `<text x="${x + 15}" y="${y + 78}" font-size="11" font-weight="500" fill="#94a3b8" font-family="DM Sans, sans-serif" text-transform="uppercase">Power</text>`;
+              s += `<text x="${x + c.w - 15}" y="${y + 78}" text-anchor="end" font-size="32" font-weight="600" fill="${valueColor || '#1e293b'}" font-family="DM Mono, monospace">${mainValue}<tspan font-size="14" font-weight="500" fill="#94a3b8" dx="4">${mainUnit || ''}</tspan></text>`;
+              if (nodeXGrid) {
+                const rowY0 = y + c.h - 45, colX = [x + 20, x + 95, x + 165, x + 235];
+                nodeXGrid.forEach((row, i) => { s += `<text x="${colX[i + 1]}" y="${rowY0}" font-size="10" font-weight="500" fill="#94a3b8" text-anchor="middle" font-family="DM Sans, sans-serif">${row.name}</text>`; });
+                const metrics = [{ label: 'AC', key: 'ac', unit: 'kW' }, { label: 'DC', key: 'dc', unit: 'kW' }];
+                metrics.forEach((m, ri) => {
+                  const ry = rowY0 + 17 + (ri * 16);
+                  s += `<text x="${colX[0]}" y="${ry}" font-size="10" font-weight="500" fill="#64748b" font-family="DM Sans, sans-serif">${m.label}</text>`;
+                  nodeXGrid.forEach((row, ci) => {
+                    s += `<text x="${colX[ci + 1]}" y="${ry}" font-size="11" font-weight="600" fill="#1e293b" text-anchor="middle" font-family="DM Mono, monospace">${fmt(row[m.key], 1)}</text>`;
+                  });
+                  s += `<text x="${x + c.w - 12}" y="${ry}" font-size="8" font-weight="500" fill="#94a3b8" text-anchor="end" font-family="DM Sans, sans-serif">${m.unit}</text>`;
+                });
+              }
+            } else {
+              s += `<rect x="${x + 12}" y="${y + 12}" width="28" height="28" rx="8" fill="${iconColor}15" stroke="${iconColor}" stroke-opacity="0.2" stroke-width="1"/>`;
+              s += `<text x="${x + 26}" y="${y + 31}" text-anchor="middle" font-size="16" fill="${iconColor}">${iconSym}</text>`;
+              s += `<text x="${x + 50}" y="${y + 32}" font-size="15" font-weight="600" fill="#1e293b" font-family="DM Sans, sans-serif">${title}</text>`;
+              s += `<text x="${x + 15}" y="${y + 78}" font-size="12" font-weight="500" fill="#94a3b8" text-transform="uppercase" font-family="DM Sans, sans-serif">${mainLabel}</text>`;
+              s += `<text x="${x + c.w - 15}" y="${y + 78}" text-anchor="end" font-size="36" font-weight="600" fill="${valueColor || '#1e293b'}" font-family="DM Mono, monospace">${mainValue}<tspan font-size="16" font-weight="500" fill="#94a3b8" dx="6">${mainUnit || ''}</tspan></text>`;
+
+              const grid = subGrid || (subRows ? { cols: subRows } : null);
+              if (grid) {
+                const rowY0 = y + c.h - 40;
+                const unitParts = [...new Set(grid.cols.map((col) => col.unit).filter(Boolean))];
+                const unitLabel = unitParts.length ? unitParts.join('/') : (grid.unit || '');
+                const unitReserve = unitLabel ? 34 : 0;
+                const colW = (c.w - 30 - unitReserve) / grid.cols.length;
+                grid.cols.forEach((col, ci) => {
+                  const cx = x + 15 + (ci * colW) + (colW / 2);
+                  s += `<text x="${cx}" y="${rowY0}" font-size="11" font-weight="500" fill="#94a3b8" text-anchor="middle" font-family="DM Sans, sans-serif">${col.label}</text>`;
+                  s += `<text x="${cx}" y="${rowY0 + 22}" font-size="15" font-weight="600" fill="#1e293b" text-anchor="middle" font-family="DM Mono, monospace">${col.value}</text>`;
+                });
+                if (unitLabel) {
+                  s += `<text x="${x + c.w - 15}" y="${rowY0 + 22}" font-size="10" font-weight="500" fill="#94a3b8" text-anchor="end" font-family="DM Sans, sans-serif">${unitLabel}</text>`;
+                }
+              }
+            }
+            return s;
+          };
+
+          let svg = `<div class="flow-card"><svg viewBox="0 0 1200 900" preserveAspectRatio="xMidYMid meet" style="width:100%;height:auto" xmlns="http://www.w3.org/2000/svg"><defs><filter id="pf-glow-3b82f6" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="2.4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter><filter id="pf-glow-f59e0b" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="2.2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter><filter id="pf-glow-16a34a" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="2.2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>`;
+
+          svg += ln(genConnX, busY, loadConnX, busY, 2.45, 0.72);
+          svg += `<text x="${genConnX}" y="${busY - 8}" font-size="12" font-weight="700" fill="#94a3b8" font-family="DM Sans, sans-serif">AC BUS</text>`;
+
+          svg += ln(cScc1.x, dcY, cBdi1.x, dcY, 2.2, 0.68);
+          svg += `<text x="${(cScc1.x + cBdi1.x) / 2}" y="${dcY - 8}" text-anchor="middle" font-size="12" font-weight="700" fill="#94a3b8" font-family="DM Sans, sans-serif">DC BUS 1</text>`;
+
+          svg += ln(cBdi2.x, dcY, cScc2.x, dcY, 2.2, 0.68);
+          svg += `<text x="${(cBdi2.x + cScc2.x) / 2}" y="${dcY - 8}" text-anchor="middle" font-size="12" font-weight="700" fill="#94a3b8" font-family="DM Sans, sans-serif">DC BUS 2</text>`;
+
+          // Vertical Connections (Asymmetric as per reference image)
+          svg += ln(genConnX, cGen.y + cGen.h / 2, genConnX, busY);
+          svg += ln(gciConnX, cGci.y + cGci.h / 2, gciConnX, busY);
+          svg += ln(loadConnX, cLoad.y + cLoad.h / 2, loadConnX, busY);
+
+          svg += ln(cBdi1.x, busY, cBdi1.x, cBdi1.y - cBdi1.h / 2);
+          svg += ln(cBdi2.x, busY, cBdi2.x, cBdi2.y - cBdi2.h / 2);
+
+          svg += ln(cBdi1.x, cBdi1.y + cBdi1.h / 2, cBdi1.x, dcY);
+          svg += ln(cBdi2.x, cBdi2.y + cBdi2.h / 2, cBdi2.x, dcY);
+
+          svg += ln(cScc1.x, dcY, cScc1.x, cScc1.y - cScc1.h / 2);
+          svg += ln(cEss1.x, dcY, cEss1.x, cEss1.y - cEss1.h / 2);
+          svg += ln(cEss2.x, dcY, cEss2.x, cEss2.y - cEss2.h / 2);
+          svg += ln(cScc2.x, dcY, cScc2.x, cScc2.y - cScc2.h / 2);
+
+          if (gTot > 0.5) {
+            svg += routeDots([{ x: genConnX, y: cGen.y + cGen.h / 2 }, { x: genConnX, y: busY }, { x: cBdi1.x, y: busY }], '#3b82f6', 0.15);
+          }
+          if (gciTot > 0.5) {
+            svg += routeDots([{ x: gciConnX, y: cGci.y + cGci.h / 2 }, { x: gciConnX, y: busY }], '#f59e0b', 0.4);
+          }
+          if (ldP > 0.5) {
+            svg += routeDots([{ x: cBdi2.x, y: busY }, { x: loadConnX, y: busY }, { x: loadConnX, y: cLoad.y + cLoad.h / 2 }], '#16a34a', 0.65);
+          }
+
+          if (bdi1Charging) {
+            svg += routeDots([{ x: cBdi2.x, y: busY }, { x: cBdi1.x, y: busY }, { x: cBdi1.x, y: cBdi1.y - cBdi1.h / 2 }], '#3b82f6', 0);
+            svg += routeDots([{ x: cBdi1.x, y: cBdi1.y + cBdi1.h / 2 }, { x: cBdi1.x, y: dcY }], '#3b82f6', 0.2);
+          } else if (bdi1Discharging) {
+            svg += routeDots([{ x: cBdi1.x, y: dcY }, { x: cBdi1.x, y: cBdi1.y + cBdi1.h / 2 }], '#3b82f6', 0);
+            svg += routeDots([{ x: cBdi1.x, y: cBdi1.y - cBdi1.h / 2 }, { x: cBdi1.x, y: busY }, { x: cBdi2.x, y: busY }], '#3b82f6', 0.2);
+          }
+
+          if (bdi2Charging) {
+            svg += routeDots([{ x: cBdi2.x, y: busY }, { x: cBdi2.x, y: cBdi2.y - cBdi2.h / 2 }], '#3b82f6', 0);
+            svg += routeDots([{ x: cBdi2.x, y: cBdi2.y + cBdi2.h / 2 }, { x: cBdi2.x, y: dcY }], '#3b82f6', 0.2);
+          } else if (bdi2Discharging) {
+            svg += routeDots([{ x: cBdi2.x, y: dcY }, { x: cBdi2.x, y: cBdi2.y + cBdi2.h / 2 }], '#3b82f6', 0);
+            svg += routeDots([{ x: cBdi2.x, y: cBdi2.y - cBdi2.h / 2 }, { x: cBdi2.x, y: busY }], '#3b82f6', 0.2);
+          }
+
+          // ESS 1 Flow (Opposite of standard: + is Down, - is Up)
+          if (ess1P > 0.5) {
+            svg += dots(cEss1.x, dcY, cEss1.x, cEss1.y - cEss1.h / 2, '#3b82f6', 0.2);
+          } else if (ess1P < -0.5) {
+            svg += dots(cEss1.x, cEss1.y - cEss1.h / 2, cEss1.x, dcY, '#3b82f6', 0.2);
+          }
+
+          // ESS 2 Flow (Opposite of standard: + is Down, - is Up)
+          if (ess2P > 0.5) {
+            svg += dots(cEss2.x, dcY, cEss2.x, cEss2.y - cEss2.h / 2, '#3b82f6', 0.2);
+          } else if (ess2P < -0.5) {
+            svg += dots(cEss2.x, cEss2.y - cEss2.h / 2, cEss2.x, dcY, '#3b82f6', 0.2);
+          }
+
+          if (scc1P > 0.5) { svg += routeDots([{ x: cScc1.x, y: cScc1.y - cScc1.h / 2 }, { x: cScc1.x, y: dcY }, { x: cBdi1.x, y: dcY }], '#f59e0b', 0.3); }
+          if (scc2P > 0.5) { svg += routeDots([{ x: cScc2.x, y: cScc2.y - cScc2.h / 2 }, { x: cScc2.x, y: dcY }, { x: cBdi2.x, y: dcY }], '#f59e0b', 0.3); }
+
+          // Render Cards
+          svg += card(cGen, {
+            title: 'Diesel Generators', iconSym: '&#9881;', iconColor: '#3b82f6', mainLabel: 'Power',
+            mainValue: fmt(gTot, 1), mainUnit: 'kW', valueColor: '#3b82f6',
+            subGrid: { cols: [{ label: 'GEN-1', value: fmt(data.gen1_power, 1) }, { label: 'GEN-2', value: fmt(data.gen2_power, 1) }], unit: 'kW' }
+          });
+          svg += card(cWeather, {
+            title: 'Meteorological Data', iconSym: '&#9728;', iconColor: '#0891b2', mainLabel: 'Irradiance',
+            mainValue: fmt(data.irradiance, 0), mainUnit: UNIT_W_M2, valueColor: '#0891b2',
+            subGrid: { cols: [{ label: 'PV Temp', value: fmt(data.tmod, 1), unit: 'C' }, { label: 'Ambient', value: fmt(data.tamb, 1), unit: 'C' }, { label: 'Humidity', value: fmt(data.rh, 0), unit: '%' }] }
+          });
+          svg += card(cGci, {
+            title: 'PV Inverters', iconSym: '&#9728;', iconColor: '#f59e0b', mainLabel: 'Power',
+            mainValue: fmt(gciTot, 1), mainUnit: 'kW', valueColor: '#f59e0b',
+            subGrid: {
+              cols: [
+                { label: 'GCI1', value: fmt(data.gci1_power, 1) },
+                { label: 'GCI2', value: fmt(data.gci2_power, 1) }
+              ],
+              unit: 'kW'
+            }
+          });
+          svg += card(cLoad, {
+            title: 'Load', iconSym: '&#9750;', iconColor: '#16a34a', mainLabel: 'Power',
+            mainValue: fmt(ldP, 1), mainUnit: 'kW', valueColor: '#16a34a',
+            subGrid: { cols: [{ label: 'P1', value: fmt(data.load_p1, 1) }, { label: 'P2', value: fmt(data.load_p2, 1) }, { label: 'P3', value: fmt(data.load_p3, 1) }], unit: 'kW' }
+          });
+
+          svg += card(cBdi1, { title: 'NODE X 1', isNodeX: true, iconColor: '#2563eb', mainLabel: 'Power', mainValue: (bdi1TotalDC > 0 ? '+' : '') + fmt(bdi1TotalDC, 1), mainUnit: 'kW', valueColor: '#4f46e5', nodeXGrid: [{ name: 'BDI 1', ac: (bdiData[1] || {}).ac || 0, dc: (bdiData[1] || {}).dc || 0 }, { name: 'BDI 2', ac: (bdiData[2] || {}).ac || 0, dc: (bdiData[2] || {}).dc || 0 }, { name: 'BDI 3', ac: (bdiData[3] || {}).ac || 0, dc: (bdiData[3] || {}).dc || 0 }] });
+          svg += card(cBdi2, { title: 'NODE X 2', isNodeX: true, iconColor: '#2563eb', mainLabel: 'Power', mainValue: (bdi2TotalDC > 0 ? '+' : '') + fmt(bdi2TotalDC, 1), mainUnit: 'kW', valueColor: '#4f46e5', nodeXGrid: [{ name: 'BDI 4', ac: (bdiData[4] || {}).ac || 0, dc: (bdiData[4] || {}).dc || 0 }, { name: 'BDI 5', ac: (bdiData[5] || {}).ac || 0, dc: (bdiData[5] || {}).dc || 0 }, { name: 'BDI 6', ac: (bdiData[6] || {}).ac || 0, dc: (bdiData[6] || {}).dc || 0 }] });
+
+          svg += card(cScc1, { title: 'Solar Charge Controllers 1', iconSym: '&#9728;', iconColor: '#f59e0b', mainLabel: 'Power', mainValue: fmt(scc1P, 2), mainUnit: 'kW', valueColor: '#f59e0b', subGrid: { cols: [{ label: 'Voltage', value: fmt(data.scc1_v || 0, 1), unit: 'V' }, { label: 'Current', value: fmt(data.scc1_i || 0, 1), unit: 'A' }] } });
+          svg += card(cEss1, { title: 'Energy Storage System 1', iconSym: '&#10072;&#10072;', iconColor: '#16a34a', mainLabel: 'SOC', mainValue: fmt(data.bdi1_soc || 0, 0), mainUnit: '%', valueColor: '#16a34a', subGrid: { cols: [{ label: 'Voltage', value: fmt(data.bdi1_voltage || 0, 0), unit: 'V' }, { label: 'Power', value: (ess1P > 0 ? '+' : '') + fmt(ess1P, 1), unit: 'kW' }] } });
+          svg += card(cEss2, { title: 'Energy Storage System 2', iconSym: '&#10072;&#10072;', iconColor: '#16a34a', mainLabel: 'SOC', mainValue: fmt(data.bdi2_soc || 0, 0), mainUnit: '%', valueColor: '#16a34a', subGrid: { cols: [{ label: 'Voltage', value: fmt(data.bdi2_voltage || 0, 0), unit: 'V' }, { label: 'Power', value: (ess2P > 0 ? '+' : '') + fmt(ess2P, 1), unit: 'kW' }] } });
+          svg += card(cScc2, { title: 'Solar Charge Controllers 2', iconSym: '&#9728;', iconColor: '#f59e0b', mainLabel: 'Power', mainValue: fmt(scc2P, 2), mainUnit: 'kW', valueColor: '#f59e0b', subGrid: { cols: [{ label: 'Voltage', value: fmt(data.scc2_v || 0, 1), unit: 'V' }, { label: 'Current', value: fmt(data.scc2_i || 0, 1), unit: 'A' }] } });
+
+          return svg + '</svg></div>';
+
+        } catch (e) {
+          console.error('PF Render Error:', e);
+          return `<div style="padding:20px;color:#ef4444;font-family:sans-serif;font-size:12px;background:#fee2e2;border-radius:8px">Render Error: ${e.message}</div>`;
+        }
+      },
+      renderMobile(data) {
+        try {
+          const scc1P = data.scc1_power || 0;
+          const ess1S = data.bdi1_soc || 0;
+          const ess1P = data.ess1_power || 0;
+          const bdi1P = data.bdi1_power || 0;
+
+          function mCard(label, icon, value, sub, bg, brd, iconBg, iconColor, valueColor) {
+            return `<div class="mpf-card" style="background:${bg};border-color:${brd}">
+          <div class="mpf-ic" style="background:${iconBg};color:${iconColor}">${icon}</div>
+          <div class="mpf-body">
+            <div class="mpf-l">${label}</div>
+            <div class="mpf-v" style="color:${valueColor}">${value}</div>
+            <div class="mpf-sub">${sub}</div>
+          </div>
+        </div>`;
+          }
+
+          function mLoader(color, active, text = '') {
+            const dots = `<div class="circle1"></div><div class="circle1"></div><div class="circle1"></div>`;
+            const content = text ? `${dots}<span style="margin:0 8px;font-family:'DM Mono',monospace;font-size:12px;font-weight:800;letter-spacing:-0.5px">${text}</span>${dots}` : `${dots}<div class="circle1"></div><div class="circle1"></div>`;
+            return `<div class="loader3 ${active ? '' : 'inactive'}" style="color:${color}">
+              ${content}
+            </div>`;
+          }
+
+          let s = ``;
+
+          // --- INNER FRAME 1: NODE X 1 ---
+          s += `<div class="flow-card" style="margin-bottom: 20px;">
+              <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
+                <img src="images/nodex-menu.png" style="height: 16px; width: auto; opacity: 1;" alt="NodeX">
+                <span style="font-size: 16px; font-weight: 900; color: #1e293b;">1</span>
+              </div>
+              <div style="height: 1px; background: #f1f5f9; width: 100%; margin-bottom: 20px; border-bottom: 1px solid #e2e8f0;"></div>
+              <div class="mpf-grid">`;
+          s += mCard('Solar Charge Controllers 1', '&#9728;', fmt(scc1P, 2) + '<span class="mpf-unit">kW</span>', `PV: ${fmt(data.scc1_v, 1)}V \u00b7 ${fmt(data.scc1_i, 1)}A`, '#fff1e0', 'rgba(245,158,11,0.4)', 'rgba(245,158,11,0.18)', '#e67e22', '#d35400');
+          s += mLoader('#e67e22', scc1P > 0.5);
+          const batStatus1 = ess1P < -0.5 ? 'Charging' : ess1P > 0.5 ? 'Discharging' : 'Idle';
+          const batColor1 = (Math.abs(ess1P) > 0.5) ? '#16a34a' : '#64748b';
+          const batBg1 = (Math.abs(ess1P) > 0.5) ? '#e6f9ed' : '#f1f5f9';
+          s += mCard('Energy Storage System 1', '&#10072;&#10072;', fmt(ess1S, 0) + '<span class="mpf-unit">%</span>', `${batStatus1} \u00b7 ${fmt(ess1P, 1)}kW`, batBg1, (Math.abs(ess1P) > 0.5 ? 'rgba(22,163,74,0.4)' : 'rgba(100,116,139,0.3)'), (Math.abs(ess1P) > 0.5 ? 'rgba(22,163,74,0.2)' : 'rgba(100,116,139,0.15)'), batColor1, batColor1);
+          s += mLoader(batColor1, Math.abs(ess1P) > 0.5);
+          s += mCard('Node X 1', '&#8644;', (bdi1P > 0 ? '+' : '') + fmt(bdi1P, 1) + '<span class="mpf-unit">kW</span>', `DC: ${fmt(data.bdi1_dc_kw, 1)} | ${fmt(data.bdi2_dc_kw, 1)} | ${fmt(data.bdi3_dc_kw, 1)} kW`, '#eef2ff', 'rgba(79,70,229,0.4)', 'rgba(79,70,229,0.18)', '#4f46e5', '#3730a3');
+          s += mLoader('#4f46e5', Math.abs(bdi1P) > 0.5, (bdi1P > 0 ? '+' : '') + fmt(bdi1P, 1) + ' kW');
+          s += mCard('Load', '&#9750;', fmt(data.load_power, 1) + '<span class="mpf-unit">kW</span>', `P1: ${fmt(data.load_p1, 1)} | P2: ${fmt(data.load_p2, 1)} | P3: ${fmt(data.load_p3, 1)} kW`, '#e6f9ed', 'rgba(22,163,74,0.4)', 'rgba(22,163,74,0.18)', '#16a34a', '#15803d');
+          s += `</div></div>`;
+
+          // --- INNER FRAME 2: NODE X 2 ---
+          const scc2P = data.scc2_power || 0;
+          const ess2S = data.bdi2_soc || 0;
+          const ess2P = data.ess2_power || 0;
+          const bdi2P = data.bdi2_power || 0;
+
+          s += `<div class="flow-card">
+              <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
+                <img src="images/nodex-menu.png" style="height: 16px; width: auto; opacity: 1;" alt="NodeX">
+                <span style="font-size: 16px; font-weight: 900; color: #1e293b;">2</span>
+              </div>
+              <div style="height: 1px; background: #f1f5f9; width: 100%; margin-bottom: 20px; border-bottom: 1px solid #e2e8f0;"></div>
+              <div class="mpf-grid">`;
+          s += mCard('Solar Charge Controllers 2', '&#9728;', fmt(scc2P, 2) + '<span class="mpf-unit">kW</span>', `PV: ${fmt(data.scc2_v, 1)}V \u00b7 ${fmt(data.scc2_i, 1)}A`, '#fff1e0', 'rgba(245,158,11,0.4)', 'rgba(245,158,11,0.18)', '#e67e22', '#d35400');
+          s += mLoader('#e67e22', scc2P > 0.5);
+          const batStatus2 = ess2P < -0.5 ? 'Charging' : ess2P > 0.5 ? 'Discharging' : 'Idle';
+          const batColor2 = (Math.abs(ess2P) > 0.5) ? '#16a34a' : '#64748b';
+          const batBg2 = (Math.abs(ess2P) > 0.5) ? '#e6f9ed' : '#f1f5f9';
+          s += mCard('Energy Storage System 2', '&#10072;&#10072;', fmt(ess2S, 0) + '<span class="mpf-unit">%</span>', `${batStatus2} \u00b7 ${fmt(ess2P, 1)}kW`, batBg2, (Math.abs(ess2P) > 0.5 ? 'rgba(22,163,74,0.4)' : 'rgba(100,116,139,0.3)'), (Math.abs(ess2P) > 0.5 ? 'rgba(22,163,74,0.2)' : 'rgba(100,116,139,0.15)'), batColor2, batColor2);
+          s += mLoader(batColor2, Math.abs(ess2P) > 0.5);
+          s += mCard('Node X 2', '&#8644;', (bdi2P > 0 ? '+' : '') + fmt(bdi2P, 1) + '<span class="mpf-unit">kW</span>', `DC: ${fmt(data.bdi4_dc_kw, 1)} | ${fmt(data.bdi5_dc_kw, 1)} | ${fmt(data.bdi6_dc_kw, 1)} kW`, '#eef2ff', 'rgba(79,70,229,0.4)', 'rgba(79,70,229,0.18)', '#4f46e5', '#3730a3');
+          s += mLoader('#4f46e5', Math.abs(bdi2P) > 0.5, (bdi2P > 0 ? '+' : '') + fmt(bdi2P, 1) + ' kW');
+          s += mCard('Load', '&#9750;', fmt(data.load_power, 1) + '<span class="mpf-unit">kW</span>', `P1: ${fmt(data.load_p1, 1)} | P2: ${fmt(data.load_p2, 1)} | P3: ${fmt(data.load_p3, 1)} kW`, '#e6f9ed', 'rgba(22,163,74,0.4)', 'rgba(22,163,74,0.18)', '#16a34a', '#15803d');
+          s += `</div></div>`;
+
+          // --- INNER FRAME 3: PV Inverters & Generators ---
+          const gciTot = (data.gci1_power || 0) + (data.gci2_power || 0);
+          const genTot = (data.gen1_power || 0) + (data.gen2_power || 0);
+
+          const gciColor = (gciTot > 0.5) ? '#f59e0b' : '#64748b';
+          const gciBg = (gciTot > 0.5) ? '#fff7ed' : '#f8fafc';
+          const genColor = (genTot > 0.5) ? '#3b82f6' : '#64748b';
+          const genBg = (genTot > 0.5) ? '#eff6ff' : '#f8fafc';
+
+          s += `<div class="flow-card" style="margin-top: 20px;">
+              <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
+                <span style="font-size: 14px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">GCI & Generators</span>
+              </div>
+              <div style="height: 1px; background: #f1f5f9; width: 100%; margin-bottom: 20px; border-bottom: 1px solid #e2e8f0;"></div>
+              <div class="mpf-grid">`;
+          s += mCard('PV Inverters', '&#9889;', fmt(gciTot, 1) + '<span class="mpf-unit">kW</span>', `GCI 1-2: ${fmt(data.gci1_power, 1)} | ${fmt(data.gci2_power, 1)} kW`, gciBg, (gciTot > 0.5 ? 'rgba(245,158,11,0.4)' : 'rgba(148,163,184,0.3)'), (gciTot > 0.5 ? 'rgba(245,158,11,0.18)' : 'rgba(148,163,184,0.15)'), gciColor, gciColor);
+          s += mCard('Diesel Generators', '&#9881;', fmt(genTot, 1) + '<span class="mpf-unit">kW</span>', `Gen 1: ${fmt(data.gen1_power, 1)} | Gen 2: ${fmt(data.gen2_power, 1)} kW`, genBg, (genTot > 0.5 ? 'rgba(59,130,246,0.4)' : 'rgba(148,163,184,0.3)'), (genTot > 0.5 ? 'rgba(59,130,246,0.18)' : 'rgba(148,163,184,0.15)'), genColor, genColor);
+          s += `</div></div>`;
+          return s;
+        } catch (e) {
+          console.error('Mobile Render Error:', e);
+          return `<div style="padding:10px;color:red;font-size:11px">Mobile Render Error: ${e.message}</div>`;
+        }
+      }
+    };
+
+    /* ============================================================
+       FETCH + RENDER
+       ============================================================ */
+    async function fetchXml(url) {
+      const res = await fetch(url + '?_=' + Date.now(), { cache: 'no-store' });
+      if (!res.ok) throw new Error('HTTP ' + res.status + ' @ ' + url);
+      const text = await res.text();
+      return new DOMParser().parseFromString(text, 'text/xml');
+    }
+
+    function mergeXmlDocs(primaryXml, fallbackXml) {
+      if (!primaryXml) return fallbackXml;
+      if (!fallbackXml) return primaryXml;
+
+      const merged = new DOMParser().parseFromString(
+        new XMLSerializer().serializeToString(primaryXml),
+        'text/xml'
+      );
+
+      [...fallbackXml.documentElement.children].forEach((fallbackEl) => {
+        const target = merged.querySelector(fallbackEl.tagName);
+        if (!target) {
+          merged.documentElement.appendChild(fallbackEl.cloneNode(true));
+        } else if (isInvalidXmlValue(target.textContent)) {
+          target.textContent = fallbackEl.textContent.trim();
+        }
+      });
+
+      return merged;
+    }
+
+    async function fetchAndRender() {
+      try {
+        const [primaryXml, fallbackXml] = await Promise.all([
+          fetchXml(XML_URL).catch(() => null),
+          fetchXml(XML_FALLBACK_URL).catch(() => null),
+        ]);
+        const xml = mergeXmlDocs(primaryXml, fallbackXml);
+        if (!xml) throw new Error('Unable to load both XML sources');
+        render(xml, fallbackXml);
+      } catch (e) {
+        console.error('Dashboard fetch/render error:', e);
+        const lu = $('last-update');
+        if (lu) { lu.textContent = 'error: ' + e.message; lu.style.color = '#ef4444'; }
+      } finally {
+        document.body.classList.remove('loading');
+      }
+    }
+
+    function render(xml, fallbackXml) {
+      // ---- AC Input (Ctrl PM) ----
+      const acV1 = num(xml, 'AC_Input_L1', 1);
+      const acV2 = num(xml, 'AC_Input_L2', 1);
+      const acV3 = num(xml, 'AC_Input_L3', 1);
+      const acI1 = num(xml, 'AC_Input_I1', 2);
+      const acI2 = num(xml, 'AC_Input_I2', 2);
+      const acI3 = num(xml, 'AC_Input_I3', 2);
+      const acP1 = num(xml, 'AC_Input_P1_kW', 2);
+      const acP2 = num(xml, 'AC_Input_P2_kW', 2);
+      const acP3 = num(xml, 'AC_Input_P3_kW', 2);
+      const acPF1 = num(xml, 'AC_Input_PF', 2);
+      const acPF2 = num(xml, 'AC_Input_PF', 2);
+      const acPF3 = num(xml, 'AC_Input_PF', 2);
+      const acIt = (acI1 || 0) + (acI2 || 0) + (acI3 || 0);
+      const acPt = (acP1 || 0) + (acP2 || 0) + (acP3 || 0);
+
+      setVal('ac-v1', num(xml, 'DG1_voltage_L1', 1));
+      setVal('ac-v2', num(xml, 'DG1_voltage_L2', 1));
+      setVal('ac-v3', num(xml, 'DG1_voltage_L3', 1));
+
+      setVal('ac-i1', num(xml, 'DG1_current_I1', 2));
+      setVal('ac-i2', num(xml, 'DG1_current_I2', 2));
+      setVal('ac-i3', num(xml, 'DG1_current_I3', 2));
+      setVal('ac-p1', num(xml, 'DG1_power_P1_kW', 2));
+      setVal('ac-p2', num(xml, 'DG1_power_P2_kW', 2));
+      setVal('ac-p3', num(xml, 'DG1_power_P3_kW', 2));
+      setVal('ac-pf1', num(xml, 'DG1_power_factor_L1', 2));
+      setVal('ac-pf2', num(xml, 'DG1_power_factor_L2', 2));
+      setVal('ac-pf3', num(xml, 'DG1_power_factor_L3', 2));
+      const dg1Itot = (num(xml, 'DG1_current_I1') || 0) + (num(xml, 'DG1_current_I2') || 0) + (num(xml, 'DG1_current_I3') || 0);
+      setVal('ac-it', dg1Itot, 2);
+      setVal('ac-pt', num(xml, 'DG1_Total_power_kW', 2));
+      setVal('ac-pftot', num(xml, 'DG1_Avg_power_factor', 2));
+
+      setVal('ac2-v1', num(xml, 'DG2_voltage_L1', 1));
+      setVal('ac2-v2', num(xml, 'DG2_voltage_L2', 1));
+      setVal('ac2-v3', num(xml, 'DG2_voltage_L3', 1));
+
+      setVal('ac2-i1', num(xml, 'DG2_current_I1', 2));
+      setVal('ac2-i2', num(xml, 'DG2_current_I2', 2));
+      setVal('ac2-i3', num(xml, 'DG2_current_I3', 2));
+      setVal('ac2-p1', num(xml, 'DG2_power_P1_kW', 2));
+      setVal('ac2-p2', num(xml, 'DG2_power_P2_kW', 2));
+      setVal('ac2-p3', num(xml, 'DG2_power_P3_kW', 2));
+      setVal('ac2-pf1', num(xml, 'DG2_power_factor_L1', 2));
+      setVal('ac2-pf2', num(xml, 'DG2_power_factor_L2', 2));
+      setVal('ac2-pf3', num(xml, 'DG2_power_factor_L3', 2));
+      const dg2Itot = (num(xml, 'DG2_current_I1') || 0) + (num(xml, 'DG2_current_I2') || 0) + (num(xml, 'DG2_current_I3') || 0);
+      setVal('ac2-it', dg2Itot, 2);
+      setVal('ac2-pt', num(xml, 'DG2_Total_power_kW', 2));
+      setVal('ac2-pftot', num(xml, 'DG2_Avg_power_factor', 2));
+
+      // ---- Load PM ----
+      const ldV1 = num(xml, 'AC_Load_L1', 1);
+      const ldV2 = num(xml, 'AC_Load_L2', 1);
+      const ldV3 = num(xml, 'AC_Load_L3', 1);
+      const ldI1 = num(xml, 'AC_Load_I1', 2);
+      const ldI2 = num(xml, 'AC_Load_I2', 2);
+      const ldI3 = num(xml, 'AC_Load_I3', 2);
+      const ldP1 = num(xml, 'AC_Load_P1_kW', 2);
+      const ldP2 = num(xml, 'AC_Load_P2_kW', 2);
+      const ldP3 = num(xml, 'AC_Load_P3_kW', 2);
+      const ldPft = num(xml, 'AC_Load_PF', 2);
+      const ldIt = (ldI1 || 0) + (ldI2 || 0) + (ldI3 || 0);
+      const ldPt = (ldP1 || 0) + (ldP2 || 0) + (ldP3 || 0);
+
+      setVal('ld-v1', ldV1, 1); setVal('ld-v2', ldV2, 1); setVal('ld-v3', ldV3, 1);
+      setVal('ld-i1', ldI1); setVal('ld-i2', ldI2); setVal('ld-i3', ldI3);
+      setVal('ld-p1', ldP1); setVal('ld-p2', ldP2); setVal('ld-p3', ldP3);
+      setText('ld-pf1', '\u2014'); setText('ld-pf2', '\u2014'); setText('ld-pf3', '\u2014');
+      setVal('ld-it', ldIt);
+      setVal('ld-pt', ldPt);
+      setVal('ld-pft', ldPft);
+
+      // ---- SCC 1 + SCC 2 ----
+      const scc1Pv = num(xml, 'SCC1_PV_Power_kW', 2);
+      const scc1Chg = num(xml, 'SCC1_Chg_Power_kW', 2);
+      const scc2Pv = num(xml, 'SCC2_PV_Power_kW', 2);
+      const scc2Chg = num(xml, 'SCC2_Chg_Power_kW', 2);
+      const sccTotalChg = (scc1Chg || 0) + (scc2Chg || 0);
+      setVal('scc1-pv', scc1Pv); setVal('scc1-chg', scc1Chg);
+      setVal('scc2-pv', scc2Pv); setVal('scc2-chg', scc2Chg);
+
+      // ---- GCI 1-2 ----
+      const gci1P = num(xml, 'GCI1_AC_Power_kW', 2) ?? 0;
+      const gci2P = num(xml, 'GCI2_AC_Power_kW', 2) ?? 0;
+      const gci3P = 0, gci4P = 0; // Retired
+      const gciSum = num(xml, 'GCI_Sum_AC_kW', 2) ?? (gci1P + gci2P);
+
+      const gci1pv = (num(xml, 'GCI1_PV1_Voltage', 1) ?? 0) + (num(xml, 'GCI1_PV2_Voltage', 1) ?? 0);
+      const gci2pv = (num(xml, 'GCI2_PV1_Voltage', 1) ?? 0) + (num(xml, 'GCI2_PV2_Voltage', 1) ?? 0);
+
+      setVal('gci-sum', gciSum);
+      setVal('gci1-pv', gci1pv, 2);
+      setVal('gci1-ac', gci1P, 2);
+      setVal('gci2-pv', gci2pv, 2);
+      setVal('gci2-ac', gci2P, 2);
+
+      // ---- Battery NODEX 1 Summary ----
+      const soc1Pct = num(xml, 'Avg_Batt_SOC', 0) ?? 0;
+      const b1P = num(xml, 'Sum_BDI_DC_kW', 2) || 0;
+      const b1V = num(xml, 'Avg_BDI_DC_V', 1) || 0;
+      const b1I = num(xml, 'Sum_BDI_DC_I', 2) || 0;
+
+      const b1dc1 = num(xml, 'BDI1_DC_kW', 2) || 0, b1dc2 = num(xml, 'BDI2_DC_kW', 2) || 0, b1dc3 = num(xml, 'BDI3_DC_kW', 2) || 0;
+
+      setVal('b-v', b1V, 1); setVal('b-i', b1I);
+      setText('b-p', (b1P > 0 ? '+' : '') + fmt(b1P));
+      setText('b-label', 'BATTERY Storage (BDI)');
+      setText('b-sub', `BDI1: ${fmt(b1dc1)} \u00b7 BDI2: ${fmt(b1dc2)} \u00b7 BDI3: ${fmt(b1dc3)} kW`);
+      $('batt-fill').style.width = Math.min(100, Math.max(0, soc1Pct)) + '%';
+      $('batt-pct').textContent = Math.round(soc1Pct) + '%';
+
+
+
+      const p1 = $('b-status');
+      if (b1P > 0.5) { p1.className = 'pill pill-batt'; p1.innerHTML = '<span class="dot dot-batt"></span>Discharging'; }
+      else if (b1P < -0.5) { p1.className = 'pill pill-ok'; p1.innerHTML = '<span class="dot dot-ok"></span>Charging'; }
+      else { p1.className = 'pill pill-neutral'; p1.innerHTML = '<span class="dot dot-off"></span>Idle'; }
+
+      const socPct = soc1Pct;
+      const battP = b1P;
+      const battV = b1V;
+      const battI = b1I;
+
+      const essSoc = num(xml, 'Avg_SOC', 1) ?? socPct;
+      const essVoltage = num(xml, 'Avg_BDI_DC_V', 1) ?? battV ?? 0;
+      const essPower = num(xml, 'Sum_BDI_DC_kW', 1) ?? battP ?? 0;
+
+      // ---- Generators ----
+      const g1P = num(xml, 'DG1_Total_power_kW', 2) ?? 0;
+      const g2P = num(xml, 'DG2_Total_power_kW', 2) ?? 0;
+      const g1Run = g1P > 0.5 ? 'Running' : 'Stopped';
+      const g2Run = g2P > 0.5 ? 'Running' : 'Stopped';
+      const genTotal = g1P + g2P;
+
+      setVal('g1-hr', num(xml, 'DG1_Engine_run_time_hrs', 1), 1);
+      setVal('g1-bv', num(xml, 'DG1_Engine_Battery_voltage', 1), 1);
+      setVal('g1-call', num(xml, 'DG1_No_of_starts_month', 0), 0);
+      setVal('g1-p', g1P, 2);
+
+      setVal('g2-hr', num(xml, 'DG2_Engine_run_time_hrs', 1), 1);
+      setVal('g2-bv', num(xml, 'DG2_Engine_Battery_voltage', 1), 1);
+      setVal('g2-call', num(xml, 'DG2_No_of_starts_month', 0), 0);
+      setVal('g2-p', g2P, 2);
+
+      function setGenPill(id, status, powerKw) {
+        const el = $(id); const s = (status || '').toLowerCase();
+        const running = s === 'running' || ((s !== 'stop' && s !== 'stopped') && (powerKw ?? 0) > 0.5);
+        if (running) { el.className = 'pill pill-ok'; el.innerHTML = '<span class="dot dot-ok"></span>Running'; }
+        else if (s === 'stop' || s === 'stopped') { el.className = 'pill pill-neutral'; el.innerHTML = '<span class="dot dot-off"></span>Stopped'; }
+        else if (s) { el.className = 'pill pill-warn'; el.innerHTML = '<span class="dot dot-warn"></span>' + status; }
+        else { el.className = 'pill pill-neutral'; el.innerHTML = '<span class="dot dot-off"></span>\u2014'; }
+      }
+      setGenPill('g1-pill', g1Run, g1P);
+      setGenPill('g2-pill', g2Run, g2P);
+
+      // ---- Weather ----
+      const rad = num(xml, 'Irradiance_W_m2', 0);
+      setVal('s-rad', rad, 0);
+      const radPct = Math.min(100, Math.max(0, ((rad || 0) / 1200) * 100));
+      $('s-rad-bar').style.width = radPct + '%';
+
+      setVal('w-tmod', num(xml, 'Module_temp', 1), 1);
+      setVal('w-tamb', num(xml, 'Ambient_temp', 1), 1);
+      setVal('w-rh', num(xml, 'Relation_Humidity', 1), 1);
+      setVal('w-irrkwh', num(xml, 'Irradiation_kWh_m2', 2), 2);
+
+      // ---- KPI Strip totals ----
+      const scc1PvTotal = num(xml, 'SCC1_PV_Power_kW', 2) ?? 0;
+      const scc2PvTotal = num(xml, 'SCC2_PV_Power_kW', 2) ?? 0;
+      const sccTotal = scc1PvTotal + scc2PvTotal;
+      const solarTotal = num(xml, 'PV_kW', 2) ?? ((gciSum || 0) + sccTotal);
+      const grid = genTotal;
+      const totalLoad = ldPt ?? 0;
+      const realtimeSupply = solarTotal + grid;
+      const realtimeRatio = realtimeSupply > 0.1 ? (solarTotal / realtimeSupply * 100) : 0;
+      const realtimeRatioColor = realtimeRatio >= 60 ? '#22c55e' : realtimeRatio >= 30 ? '#f59e0b' : '#ef4444';
+
+      setVal('k-solar', solarTotal);
+      setVal('k-grid', grid, 1);
+      setText('k-batt', (battP > 0 ? '+' : '') + fmt(battP));
+      setVal('k-load', totalLoad);
+      $('e-ratio').textContent = Math.round(realtimeRatio);
+      $('e-ratio').parentElement.style.color = realtimeRatioColor;
+
+      $('k-solar-sub').textContent = rad !== null ? `Irradiance ${fmt(rad, 0)} ${UNIT_W_M2}` : 'PV production';
+      $('k-grid-sub').textContent = `GEN-1 ${fmt(g1P, 1)} \u00b7 GEN-2 ${fmt(g2P, 1)}`;
+      $('k-batt-sub').textContent = battP < -0.5 ? 'Charging' : (battP > 0.5 ? 'Discharging' : 'Idle');
+
+      const maxRef = KPI_BAR_SCALE_KW;
+      $('k-solar-bar').style.width = Math.min(100, (solarTotal / maxRef) * 100) + '%';
+      $('k-grid-bar').style.width = Math.min(100, (grid / maxRef) * 100) + '%';
+      $('k-batt-bar').style.width = Math.min(100, (Math.abs(battP) / maxRef) * 100) + '%';
+      $('k-load-bar').style.width = Math.min(100, (totalLoad / maxRef) * 100) + '%';
+
+      // ---- BDI / NODE X ----
+      const bdiDataMap = {};
+      for (let i = 1; i <= 6; i++) {
+        bdiDataMap[`bdi${i}_p1_kw`] = num(xml, `BDI${i}_P1_kW`, 1) ?? 0;
+        bdiDataMap[`bdi${i}_dc_kw`] = num(xml, `BDI${i}_DC_kW`, 1) ?? 0;
+        bdiDataMap[`bdi${i}_batt_i`] = num(xml, `BDI${i}_Batt_I`, 1) ?? 0;
+        bdiDataMap[`bdi${i}_soc`] = num(xml, `BDI${i}_SOC`, 0) ?? 0;
+      }
+
+      const st1Soc = num(xml, 'St1_Avg_Batt_SOC', 0);
+      const st1Power = num(xml, 'St1_Sum_Pbatt_kW', 1);
+      const st1Voltage = num(xml, 'St1_Avg_Vbatt', 0);
+      const st2Soc = num(xml, 'St2_Avg_Batt_SOC', 0);
+      const st2Power = num(xml, 'St2_Sum_Pbatt_kW', 1);
+      const st2Voltage = num(xml, 'St2_Avg_Vbatt', 0);
+
+      PowerFlow.render({
+        ...bdiDataMap,
+        gen1_power: g1P, gen1_on: g1P > 0.5,
+        gen2_power: g2P, gen2_on: g2P > 0.5,
+        gci1_power: gci1P, gci2_power: gci2P, gci3_power: gci3P, gci4_power: gci4P,
+        bdi1_power: (bdiDataMap.bdi1_dc_kw || 0) + (bdiDataMap.bdi2_dc_kw || 0) + (bdiDataMap.bdi3_dc_kw || 0),
+        bdi2_power: (bdiDataMap.bdi4_dc_kw || 0) + (bdiDataMap.bdi5_dc_kw || 0) + (bdiDataMap.bdi6_dc_kw || 0),
+        ess1_power: st1Power ?? 0,
+        ess2_power: st2Power ?? 0,
+        bdi1_voltage: st1Voltage, bdi2_voltage: st2Voltage,
+        bdi1_soc: st1Soc, bdi2_soc: st2Soc,
+        battery_power: battP,
+        battery_soc: socPct,
+        battery_voltage: battV ?? 0,
+        battery_current: battI ?? 0,
+        ess_soc: essSoc,
+        ess_voltage: essVoltage,
+        ess_power: essPower,
+        scc1_power: scc1Pv || 0, scc2_power: scc2Pv || 0,
+        scc1_v: num(xml, 'SCC1_PV_Voltage', 1) ?? 0, scc1_i: num(xml, 'SCC1_PV_Current', 1) ?? 0,
+        scc2_v: num(xml, 'SCC2_PV_Voltage', 1) ?? 0, scc2_i: num(xml, 'SCC2_PV_Current', 1) ?? 0,
+        load_power: ldPt,
+        load_p1: ldP1 ?? 0, load_p2: ldP2 ?? 0, load_p3: ldP3 ?? 0,
+        load_v1: ldV1 ?? 0, load_v2: ldV2 ?? 0, load_v3: ldV3 ?? 0,
+        load_i1: ldI1 ?? 0, load_i2: ldI2 ?? 0, load_i3: ldI3 ?? 0,
+        irradiance: rad ?? 0,
+        tmod: num(xml, 'Module_temp', 1) ?? 0,
+        tamb: num(xml, 'Ambient_temp', 1) ?? 0,
+        rh: num(xml, 'Relation_Humidity', 1) ?? 0,
+      });
+
+      // ---- Timestamp & Connectivity ----
+      const dEl = xml.getElementsByTagName('DateServer')[0], tEl = xml.getElementsByTagName('TimeServer')[0];
+      const liveInd = $('live-indicator'), stamp = $('status-stamp');
+      if (dEl && tEl && liveInd && stamp) {
+        const srvT = parseXmlDate(dEl.textContent.trim(), tEl.textContent.trim());
+        const isOffline = srvT && Math.abs(new Date() - srvT) > 15 * 60 * 1000;
+        if (isOffline) {
+          stamp.className = 'stamp is-offline';
+          liveInd.className = 'offline';
+          liveInd.textContent = 'Offline Monitoring ยท Fleet';
+        } else {
+          stamp.className = 'stamp is-live';
+          liveInd.className = 'live';
+          liveInd.textContent = 'Live Monitoring ยท Fleet';
+        }
+        liveInd.textContent = isOffline ? 'Offline Monitoring - Fleet' : 'Live Monitoring - Fleet';
+        $('last-update').textContent = tEl.textContent.trim();
+      }
+    }
+
+    fetchAndRender();
+    setInterval(fetchAndRender, POLL_MS);
+
+
+    async function fetchEnergyLog() {
+      try {
+        const res = await fetch('Xml/Energylog.xml?_=' + Date.now(), { cache: 'no-store' });
+        if (!res.ok) return;
+        const xml = new DOMParser().parseFromString(await res.text(), 'text/xml');
+        const n = (tag) => { const el = xml.querySelector(tag); if (!el) return null; const v = parseFloat(el.textContent); return isNaN(v) ? null : v; };
+
+        const solarKWh = n('PV_kWh') ?? ((n('Sum_GCI_AC_Today_kWh') || 0) + (n('SCC1_Today_PV_kWh') || 0) + (n('SCC2_Today_PV_kWh') || 0));
+        const genKWh = n('Gen_kWh') ?? ((n('DG1_Today_Positive_Energy_kWh') || 0) + (n('DG2_Today_Positive_Energy_kWh') || 0));
+        const gen1Today = n('DG1_Today_Positive_Energy_kWh') ?? 0;
+        const gen2Today = n('DG2_Today_Positive_Energy_kWh') ?? 0;
+        const loadKWh = n('Load_kWh') ?? n('Today_Load_pos_kWh') ?? 0;
+        const co2 = n('CO2_kg') ?? 0;
+
+        setText('e-solar', solarKWh.toFixed(1));
+        setText('e-gen', genKWh.toFixed(1));
+        setText('e-load', loadKWh.toFixed(1));
+        setText('g1-td', gen1Today.toFixed(2));
+        setText('g2-td', gen2Today.toFixed(2));
+        setText('e-co2', `${LABEL_CO2} saved: ${co2.toFixed(1)} kg`);
+      } catch (e) { console.error('Energylog fetch error:', e); }
+    }
+    fetchEnergyLog();
+    setInterval(fetchEnergyLog, 30000);
+
+    // Re-render on viewport breakpoint cross
+    let _lastIsMobile = window.innerWidth < 640;
+    let _resizeTimer = null;
+    window.addEventListener('resize', () => {
+      clearTimeout(_resizeTimer);
+      _resizeTimer = setTimeout(() => {
+        const isMobile = window.innerWidth < 640;
+        if (isMobile !== _lastIsMobile) {
+          _lastIsMobile = isMobile;
+          fetchAndRender();
+        }
+      }, 150);
+    });
+  </script>
+
+</body>
+
+</html>

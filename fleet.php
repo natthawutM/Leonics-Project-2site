@@ -84,8 +84,13 @@ h1{font-size:22px;font-weight:700;margin-bottom:4px}
 
 <script>
 const SITES = [
-  { id: 1, name: 'Tetabuan', loc: 'Sabah, Malaysia', path: 'http://www.leonics-moc.com:52080/BELB_Sabah/Tetabuan_MYS/f1/', proxyType: 'Tetabuan' },
-  { id: 2, name: 'Terusan', loc: 'Sabah, Malaysia', path: 'http://www.leonics-moc.com:52080/BELB_Sabah/Terusan_MYS/f1/', proxyType: 'Terusan' },
+  // Server path
+  { id: 1, name: 'Tetabuan', loc: 'Sabah, Malaysia', path: 'http://www.leonics-moc.com:52080/BELB_Sabah/Tetabuan_MYS/f1/', menuPath: 'menu.html', proxyType: 'Tetabuan' },
+  { id: 2, name: 'Terusan', loc: 'Sabah, Malaysia', path: 'http://www.leonics-moc.com:52080/BELB_Sabah/Terusan_MYS/f1/', menuPath: 'menu.html', proxyType: 'Terusan' },
+
+  // Local path
+  // { id: 1, name: 'Tetabuan', loc: 'Sabah, Malaysia', path: 'Tetabuan_MYS/f1/', menuPath: 'menu.html', proxyType: 'Tetabuan' },
+  // { id: 2, name: 'Terusan', loc: 'Sabah, Malaysia', path: 'Terusan_MYS/f1/', menuPath: 'menu.html', proxyType: 'Terusan' },
 ];
 const LIVE_OK_SECONDS = 10;
 const LIVE_STALE_SECONDS = 120;
@@ -243,7 +248,7 @@ function buildCard(site, data, alarm){
     ? `<div style="background:#fef2f2;border:1px solid #fecaca;border-radius:6px;padding:5px 10px;margin-top:8px;font-size:11px;color:#b91c1c;display:flex;align-items:center;gap:6px"><span style="font-size:14px">&#9888;</span>${alarm.msg}</div>`
     : '';
 
-  return `<a class="site-card ${isOffline?'offline':''}" href="/BELB_Sabah/menu.html?site=${site.id}" target="_top">
+  return `<a class="site-card ${isOffline?'offline':''}" href="${site.path}${site.menuPath}" target="_top">
     <div class="sc-top">
       <span class="sc-badge sc-badge-offgrid">Off-Grid</span>
       <span class="sc-type">Solar+Bat+Gen</span>

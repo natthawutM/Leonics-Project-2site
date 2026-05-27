@@ -1,10 +1,4 @@
 <?php
-// ============================================================
-// Power Graph — Tetabuan
-// Queries: tetabuan_mys (PV, Gen, Load, Ctrl, Irradiance)
-//          tetabuanbattery_mys (Batt voltage, SOC)
-// Uses mysql_* (PHP 5.x).
-// ============================================================
 if($_POST==NULL){
     $date1_=date('Y-m-d');
     $d_1=date('d');
@@ -24,7 +18,6 @@ if(!isset($m_2)){
     $m_2=isset($months[$m_1])?$months[$m_1]:$m_1;
 }
 
-// ── DB1: main data (PV, Gen, Load, Ctrl, Irr) ──
 include("../Includes/DBConn.php");
 $link1 = connectToDB1();
 
@@ -54,9 +47,13 @@ $sql1 = "SELECT DatetimeLocal,PV_kW,Gen_kW,Load_PM_Total_P_kW,Ctrl_PM_Total_P_kW
 $q1 = mysql_query($sql1) or die("Query error (DB1): " . mysql_error());
 
 $nnPv=$nnGen=$nnLoad=$nnCtrl=$nnIrr="";
-$maxPv=$maxGen=$maxLoad=$maxIrr=0;
 $totalPoints=0;
 $meaningfulPoints=0;
+$sumPv=0;
+$sumGen=0;
+$sumLoad=0;
+$sumCtrl=0;
+$lastIrr=0;
 
 while($r = mysql_fetch_array($q1)){
     $Y=substr($r['DatetimeLocal'],0,4);
@@ -67,19 +64,21 @@ while($r = mysql_fetch_array($q1)){
     $S=substr($r['DatetimeLocal'],17,2);
     $ts="Date.UTC($Y,".((int)$M-1).",$D,$H,$Mi,$S)";
 
-    $pv  = ($r['PV_kW']==-0.999            || $r['PV_kW']===NULL)            ? 0 : (float)$r['PV_kW'];
-    $gen = ($r['Gen_kW']==-0.999           || $r['Gen_kW']===NULL)           ? 0 : (float)$r['Gen_kW'];
+    $pv  = ($r['PV_kW']==-0.999 || $r['PV_kW']===NULL) ? 0 : (float)$r['PV_kW'];
+    $gen = ($r['Gen_kW']==-0.999 || $r['Gen_kW']===NULL) ? 0 : (float)$r['Gen_kW'];
     $ld  = ($r['Load_PM_Total_P_kW']==-0.999 || $r['Load_PM_Total_P_kW']===NULL) ? 0 : (float)$r['Load_PM_Total_P_kW'];
     $cl  = ($r['Ctrl_PM_Total_P_kW']==-0.999 || $r['Ctrl_PM_Total_P_kW']===NULL) ? 0 : (float)$r['Ctrl_PM_Total_P_kW'];
-    $ir  = ($r['Irradiance_W_m2']==-0.999    || $r['Irradiance_W_m2']===NULL)    ? 0 : (float)$r['Irradiance_W_m2'];
+    $ir  = ($r['Irradiance_W_m2']==-0.999 || $r['Irradiance_W_m2']===NULL) ? 0 : (float)$r['Irradiance_W_m2'];
 
-    if($pv>$maxPv)   $maxPv=$pv;
-    if($gen>$maxGen) $maxGen=$gen;
-    if($ld>$maxLoad) $maxLoad=$ld;
-    if($ir>$maxIrr)  $maxIrr=$ir;
     if($pv > 0 || $gen > 0 || $ld > 0 || $cl > 0 || $ir > 0){
         $meaningfulPoints++;
     }
+
+    if($pv > 0){ $sumPv += $pv * (5/60); }
+    if($gen > 0){ $sumGen += $gen * (5/60); }
+    if($ld > 0){ $sumLoad += $ld * (5/60); }
+    if($cl > 0){ $sumCtrl += $cl * (5/60); }
+    $lastIrr = $ir;
 
     $nnPv  .="[$ts,$pv],";
     $nnGen .="[$ts,$gen],";
@@ -90,9 +89,9 @@ while($r = mysql_fetch_array($q1)){
 }
 mysql_close($link1);
 
-// ── DB2: battery data (Voltage, SOC) — graceful: skip if DB missing ──
 $nnBattV=$nnSoc="";
 $lastSoc=null;
+$lastBatt=0;
 include_once("../Includes/DBConn2.php");
 $link2 = function_exists('connectToDB2') ? @connectToDB2() : false;
 if($link2){
@@ -112,9 +111,10 @@ if($link2){
             $ts="Date.UTC($Y,".((int)$M-1).",$D,$H,$Mi,$S)";
 
             $bv  = ($r['Batt_Avg_Voltage']==-0.999 || $r['Batt_Avg_Voltage']===NULL) ? 0 : (float)$r['Batt_Avg_Voltage'];
-            $soc = ($r['Batt_Avg_SOC']==-0.999     || $r['Batt_Avg_SOC']===NULL)     ? null : (float)$r['Batt_Avg_SOC'];
+            $soc = ($r['Batt_Avg_SOC']==-0.999 || $r['Batt_Avg_SOC']===NULL) ? null : (float)$r['Batt_Avg_SOC'];
 
             $nnBattV.="[$ts,$bv],";
+            $lastBatt = $bv;
             if($soc!==null){
                 $nnSoc.="[$ts,$soc],";
                 $lastSoc=$soc;
@@ -135,336 +135,135 @@ $hasChartData = $totalPoints > 0 && $meaningfulPoints > 0;
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="../css/log.css" rel="stylesheet" type="text/css">
   <style type="text/css">
-  :root {
-    --bg-main:#f5f5f0;
-    --bg-card:#fff;
-    --bg-panel:#fafaf7;
-    --border-default:#e8e6df;
-    --text-primary:#1a1a1a;
-    --text-secondary:#888;
-    --text-tertiary:#aaa;
-    --info:#3b82f6;
-    --cyan:#06b6d4;
-    --purple:#8b5cf6;
-    --warning:#f59e0b;
-    --danger:#ef4444;
-    --radius-md:8px;
-    --radius-lg:12px;
-    --font-sans:'DM Sans',system-ui,-apple-system,sans-serif;
-    --font-mono:'DM Mono',ui-monospace,monospace;
-  }
   *{box-sizing:border-box}
-  html,body{margin:0;padding:0}
-  body{font-family:var(--font-sans);background:var(--bg-main);color:var(--text-primary);font-size:13px;line-height:1.5;padding:16px;min-height:100vh}
-  .wrap{max-width:1400px;margin:0 auto}
-  .card{background:var(--bg-card);border:1px solid var(--border-default);border-radius:var(--radius-lg);padding:16px}
-  .card-title{font-size:11px;font-weight:500;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.3px;margin:0 0 12px;display:flex;align-items:center;gap:8px}
-  .card-title .dot{width:6px;height:6px;border-radius:50%;background:var(--cyan)}
-
-  .toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--bg-panel)}
-  .toolbar .label{font-size:11px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.3px;font-weight:500;margin-right:6px}
-  .toolbar input[type=date]{
-    font-family:var(--font-sans);font-size:13px;padding:7px 12px;
-    border:1px solid var(--border-default);border-radius:var(--radius-md);
-    background:#fff;color:var(--text-primary);
-  }
-  .toolbar button{
-    font-family:var(--font-sans);font-size:13px;font-weight:500;
-    padding:7px 16px;border:none;border-radius:var(--radius-md);
-    background:var(--text-primary);color:#fff;cursor:pointer;transition:background .15s;
-  }
-  .toolbar button:hover{background:#333}
-  .range-info{font-size:12px;color:var(--text-secondary);font-family:var(--font-mono)}
-
-  #chart-container{width:100%;height:480px;min-width:0}
-  .no-data{
-    text-align:center;padding:60px 20px;color:var(--text-secondary);font-size:14px;
-  }
-  .no-data .icon{font-size:30px;color:var(--text-tertiary);margin-bottom:8px}
-
-  /* legend tiles below chart */
-  .legend-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:14px}
-  .lg-tile{background:var(--bg-panel);border-radius:var(--radius-md);padding:10px 12px;display:flex;align-items:center;gap:10px}
-  .lg-tile .swatch{width:10px;height:10px;border-radius:2px;flex-shrink:0}
-  .lg-tile .name{font-size:11px;color:var(--text-secondary);font-weight:500;text-transform:uppercase;letter-spacing:0.3px}
-  .lg-tile .desc{font-size:11px;color:var(--text-tertiary);margin-top:2px}
-
-  @media (max-width:992px){
-    .legend-grid{grid-template-columns:repeat(3,1fr)}
-  }
-  @media (max-width:768px){
-    body{padding:12px}
-    #chart-container{height:380px}
-    .legend-grid{grid-template-columns:repeat(2,1fr)}
-    .toolbar{flex-direction:column;align-items:stretch}
-  }
-  @media (max-width:480px){
-    body{padding:10px}
-    .card{padding:12px;border-radius:10px}
-    #chart-container{height:320px}
-    .legend-grid{grid-template-columns:1fr}
-  }
-
-  /* Highstock overrides for cleaner look */
-  .highcharts-background{fill:transparent}
-  .highcharts-grid-line{stroke:var(--border-default)}
-  .highcharts-axis-line{stroke:var(--border-default)}
-  .highcharts-tick{stroke:var(--border-default)}
-  .highcharts-axis-labels text{font-family:var(--font-mono) !important;font-size:11px !important;fill:var(--text-secondary) !important}
-  .highcharts-range-selector-buttons text{font-family:var(--font-sans) !important;font-size:12px !important}
-  .highcharts-button rect{fill:var(--bg-panel) !important;stroke:var(--border-default) !important}
-  .highcharts-button-pressed rect{fill:var(--text-primary) !important;stroke:var(--text-primary) !important}
-  .highcharts-button-pressed text{fill:#fff !important}
-  .highcharts-input-group text{font-family:var(--font-sans) !important;font-size:12px !important;fill:var(--text-secondary) !important}
-  .highcharts-legend-item text{font-family:var(--font-sans) !important;font-size:12px !important;fill:var(--text-primary) !important}
-  .highcharts-tooltip{font-family:var(--font-sans) !important}
-  .highcharts-navigator-mask-inside{fill:rgba(59,130,246,0.10) !important}
-  .highcharts-navigator-handle{fill:var(--info) !important;stroke:var(--info) !important}
-  .highcharts-navigator-outline{stroke:var(--border-default) !important}
-  .highcharts-scrollbar-track,.highcharts-scrollbar-button{display:none !important}
+  body{margin:0;padding:16px;font-family:'DM Sans',system-ui,sans-serif;background:#f5f5f0;color:#1a1a1a;font-size:13px}
+  .wrap{max-width:1180px;margin:0 auto}
+  .card{background:#fff;border:1px solid #e8e6df;border-radius:12px;padding:16px}
+  .card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+  .card-title{font-size:11px;font-weight:500;color:#888;text-transform:uppercase;letter-spacing:.3px;display:flex;align-items:center;gap:8px}
+  .card-title .dot{width:6px;height:6px;border-radius:50%;background:#3b82f6}
+  .card-title b{color:#1a1a1a;font-weight:600;font-size:13px;text-transform:none;letter-spacing:0}
+  .date-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .date-row input[type=date]{font-family:'DM Sans',sans-serif;font-size:13px;padding:7px 12px;border:1px solid #e8e6df;border-radius:8px;background:#fafaf7;color:#1a1a1a;outline:none}
+  .date-row input[type=date]:focus{border-color:#999}
+  .kpi-row{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:16px}
+  .kpi-box{background:#fafaf7;border-radius:6px;padding:10px 12px}
+  .kpi-box .lbl{font-size:10px;font-weight:500;color:#888;text-transform:uppercase;letter-spacing:.3px}
+  .kpi-box .val{font-family:'DM Mono',monospace;font-size:17px;font-weight:600;margin-top:2px}
+  .kpi-box .val .u{font-size:10px;color:#888;margin-left:2px}
+  #chart-container{width:100%;height:430px}
+  .axis-guide{font-size:11px;color:#666;background:#fafaf7;border:1px dashed #e8e6df;border-radius:6px;padding:6px 10px;margin:6px 0 4px;display:inline-block}
+  .axis-guide b{color:#1a1a1a;font-weight:600}
+  .note{font-size:11px;color:#aaa;margin-top:8px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .empty{padding:60px 20px;text-align:center;color:#888}
+  @media(max-width:900px){.kpi-row{grid-template-columns:repeat(3,1fr)}}
+  @media(max-width:600px){body{padding:10px}.card{padding:12px}#chart-container{height:340px}}
+  @media(max-width:480px){.kpi-row{grid-template-columns:repeat(2,1fr)}}
   </style>
 </head>
 <body>
-
-<div class="wrap">
-  <div class="card">
-    <div class="card-title"><span class="dot"></span>Power Graph · Tetabuan</div>
-
-    <div class="toolbar">
-      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-        <span class="label">Date</span>
-        <form method="POST" action="All.php" id="dateform" style="display:flex;gap:8px;align-items:center">
-          <input type="date" id="datepick" name="datepick" value="<?php echo $dateValue; ?>" />
-          <input type="hidden" name="d" id="hd" value="<?php echo $d_1; ?>" />
-          <input type="hidden" name="m" id="hm" value="<?php echo $m_1; ?>" />
-          <input type="hidden" name="y" id="hy" value="<?php echo $y_1; ?>" />
-          <button type="submit">Apply</button>
-        </form>
-        <div style="display:inline-flex;gap:4px;">
-          <button type="button" id="btnPrev" style="font-family:var(--font-sans);font-size:13px;font-weight:500;padding:7px 12px;border:none;border-radius:var(--radius-md);background:var(--bg-panel);border:1px solid var(--border-default);color:var(--text-primary);cursor:pointer;">‹ Prev</button>
-          <button type="button" id="btnToday" style="font-family:var(--font-sans);font-size:13px;font-weight:500;padding:7px 12px;border:none;border-radius:var(--radius-md);background:var(--bg-panel);border:1px solid var(--border-default);color:var(--text-primary);cursor:pointer;">Today</button>
-          <button type="button" id="btnNext" style="font-family:var(--font-sans);font-size:13px;font-weight:500;padding:7px 12px;border:none;border-radius:var(--radius-md);background:var(--bg-panel);border:1px solid var(--border-default);color:var(--text-primary);cursor:pointer;">Next ›</button>
+  <div class="wrap">
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title"><span class="dot"></span>Power Graph — <b><?php echo $dateLabel; ?></b></div>
+        <div class="date-row">
+          <form method="POST" action="All.php" id="dateform" style="display:flex;gap:8px;align-items:center">
+            <input type="date" id="datepick" name="datepick" value="<?php echo $dateValue; ?>" />
+            <input type="hidden" name="d" id="hd" value="<?php echo $d_1; ?>" />
+            <input type="hidden" name="m" id="hm" value="<?php echo $m_1; ?>" />
+            <input type="hidden" name="y" id="hy" value="<?php echo $y_1; ?>" />
+          </form>
         </div>
       </div>
-      <div class="range-info">Showing <?php echo $dateLabel; ?></div>
-    </div>
 
-    <?php if(!$hasChartData): ?>
-      <div class="no-data">
-        <div class="icon">&#9888;</div>
-        <div>No data for <?php echo $dateLabel;?></div>
-        <div style="font-size:12px;margin-top:4px;color:var(--text-tertiary)">Try a different date</div>
+      <div class="kpi-row">
+        <div class="kpi-box"><div class="lbl">Latest Batt V.</div><div class="val" style="color:#ea580c"><?php echo number_format($lastBatt,1); ?><span class="u">V</span></div></div>
+        <div class="kpi-box"><div class="lbl">PV Total</div><div class="val" style="color:#f59e0b"><?php echo number_format($sumPv,1); ?><span class="u">kWh</span></div></div>
+        <div class="kpi-box"><div class="lbl">AC Input Total</div><div class="val" style="color:#3b82f6"><?php echo number_format($sumGen,1); ?><span class="u">kWh</span></div></div>
+        <div class="kpi-box"><div class="lbl">Load Total</div><div class="val" style="color:#1a1a1a"><?php echo number_format($sumLoad,1); ?><span class="u">kWh</span></div></div>
+        <div class="kpi-box"><div class="lbl">Latest Irradiance</div><div class="val" style="color:#ef4444"><?php echo number_format($lastIrr,1); ?><span class="u">W/m²</span></div></div>
+        <div class="kpi-box"><div class="lbl">Latest SOC</div><div class="val" style="color:#8b5cf6"><?php echo $lastSoc!==null?number_format($lastSoc,1):'0.0'; ?><span class="u">%</span></div></div>
       </div>
-    <?php else: ?>
-      <div id="chart-container"></div>
-    <?php endif; ?>
 
-    <div class="legend-grid">
-      <div class="lg-tile"><span class="swatch" style="background:#f59e0b"></span><div><div class="name" style="color:#f59e0b">Solar (Peak)</div><div class="desc"><?php echo number_format($maxPv, 2); ?> kW</div></div></div>
-      <div class="lg-tile"><span class="swatch" style="background:#ea580c"></span><div><div class="name" style="color:#ea580c">Gen (Peak)</div><div class="desc"><?php echo number_format($maxGen, 2); ?> kW</div></div></div>
-      <div class="lg-tile"><span class="swatch" style="background:#3b82f6"></span><div><div class="name" style="color:#3b82f6">Load (Peak)</div><div class="desc"><?php echo number_format($maxLoad, 2); ?> kW</div></div></div>
-      <div class="lg-tile"><span class="swatch" style="background:#f9c66b"></span><div><div class="name" style="color:#f9c66b">Irradiance (Peak)</div><div class="desc"><?php echo number_format($maxIrr, 0); ?> W/m²</div></div></div>
-      <?php if($lastSoc!==null): ?>
-      <div class="lg-tile"><span class="swatch" style="background:#8b5cf6"></span><div><div class="name" style="color:#8b5cf6">Last SOC</div><div class="desc"><?php echo number_format($lastSoc, 0); ?> %</div></div></div>
+      <?php if(!$hasChartData): ?>
+      <div class="empty">No data for <?php echo $dateLabel; ?></div>
+      <?php else: ?>
+      <div id="chart-container"></div>
+      <div class="axis-guide"><b>← Left axis</b>&nbsp;kW · SOC %&nbsp;&nbsp;|&nbsp;&nbsp;<b>Right axis →</b>&nbsp;Volt · W/m²</div>
+      <div class="note">real data · same query logic · updated UI</div>
       <?php endif; ?>
     </div>
   </div>
-</div>
 
 <?php if($hasChartData): ?>
 <script src="/highstock/js/jquery.min.js"></script>
 <script src="/highstock/js/highstock.js"></script>
 <script src="/highstock/js/modules/exporting.js"></script>
-
 <script type="text/javascript">
-function showChartError(message){
-  var el = document.getElementById('chart-container');
-  if(!el) return;
-  el.innerHTML = '<div style="padding:24px;color:#b91c1c;font:13px DM Sans, sans-serif">Chart render error: ' + String(message) + '</div>';
-}
-
-if(!window.Highcharts){
-  showChartError('Highcharts library not loaded');
-} else {
-try {
-  Highcharts.setOptions({
-      lang: { rangeSelectorZoom: '' },
-      global: { useUTC: true }
-  });
-
-  var PM1 = [<?php echo rtrim($nnPv,',');?>];
-  var PM2 = [<?php echo rtrim($nnGen,',');?>];
-  var PM3 = [<?php echo rtrim($nnLoad,',');?>];
-  var PM4 = [<?php echo rtrim($nnCtrl,',');?>];
-  var PM5 = [<?php echo rtrim($nnIrr,',');?>];
-  var PM6 = [<?php echo rtrim($nnSoc,',');?>];
-
-  chart = new Highcharts.StockChart({
-    chart: {
-        renderTo: 'chart-container',
-        zoomType: 'x',
-        backgroundColor: 'transparent',
-        style: { fontFamily: "'DM Sans', sans-serif" },
-        spacing: [16, 8, 10, 8]
+Highcharts.setOptions({ lang: { rangeSelectorZoom: '' }, global: { useUTC: true } });
+var PM1 = [<?php echo rtrim($nnPv,',');?>];
+var PM2 = [<?php echo rtrim($nnGen,',');?>];
+var PM3 = [<?php echo rtrim($nnLoad,',');?>];
+var PM4 = [<?php echo rtrim($nnCtrl,',');?>];
+var PM5 = [<?php echo rtrim($nnIrr,',');?>];
+var PM6 = [<?php echo rtrim($nnSoc,',');?>];
+var PM7 = [<?php echo rtrim($nnBattV,',');?>];
+new Highcharts.StockChart({
+  chart:{renderTo:'chart-container',backgroundColor:'transparent',style:{fontFamily:"'DM Sans',sans-serif"},zoomType:'x'},
+  credits:{enabled:false},
+  title:{text:null},
+  subtitle:{text:null},
+  rangeSelector:{
+    inputEnabled:false,
+    selected:2,
+    buttonTheme:{
+      fill:'#fff',stroke:'#e8e6df','stroke-width':1,r:6,
+      style:{color:'#888',fontWeight:'500'},
+      states:{select:{fill:'#1a1a1a',style:{color:'#fff'}},hover:{fill:'#f5f5f0'}}
     },
-    credits: { enabled: false },
-    title: { text: '' },
-    subtitle: { text: '' },
-
-    rangeSelector: {
-        buttons: [
-            { type: 'hour', count: 6, text: '6h' },
-            { type: 'hour', count: 12, text: '12h' },
-            { type: 'all', text: 'All' }
-        ],
-        selected: 2,
-        inputEnabled: false,
-        buttonTheme: {
-            r: 8,
-            padding: 6,
-            style: { color: '#888', fontWeight: 500 }
-        }
-    },
-
-    xAxis: {
-        type: 'datetime',
-        gridLineWidth: 1,
-        gridLineColor: '#e8e6df',
-        lineColor: '#e8e6df',
-        tickColor: '#e8e6df',
-        labels: { style: { color: '#888', fontFamily: "'DM Mono'" } }
-    },
-
-    yAxis: [{ // 0: kW (left)
-        title: { text: null },
-        labels: { format: '{value} kW', style: { color: '#888', fontFamily: "'DM Mono'" } },
-        gridLineColor: '#e8e6df',
-        opposite: false
-    }, { // 1: Irradiance (right)
-        title: { text: null },
-        labels: { format: '{value} W/m2', style: { color: '#f9c66b', fontFamily: "'DM Mono'" } },
-        gridLineColor: 'transparent',
-        opposite: true,
-        min: 0
-    }, { // 2: SOC % (far right)
-        title: { text: null },
-        labels: { format: '{value}%', style: { color: '#8b5cf6', fontFamily: "'DM Mono'" } },
-        gridLineColor: 'transparent',
-        opposite: true,
-        min: 0,
-        max: 100
-    }],
-
-    tooltip: {
-        shared: true,
-        backgroundColor: '#fff',
-        borderColor: '#e8e6df',
-        borderRadius: 8,
-        borderWidth: 1,
-        shadow: { color: 'rgba(0,0,0,0.08)', width: 6, opacity: 0.6 },
-        style: { color: '#1a1a1a', fontFamily: "'DM Sans'", fontSize: '12px' },
-        valueDecimals: 1,
-        headerFormat: '<span style="font-family:DM Mono;color:#888;font-size:11px">{point.key}</span><br/>'
-    },
-
-    legend: { enabled: false },
-
-    plotOptions: {
-        series: {
-            lineWidth: 2,
-            marker: { enabled: false },
-            states: { hover: { lineWidth: 3 } }
-        }
-    },
-
-    series: [{
-        name: 'PV (Solar)',
-        color: '#f59e0b',
-        data: PM1,
-        tooltip: { valueSuffix: ' kW' }
-    }, {
-        name: 'Gen',
-        color: '#ea580c',
-        data: PM2,
-        tooltip: { valueSuffix: ' kW' }
-    }, {
-        name: 'Load',
-        color: '#3b82f6',
-        data: PM3,
-        tooltip: { valueSuffix: ' kW' }
-    }, {
-        name: 'Ctrl PM',
-        color: '#06b6d4',
-        data: PM4,
-        visible: false,
-        dashStyle: 'ShortDash',
-        tooltip: { valueSuffix: ' kW' }
-    }, {
-        name: 'Irradiance',
-        color: '#f9c66b',
-        data: PM5,
-        yAxis: 1,
-        tooltip: { valueSuffix: ' W/m2' }
-    }, {
-        name: 'SOC',
-        color: '#8b5cf6',
-        data: PM6,
-        yAxis: 2,
-        tooltip: { valueSuffix: '%' }
-    }],
-
-    navigator: {
-        height: 40,
-        outlineColor: '#e8e6df',
-        maskFill: 'rgba(59,130,246,0.10)',
-        series: { color: '#3b82f6', lineWidth: 1 },
-        xAxis: { labels: { style: { color: '#aaa', fontFamily: "'DM Mono'", fontSize: '10px' } } }
-    },
-
-    scrollbar: { enabled: false },
-
-    exporting: {
-        enabled: false
-    }
-  });
-} catch (err) {
-  showChartError(err && err.message ? err.message : err);
-}
-}
+    buttons:[{type:'hour',count:6,text:'6h'},{type:'hour',count:12,text:'12h'},{type:'all',text:'All'}]
+  },
+  navigator:{
+    maskFill:'rgba(59,130,246,0.08)',
+    series:{color:'#888',lineColor:'#888'},
+    xAxis:{gridLineColor:'#e8e6df'},
+    handles:{backgroundColor:'#fff',borderColor:'#999'}
+  },
+  scrollbar:{enabled:false},
+  legend:{enabled:true,symbolWidth:10,symbolHeight:10,symbolRadius:5,itemStyle:{fontFamily:"'DM Sans',sans-serif",fontSize:'12px',color:'#555'}},
+  xAxis:{type:'datetime',gridLineColor:'#e8e6df',lineColor:'#e8e6df',tickColor:'#e8e6df',labels:{style:{color:'#aaa'}}},
+  yAxis:[
+    {min:0,max:100,tickInterval:25,startOnTick:false,endOnTick:false,gridLineColor:'#e8e6df',title:{text:null},opposite:false,labels:{format:'{value}%',style:{color:'#aaa'}}},
+    {min:-100,max:100,tickInterval:50,startOnTick:false,endOnTick:false,gridLineColor:'#e8e6df',title:{text:null},opposite:false,labels:{format:'{value} kW',style:{color:'#aaa'}}},
+    {min:200,max:1000,tickInterval:200,startOnTick:false,endOnTick:false,gridLineColor:'transparent',title:{text:null},opposite:true,labels:{format:'{value} V',style:{color:'#aaa'}}},
+    {min:0,max:1200,tickInterval:300,startOnTick:false,endOnTick:false,gridLineColor:'transparent',title:{text:null},opposite:true,labels:{format:'{value} W/m²',style:{color:'#aaa'}}}
+  ],
+  tooltip:{shared:true,backgroundColor:'#fff',borderColor:'#e8e6df',borderRadius:8,borderWidth:1,shadow:false,style:{fontFamily:"'DM Mono',monospace",fontSize:'12px',color:'#1a1a1a'}},
+  plotOptions:{series:{lineWidth:1.4,marker:{enabled:false},states:{hover:{lineWidth:1.8}},legendSymbol:'rectangle'}},
+  series:[
+    {name:'Batt Volt',data:PM7,yAxis:2,tooltip:{valueDecimals:1,valueSuffix:' V'},color:'#ea580c'},
+    {name:'PV',data:PM1,yAxis:1,tooltip:{valueDecimals:1,valueSuffix:' kW'},color:'#f59e0b'},
+    {name:'AC Input',data:PM2,yAxis:1,tooltip:{valueDecimals:1,valueSuffix:' kW'},color:'#3b82f6'},
+    {name:'Load',data:PM3,yAxis:1,tooltip:{valueDecimals:1,valueSuffix:' kW'},color:'#1a1a1a'},
+    {name:'Ctrl PM',data:PM4,yAxis:1,tooltip:{valueDecimals:1,valueSuffix:' kW'},color:'#06b6d4'},
+    {name:'Irradiance',data:PM5,yAxis:3,tooltip:{valueDecimals:1,valueSuffix:' W/m²'},color:'#ef4444'},
+    {name:'SOC',data:PM6,yAxis:0,tooltip:{valueDecimals:1,valueSuffix:' %'},color:'#8b5cf6'}
+  ]
+});
 </script>
 <?php endif; ?>
-
 <script>
-// ── Date controls ──
-const datePick = document.getElementById('datepick');
-const form = document.getElementById('dateform');
-
-function submitDate(d){
-  const parts = d.split('-');
-  document.getElementById('hy').value = parts[0];
-  document.getElementById('hm').value = parts[1];
-  document.getElementById('hd').value = parts[2];
-  form.submit();
+var datePick = document.getElementById('datepick');
+var form = document.getElementById('dateform');
+if(datePick){
+  datePick.addEventListener('change', function(){
+    var parts = this.value.split('-');
+    document.getElementById('hy').value = parts[0];
+    document.getElementById('hm').value = parts[1];
+    document.getElementById('hd').value = parts[2];
+    form.submit();
+  });
 }
-
-datePick.addEventListener('change', e => submitDate(e.target.value));
-
-document.getElementById('btnToday').addEventListener('click', () => {
-  const t = new Date(), pad = n => String(n).padStart(2,'0');
-  submitDate(t.getFullYear()+'-'+pad(t.getMonth()+1)+'-'+pad(t.getDate()));
-});
-document.getElementById('btnPrev').addEventListener('click', () => {
-  const d = new Date(datePick.value); d.setDate(d.getDate()-1);
-  const pad = n => String(n).padStart(2,'0');
-  submitDate(d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()));
-});
-document.getElementById('btnNext').addEventListener('click', () => {
-  const d = new Date(datePick.value); d.setDate(d.getDate()+1);
-  const today = new Date(); today.setHours(0,0,0,0);
-  if(d > today){ alert('Cannot go beyond today'); return; }
-  const pad = n => String(n).padStart(2,'0');
-  submitDate(d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()));
-});
 </script>
 </body>
 </html>
