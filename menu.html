@@ -18,17 +18,25 @@
        2) Read cookie moc_site → resolve to SITES entry
        ============================================================ */
     (function () {
+      function readHashState() {
+        var m = /^#\/?([^\/?#]+)?(?:\/([^?#]+))?/.exec(window.location.hash || '');
+        return {
+          siteId: m && m[1] ? m[1] : '',
+          page: m && m[2] ? m[2] : ''
+        };
+      }
+
       function readCookie(name) {
         var m = document.cookie.match(new RegExp('(?:^|;\\s*)' + name + '=([^;]+)'));
         return m ? decodeURIComponent(m[1]) : '';
       }
 
       var params = new URLSearchParams(window.location.search);
-      var siteId = params.get('site') || readCookie('moc_site');
+      var hashState = readHashState();
+      var siteId = params.get('site') || hashState.siteId || readCookie('moc_site');
 
-      if (params.get('site')) {
+      if (params.get('site') || hashState.siteId) {
         document.cookie = 'moc_site=' + encodeURIComponent(siteId) + '; path=/; max-age=2592000';
-        // We don't replaceState immediately to ensure the bottom script sees the siteId too
       }
 
       /* SITES table — must mirror SITES array in fleet.php */
@@ -41,7 +49,9 @@
         window.location.replace('/BELB_Sabah/fleet.php');
         return;
       }
+      site.id = siteId;
       window.__MOC_SITE__ = site;
+      window.__MOC_HASH_PAGE__ = hashState.page || 'dashboard';
     })();
   </script>
   <style>
@@ -599,7 +609,7 @@
     </div>
 
     <nav class="nav-bar" id="navbar">
-      <a href="#" data-page="plant.html" target="IF_m" class="nav-btn active">
+      <a href="#dashboard" data-page="plant.html" data-nav="dashboard" target="IF_m" class="nav-btn active">
         <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
             stroke-linecap="round" stroke-linejoin="round">
             <rect x="3" y="3" width="7" height="9" />
@@ -609,7 +619,7 @@
           </svg></span>
         Dashboard
       </a>
-      <a href="#" data-page="BDI.html" target="IF_m" class="nav-btn">
+      <a href="#bdi" data-page="BDI.html" data-nav="bdi" target="IF_m" class="nav-btn">
         <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
             stroke-linecap="round" stroke-linejoin="round">
             <rect x="2" y="7" width="18" height="10" rx="2" />
@@ -618,7 +628,7 @@
           </svg></span>
         BDI
       </a>
-      <a href="#" data-page="SCC.html" target="IF_m" class="nav-btn">
+      <a href="#scc" data-page="SCC.html" data-nav="scc" target="IF_m" class="nav-btn">
         <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
             stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="4" />
@@ -633,7 +643,7 @@
           </svg></span>
         SCC
       </a>
-      <a href="#" data-page="GCI.html" target="IF_m" class="nav-btn">
+      <a href="#gci" data-page="GCI.html" data-nav="gci" target="IF_m" class="nav-btn">
         <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
             stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 2v6" />
@@ -646,7 +656,7 @@
           </svg></span>
         GCI
       </a>
-      <a href="#" data-page="PM.html" target="IF_m" class="nav-btn">
+      <a href="#meter" data-page="PM.html" data-nav="meter" target="IF_m" class="nav-btn">
         <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
             stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="10" />
@@ -654,14 +664,14 @@
           </svg></span>
         Meter
       </a>
-      <a href="#" data-page="Gen.html" target="IF_m" class="nav-btn">
+      <a href="#generator" data-page="Gen.html" data-nav="generator" target="IF_m" class="nav-btn">
         <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
             stroke-linecap="round" stroke-linejoin="round">
             <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
           </svg></span>
         Generator
       </a>
-      <a href="#" data-page="graph.php" target="IF_m" class="nav-btn">
+      <a href="#power" data-page="graph.php" data-nav="power" target="IF_m" class="nav-btn">
         <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
             stroke-linecap="round" stroke-linejoin="round">
             <polyline points="3 17 9 11 13 15 21 7" />
@@ -669,7 +679,7 @@
           </svg></span>
         Power
       </a>
-      <a href="#" data-page="graph_energy.php" target="IF_m" class="nav-btn">
+      <a href="#energy" data-page="graph_energy.php" data-nav="energy" target="IF_m" class="nav-btn">
         <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
             stroke-linecap="round" stroke-linejoin="round">
             <line x1="18" y1="20" x2="18" y2="10" />
@@ -678,7 +688,7 @@
           </svg></span>
         Energy
       </a>
-      <a href="#" data-page="data/data.php" target="IF_m" class="nav-btn">
+      <a href="#download" data-page="data/data.php" data-nav="download" target="IF_m" class="nav-btn">
         <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
             stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -714,22 +724,57 @@
         document.getElementById('site-loc').textContent = site.loc;
         document.getElementById('brand-img').src = site.path + 'image/leo.svg';
 
-        var navLinks = document.querySelectorAll('#navbar a[data-page]');
+        var navLinks = Array.prototype.slice.call(document.querySelectorAll('#navbar a[data-page]'));
+        var navMap = {};
+
+        function setActiveNav(activeRoute) {
+          navLinks.forEach(function (link) {
+            link.classList.toggle('active', link.getAttribute('data-nav') === activeRoute);
+          });
+        }
+
+        function parseRoute(route) {
+          var cleaned = (route || '').trim();
+          var match = /^#\/?([^\/?#]+)?(?:\/([^?#]+))?/.exec(cleaned);
+          if (!match) return { siteId: '', page: '' };
+          return {
+            siteId: match[1] || '',
+            page: match[2] || match[1] || ''
+          };
+        }
+
+        function loadRoute(route, replaceHistory) {
+          var parsedRoute = parseRoute(route);
+          var normalizedRoute = parsedRoute.page || 'dashboard';
+          var link = navMap[normalizedRoute] || navLinks[0];
+          if (!link) return;
+
+          var targetRoute = link.getAttribute('data-nav') || 'dashboard';
+          var targetSrc = withNoCache(site.path + link.getAttribute('data-page'));
+
+          setActiveNav(targetRoute);
+          ifm.src = targetSrc;
+
+          var targetHash = '#/' + site.id + '/' + targetRoute;
+          if (replaceHistory) history.replaceState(null, '', '/' + targetHash);
+          else if (window.location.hash !== targetHash) history.pushState(null, '', '/' + targetHash);
+        }
+
         navLinks.forEach(function (a) {
-          a.href = withNoCache(site.path + a.getAttribute('data-page'));
-          a.addEventListener('click', function () {
-            navLinks.forEach(function (b) { b.classList.remove('active'); });
-            this.classList.add('active');
+          var route = a.getAttribute('data-nav');
+          if (route) navMap[route] = a;
+          a.addEventListener('click', function (ev) {
+            ev.preventDefault();
+            loadRoute(route, false);
           });
         });
 
-        // Set initial iframe src
-        ifm.src = withNoCache(site.path + 'plant.html');
+        window.addEventListener('hashchange', function () {
+          loadRoute(window.location.hash, true);
+        });
 
-        // Clean up URL after successful load
-        if (window.location.search.indexOf('site=') !== -1) {
-          history.replaceState(null, '', '/BELB_Sabah/menu.html');
-        }
+        var initialRoute = window.location.hash || ('#/' + site.id + '/' + (window.__MOC_HASH_PAGE__ || 'dashboard'));
+        loadRoute(initialRoute, true);
       }
 
       if (document.readyState === 'loading') {
@@ -776,9 +821,7 @@
       }
 
       function getTimestampUrl() {
-        return site.path.indexOf('Tetabuan_MYS/f1/') !== -1
-          ? site.path + 'Xml/simulate.php?_=' + Date.now()
-          : site.path + 'Xml/Main.xml?_=' + Date.now();
+        return site.path + 'Xml/Main.xml?_=' + Date.now();
       }
 
       async function updateTimestamp() {

@@ -61,8 +61,13 @@ h1{font-size:22px;font-weight:700;margin-bottom:4px}
 
 <script>
 const SITES = [
-  { id: 1, name: 'Tetabuan', loc: 'Sabah, Malaysia', path: 'http://www.leonics-moc.com:52080/BELB_Sabah/Tetabuan_MYS/f1/', proxyType: 'Tetabuan' },
-  { id: 2, name: 'Terusan', loc: 'Sabah, Malaysia', path: 'http://www.leonics-moc.com:52080/BELB_Sabah/Terusan_MYS/f1/', proxyType: 'Terusan' },
+  // Server path
+  { id: 1, name: 'Tetabuan', loc: 'Sabah, Malaysia', path: 'http://www.leonics-moc.com:52080/BELB_Sabah/Tetabuan_MYS/f1/', menuPath: 'menu.html', proxyType: 'Tetabuan' },
+  { id: 2, name: 'Terusan', loc: 'Sabah, Malaysia', path: 'http://www.leonics-moc.com:52080/BELB_Sabah/Terusan_MYS/f1/', menuPath: 'menu.html', proxyType: 'Terusan' },
+
+  // Local path
+  // { id: 1, name: 'Tetabuan', loc: 'Sabah, Malaysia', path: 'Tetabuan_MYS/f1/', menuPath: 'menu.html', proxyType: 'Tetabuan' },
+  // { id: 2, name: 'Terusan', loc: 'Sabah, Malaysia', path: 'Terusan_MYS/f1/', menuPath: 'menu.html', proxyType: 'Terusan' },
 ];
 
 function num(xml, tag){
@@ -147,7 +152,7 @@ function buildCard(site, data){
   const soc = online ? metrics.soc : null;
   const timeStr = online && metrics.timeServer ? metrics.timeServer : '-';
 
-  return `<a class="site-card ${online?'':'offline'}" href="/BELB_Sabah/menu.html?site=${site.id}" target="_top">
+  return `<a class="site-card ${online?'':'offline'}" href="${site.path}${site.menuPath}" target="_top">
     <div class="sc-top">
       <span class="sc-badge sc-badge-offgrid">Off-Grid</span>
       <span class="sc-type">Solar+Bat+Gen</span>
