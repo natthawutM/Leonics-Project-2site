@@ -1,132 +1,433 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Power Meters - Terusan MOC</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-:root{
-  --bg-main:#f5f5f0;--bg-card:#ffffff;--bg-panel:#fafaf7;
-  --border-default:#e8e6df;--text-primary:#1a1a1a;--text-secondary:#888;--text-tertiary:#aaa;
-  --success:#22c55e;--info:#3b82f6;
-  --radius-sm:6px;--radius-md:8px;--radius-lg:12px;
-  --font-sans:'DM Sans',system-ui,sans-serif;--font-mono:'DM Mono',monospace;
-}
-*{box-sizing:border-box}
-html,body{margin:0;padding:0;max-width:100vw;overflow-x:hidden}
-body{font-family:var(--font-sans);background:var(--bg-main);color:var(--text-primary);font-size:13px;line-height:1.5;padding:16px;min-height:100vh}
-.mono{font-family:var(--font-mono);font-feature-settings:"tnum" 1}
+  <meta charset="utf-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Power Meters - Terusan MOC</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #f5f5f0;
+      --bg-card: #ffffff;
+      --bg-panel: #fafaf7;
+      --border-default: #e8e6df;
+      --text-primary: #1a1a1a;
+      --text-secondary: #888;
+      --text-tertiary: #aaa;
+      --success: #22c55e;
+      --info: #3b82f6;
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --font-sans: 'DM Sans', system-ui, sans-serif;
+      --font-mono: 'DM Mono', monospace;
+    }
 
-.page{max-width:1400px;margin:0 auto}
-.grid-2{display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:14px}
+    * {
+      box-sizing: border-box
+    }
 
-.card{background:var(--bg-card);border:1px solid var(--border-default);border-radius:var(--radius-lg);padding:16px;min-width:0}
-.card-title{font-size:12px;font-weight:600;color:var(--text-primary);text-transform:uppercase;letter-spacing:.3px;margin:0 0 12px;display:flex;align-items:center;justify-content:space-between;gap:8px}
-.card-title .left{display:flex;align-items:center;gap:8px}
-.card-title .dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      max-width: 100vw;
+      overflow-x: hidden
+    }
 
-.pill{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:10px;font-size:11px;font-weight:500}
-.pill-info{background:rgba(59,130,246,.10);color:var(--info)}
-.pill-load{background:#1a1a1a;color:#fff}
-.pill .v{font-family:var(--font-mono);font-weight:600}
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-main);
+      color: var(--text-primary);
+      font-size: 13px;
+      line-height: 1.5;
+      padding: 16px;
+      min-height: 100vh
+    }
 
-/* Hero total power */
-.hero{
-  display:flex;align-items:center;justify-content:space-between;gap:10px;
-  background:var(--bg-panel);border-radius:var(--radius-md);
-  padding:12px 14px;margin-bottom:12px;
-}
-.hero .lbl{font-size:11px;font-weight:500;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.3px}
-.hero .sub{font-size:11px;color:var(--text-secondary);margin-top:2px}
-.hero .val{font-family:var(--font-mono);font-size:24px;font-weight:700}
-.hero .val .u{font-size:13px;color:var(--text-secondary);margin-left:4px;font-weight:500}
+    .mono {
+      font-family: var(--font-mono);
+      font-feature-settings: "tnum" 1
+    }
 
-.section-label{font-size:11px;font-weight:600;color:var(--text-primary);text-transform:uppercase;letter-spacing:.3px;padding:10px 0 6px;border-bottom:1px solid var(--border-default);margin:6px 0 8px}
+    .page {
+      max-width: 1400px;
+      margin: 0 auto
+    }
 
-/* 3-phase table */
-.phase-chip{display:inline-block;width:6px;height:6px;border-radius:2px;margin-right:5px;vertical-align:middle}
-.phase-table{width:100%;border-collapse:collapse}
-.phase-table th{font-size:9px;font-weight:500;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.3px;text-align:right;padding:5px 4px;border-bottom:1px solid var(--border-default)}
-.phase-table th:first-child{text-align:left}
-.phase-table td{font-family:var(--font-mono);font-size:12px;padding:6px 4px;text-align:right;border-bottom:1px solid var(--border-default)}
-.phase-table td:first-child{font-family:var(--font-sans);text-align:left;font-weight:500;font-size:11px}
-.phase-table tr.total td{font-weight:600;background:var(--bg-panel)}
-.phase-table tr:last-child td{border-bottom:none}
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px
+    }
 
-/* Frequency + summary */
-.kpi-row{display:grid;grid-template-columns:repeat(3, minmax(0, 1fr));gap:8px;margin-top:10px}
-.kpi-row.cols2{grid-template-columns:repeat(2, minmax(0, 1fr))}
-.kpi-box{background:var(--bg-panel);border-radius:var(--radius-sm);padding:9px 11px;min-width:0;overflow:hidden}
-.kpi-box .lbl{font-size:10px;font-weight:500;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.kpi-box .val{font-family:var(--font-mono);font-size:14px;font-weight:600;margin-top:2px;white-space:nowrap}
-.kpi-box .val .u{font-size:10px;color:var(--text-secondary);margin-left:2px;font-weight:500}
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      min-width: 0
+    }
 
-/* Energy boxes */
-.energy-row{display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:8px;margin-top:6px}
-.energy-box{background:var(--bg-panel);border-radius:var(--radius-sm);padding:9px 11px;display:flex;justify-content:space-between;align-items:center;min-width:0}
-.energy-box .lbl{font-size:10px;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.energy-box .val{font-family:var(--font-mono);font-size:13px;font-weight:600;white-space:nowrap}
-.energy-box .val .u{font-size:10px;color:var(--text-secondary);margin-left:2px}
+    .card-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+      text-transform: uppercase;
+      letter-spacing: .3px;
+      margin: 0 0 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px
+    }
 
-.stamp{font-size:11px;color:var(--text-tertiary);display:flex;justify-content:space-between;padding:4px;margin-top:4px}
-.stamp .live{display:inline-flex;align-items:center;gap:6px;color:var(--success);font-weight:500}
-.stamp .live::before{content:"";width:6px;height:6px;background:var(--success);border-radius:50%;animation:pulse 1.6s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+    .card-title .left {
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
 
-@media(max-width:1024px){
-  .grid-2{grid-template-columns:1fr}
-}
-@media(max-width:600px){
-  body{padding:10px}
-  .card{padding:12px}
-  .hero{padding:10px 12px}
-  .hero .val{font-size:18px}
-  .kpi-row{grid-template-columns:repeat(2, minmax(0, 1fr))}
-  .energy-row{grid-template-columns:1fr}
-  .phase-table th,.phase-table td{padding:5px 3px;font-size:11px}
-}
-</style>
+    .card-title .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 500
+    }
+
+    .pill-info {
+      background: rgba(59, 130, 246, .10);
+      color: var(--info)
+    }
+
+    .pill-load {
+      background: #1a1a1a;
+      color: #fff
+    }
+
+    .pill .v {
+      font-family: var(--font-mono);
+      font-weight: 600
+    }
+
+    /* Hero total power */
+    .hero {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: var(--bg-panel);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      margin-bottom: 12px;
+    }
+
+    .hero .lbl {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: .3px
+    }
+
+    .hero .sub {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 2px
+    }
+
+    .hero .val {
+      font-family: var(--font-mono);
+      font-size: 24px;
+      font-weight: 700
+    }
+
+    .hero .val .u {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-left: 4px;
+      font-weight: 500
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-primary);
+      text-transform: uppercase;
+      letter-spacing: .3px;
+      padding: 10px 0 6px;
+      border-bottom: 1px solid var(--border-default);
+      margin: 6px 0 8px
+    }
+
+    /* 3-phase table */
+    .phase-chip {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 2px;
+      margin-right: 5px;
+      vertical-align: middle
+    }
+
+    .phase-table {
+      width: 100%;
+      border-collapse: collapse
+    }
+
+    .phase-table th {
+      font-size: 9px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      letter-spacing: .3px;
+      text-align: right;
+      padding: 5px 4px;
+      border-bottom: 1px solid var(--border-default)
+    }
+
+    .phase-table th:first-child {
+      text-align: left
+    }
+
+    .phase-table td {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      padding: 6px 4px;
+      text-align: right;
+      border-bottom: 1px solid var(--border-default)
+    }
+
+    .phase-table td:first-child {
+      font-family: var(--font-sans);
+      text-align: left;
+      font-weight: 500;
+      font-size: 11px
+    }
+
+    .phase-table tr.total td {
+      font-weight: 600;
+      background: var(--bg-panel)
+    }
+
+    .phase-table tr:last-child td {
+      border-bottom: none
+    }
+
+    /* Frequency + summary */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 10px
+    }
+
+    .kpi-row.cols2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr))
+    }
+
+    .kpi-box {
+      background: var(--bg-panel);
+      border-radius: var(--radius-sm);
+      padding: 9px 11px;
+      min-width: 0;
+      overflow: hidden
+    }
+
+    .kpi-box .lbl {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: .3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+
+    .kpi-box .val {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 600;
+      margin-top: 2px;
+      white-space: nowrap
+    }
+
+    .kpi-box .val .u {
+      font-size: 10px;
+      color: var(--text-secondary);
+      margin-left: 2px;
+      font-weight: 500
+    }
+
+    /* Energy boxes */
+    .energy-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 6px
+    }
+
+    .energy-box {
+      background: var(--bg-panel);
+      border-radius: var(--radius-sm);
+      padding: 9px 11px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-width: 0
+    }
+
+    .energy-box .lbl {
+      font-size: 10px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+
+    .energy-box .val {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap
+    }
+
+    .energy-box .val .u {
+      font-size: 10px;
+      color: var(--text-secondary);
+      margin-left: 2px
+    }
+
+    .stamp {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      display: flex;
+      justify-content: space-between;
+      padding: 4px;
+      margin-top: 4px
+    }
+
+    .stamp .live {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--success);
+      font-weight: 500
+    }
+
+    .stamp .live::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      background: var(--success);
+      border-radius: 50%;
+      animation: pulse 1.6s ease-in-out infinite
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .4
+      }
+    }
+
+    @media(max-width:1024px) {
+      .grid-2 {
+        grid-template-columns: 1fr
+      }
+    }
+
+    @media(max-width:600px) {
+      body {
+        padding: 10px
+      }
+
+      .card {
+        padding: 12px
+      }
+
+      .hero {
+        padding: 10px 12px
+      }
+
+      .hero .val {
+        font-size: 18px
+      }
+
+      .kpi-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr))
+      }
+
+      .energy-row {
+        grid-template-columns: 1fr
+      }
+
+      .phase-table th,
+      .phase-table td {
+        padding: 5px 3px;
+        font-size: 11px
+      }
+    }
+  </style>
 </head>
+
 <body>
-<div class="page">
+  <div class="page">
 
-  <div class="grid-2" id="pm-grid">
-    <!-- 2 PM cards rendered by JS: Load PM + Ctrl PM -->
+    <div class="grid-2" id="pm-grid">
+      <!-- 2 PM cards rendered by JS: Load PM + Ctrl PM -->
+    </div>
+
+    <div class="stamp">
+      <span class="live">Live · refreshes every 2s</span>
+      <span>Last update: <span id="last-update" class="mono" style="color:#1a1a1a">—</span></span>
+    </div>
   </div>
 
-  <div class="stamp">
-    <span class="live">Live · refreshes every 2s</span>
-    <span>Last update: <span id="last-update" class="mono" style="color:#1a1a1a">—</span></span>
-  </div>
-</div>
+  <script>
+    const XML_URL = 'Xml/Main.xml';
+    const POLL_MS = 2000;
+    const $ = id => document.getElementById(id);
 
-<script>
-const XML_URL = 'Xml/Main.xml';
-const POLL_MS = 2000;
-const $ = id => document.getElementById(id);
+    function num(xml, tag, d = 2) {
+      const el = xml.querySelector(tag); if (!el) return null;
+      const t = el.textContent.trim();
+      if (t === '' || t === 'Err' || t === 'err' || isNaN(parseFloat(t))) return null;
+      return Number(parseFloat(t).toFixed(d));
+    }
+    function fmt(v, d = 2) { return v === null || v === undefined ? '—' : Number(v).toFixed(d); }
 
-function num(xml, tag, d=2){
-  const el = xml.querySelector(tag); if(!el) return null;
-  const t = el.textContent.trim();
-  if(t==='' || t==='Err' || t==='err' || isNaN(parseFloat(t))) return null;
-  return Number(parseFloat(t).toFixed(d));
-}
-function fmt(v, d=2){ return v===null||v===undefined ? '—' : Number(v).toFixed(d); }
+    /**
+     * Build a 3-phase Power Meter card.
+     * @param {string} prefix — XML tag prefix, e.g. "Load_PM_" or "Ctrl_PM_"
+     * @param {object} cfg — { title, role, dotColor, valColor, pillClass }
+     */
+    function buildPmCard(xml, energyXml, prefix, cfg) {
+      const v = (tag, d = 2) => fmt(num(xml, prefix + tag, d), d);
+      const ev = (tag, d = 2) => fmt(num(energyXml, tag, d), d);
+      const totP = num(xml, prefix + 'Total_P_kW', 2) ?? 0;
+      const energyPrefix = prefix === 'Load_PM_' ? 'Load_PM_' : prefix === 'Ctrl_PM_' ? 'Ctrl_PM_' : prefix;
 
-/**
- * Build a 3-phase Power Meter card.
- * @param {string} prefix — XML tag prefix, e.g. "Load_PM_" or "Ctrl_PM_"
- * @param {object} cfg — { title, role, dotColor, valColor, pillClass }
- */
-function buildPmCard(xml, energyXml, prefix, cfg){
-  const v = (tag, d=2) => fmt(num(xml, prefix+tag, d), d);
-  const ev = (tag, d=2) => fmt(num(energyXml, tag, d), d);
-  const totP = num(xml, prefix+'Total_P_kW', 2) ?? 0;
-  const energyPrefix = prefix === 'Load_PM_' ? 'Load_PM_' : prefix === 'Ctrl_PM_' ? 'Ctrl_PM_' : prefix;
-
-  return `<div class="card">
+      return `<div class="card">
     <div class="card-title">
       <span class="left">
         <span class="dot" style="background:${cfg.dotColor}"></span>
@@ -140,7 +441,7 @@ function buildPmCard(xml, energyXml, prefix, cfg){
     <div class="hero">
       <div>
         <div class="lbl">Total active power</div>
-        <div class="sub">Frequency ${v('Freq',2)} Hz · Total kVA ${v('Total_S_kVA',2)} · Total kVAr ${v('Total_Q_kVAr',2)}</div>
+        <div class="sub">Frequency ${v('Freq', 2)} Hz · Total kVA ${v('Total_S_kVA', 2)} · Total kVAr ${v('Total_Q_kVAr', 2)}</div>
       </div>
       <div class="val mono" style="color:${cfg.valColor}">${fmt(totP, 2)}<span class="u">kW</span></div>
     </div>
@@ -154,27 +455,27 @@ function buildPmCard(xml, energyXml, prefix, cfg){
       <tbody>
         <tr>
           <td><span class="phase-chip" style="background:#ef4444"></span>L1</td>
-          <td>${v('Voltage_L1',1)}</td><td>${v('Current_I1',2)}</td>
-          <td>${v('Power_P1_kW',2)}</td><td>${v('Power_Q1_kVAr',2)}</td>
-          <td>${v('Power_S1_kVA',2)}</td><td>${v('PF1',2)}</td>
+          <td>${v('Voltage_L1', 1)}</td><td>${v('Current_I1', 2)}</td>
+          <td>${v('Power_P1_kW', 2)}</td><td>${v('Power_Q1_kVAr', 2)}</td>
+          <td>${v('Power_S1_kVA', 2)}</td><td>${v('PF1', 2)}</td>
         </tr>
         <tr>
           <td><span class="phase-chip" style="background:#f59e0b"></span>L2</td>
-          <td>${v('Voltage_L2',1)}</td><td>${v('Current_I2',2)}</td>
-          <td>${v('Power_P2_kW',2)}</td><td>${v('Power_Q2_kVAr',2)}</td>
-          <td>${v('Power_S2_kVA',2)}</td><td>${v('PF2',2)}</td>
+          <td>${v('Voltage_L2', 1)}</td><td>${v('Current_I2', 2)}</td>
+          <td>${v('Power_P2_kW', 2)}</td><td>${v('Power_Q2_kVAr', 2)}</td>
+          <td>${v('Power_S2_kVA', 2)}</td><td>${v('PF2', 2)}</td>
         </tr>
         <tr>
           <td><span class="phase-chip" style="background:#3b82f6"></span>L3</td>
-          <td>${v('Voltage_L3',1)}</td><td>${v('Current_I3',2)}</td>
-          <td>${v('Power_P3_kW',2)}</td><td>${v('Power_Q3_kVAr',2)}</td>
-          <td>${v('Power_S3_kVA',2)}</td><td>${v('PF3',2)}</td>
+          <td>${v('Voltage_L3', 1)}</td><td>${v('Current_I3', 2)}</td>
+          <td>${v('Power_P3_kW', 2)}</td><td>${v('Power_Q3_kVAr', 2)}</td>
+          <td>${v('Power_S3_kVA', 2)}</td><td>${v('PF3', 2)}</td>
         </tr>
         <tr class="total">
           <td>Total</td>
           <td>—</td><td>—</td>
-          <td>${v('Total_P_kW',2)}</td><td>${v('Total_Q_kVAr',2)}</td>
-          <td>${v('Total_S_kVA',2)}</td><td>—</td>
+          <td>${v('Total_P_kW', 2)}</td><td>${v('Total_Q_kVAr', 2)}</td>
+          <td>${v('Total_S_kVA', 2)}</td><td>—</td>
         </tr>
       </tbody>
     </table>
@@ -182,51 +483,52 @@ function buildPmCard(xml, energyXml, prefix, cfg){
     <!-- Energy / counters -->
     <div class="section-label">Energy</div>
     <div class="energy-row">
-      <div class="energy-box"><span class="lbl">Today import</span><span class="val mono">${ev(energyPrefix+'Import_kWh',2)}<span class="u">kWh</span></span></div>
-      <div class="energy-box"><span class="lbl">Today export</span><span class="val mono">${ev(energyPrefix+'Export_kWh',2)}<span class="u">kWh</span></span></div>
-      <div class="energy-box"><span class="lbl">Total import</span><span class="val mono">${v('Import_kWh',2)}<span class="u">kWh</span></span></div>
-      <div class="energy-box"><span class="lbl">Total export</span><span class="val mono">${v('Export_kWh',2)}<span class="u">kWh</span></span></div>
+      <div class="energy-box"><span class="lbl">Today import</span><span class="val mono">${ev(energyPrefix + 'Import_kWh', 2)}<span class="u">kWh</span></span></div>
+      <div class="energy-box"><span class="lbl">Today export</span><span class="val mono">${ev(energyPrefix + 'Export_kWh', 2)}<span class="u">kWh</span></span></div>
+      <div class="energy-box"><span class="lbl">Total import</span><span class="val mono">${v('Import_kWh', 2)}<span class="u">kWh</span></span></div>
+      <div class="energy-box"><span class="lbl">Total export</span><span class="val mono">${v('Export_kWh', 2)}<span class="u">kWh</span></span></div>
     </div>
   </div>`;
-}
+    }
 
-async function fetchAndRender(){
-  try{
-    const [res, energyRes] = await Promise.all([
-      fetch(XML_URL + '?_=' + Date.now(), {cache:'no-store'}),
-      fetch('Xml/Energylog.xml?_=' + Date.now(), {cache:'no-store'})
-    ]);
-    if(!res.ok) throw new Error('HTTP '+res.status);
-    if(!energyRes.ok) throw new Error('HTTP '+energyRes.status);
-    const xml = new DOMParser().parseFromString(await res.text(), 'text/xml');
-    const energyXml = new DOMParser().parseFromString(await energyRes.text(), 'text/xml');
+    async function fetchAndRender() {
+      try {
+        const [res, energyRes] = await Promise.all([
+          fetch(XML_URL + '?_=' + Date.now(), { cache: 'no-store' }),
+          fetch('Xml/Energylog.xml?_=' + Date.now(), { cache: 'no-store' })
+        ]);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        if (!energyRes.ok) throw new Error('HTTP ' + energyRes.status);
+        const xml = new DOMParser().parseFromString(await res.text(), 'text/xml');
+        const energyXml = new DOMParser().parseFromString(await energyRes.text(), 'text/xml');
 
-    const loadCard = buildPmCard(xml, energyXml, 'Load_PM_', {
-      title: 'Load PM',
-      role: 'Power consumption meter',
-      dotColor: '#1a1a1a',
-      valColor: '#1a1a1a',
-      pillClass: 'pill-load',
-    });
-    const ctrlCard = buildPmCard(xml, energyXml, 'Ctrl_PM_', {
-      title: 'Ctrl PM',
-      role: 'AC input / control meter',
-      dotColor: '#3b82f6',
-      valColor: '#1e40af',
-      pillClass: 'pill-info',
-    });
-    $('pm-grid').innerHTML = loadCard + ctrlCard;
+        const loadCard = buildPmCard(xml, energyXml, 'Load_PM_', {
+          title: 'Load PM',
+          role: 'Power consumption meter',
+          dotColor: '#1a1a1a',
+          valColor: '#1a1a1a',
+          pillClass: 'pill-load',
+        });
+        const ctrlCard = buildPmCard(xml, energyXml, 'Ctrl_PM_', {
+          title: 'Ctrl PM',
+          role: 'AC input / control meter',
+          dotColor: '#3b82f6',
+          valColor: '#1e40af',
+          pillClass: 'pill-info',
+        });
+        $('pm-grid').innerHTML = loadCard + ctrlCard;
 
-    const now = new Date(), pad = n => String(n).padStart(2,'0');
-    $('last-update').textContent = pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
-  }catch(e){
-    console.error('PM fetch error:', e);
-    const lu = $('last-update');
-    if(lu){ lu.textContent = 'error: '+e.message; lu.style.color='#ef4444'; }
-  }
-}
-fetchAndRender();
-setInterval(fetchAndRender, POLL_MS);
-</script>
+        const now = new Date(), pad = n => String(n).padStart(2, '0');
+        $('last-update').textContent = pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds());
+      } catch (e) {
+        console.error('PM fetch error:', e);
+        const lu = $('last-update');
+        if (lu) { lu.textContent = 'error: ' + e.message; lu.style.color = '#ef4444'; }
+      }
+    }
+    fetchAndRender();
+    setInterval(fetchAndRender, POLL_MS);
+  </script>
 </body>
+
 </html>

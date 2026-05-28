@@ -1,189 +1,586 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>GCI - Terusan MOC</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-:root{
-  --bg-main:#f5f5f0;--bg-card:#ffffff;--bg-panel:#fafaf7;
-  --border-default:#e8e6df;--text-primary:#1a1a1a;--text-secondary:#888;--text-tertiary:#aaa;
-  --success:#22c55e;--danger:#ef4444;--warning:#f59e0b;--info:#3b82f6;--purple:#8b5cf6;
-  --radius-sm:6px;--radius-md:8px;--radius-lg:12px;
-  --font-sans:'DM Sans',system-ui,sans-serif;--font-mono:'DM Mono',monospace;
-}
-*{box-sizing:border-box}
-html,body{margin:0;padding:0;max-width:100vw;overflow-x:hidden}
-body{font-family:var(--font-sans);background:var(--bg-main);color:var(--text-primary);font-size:13px;line-height:1.5;padding:16px;min-height:100vh}
-.mono{font-family:var(--font-mono);font-feature-settings:"tnum" 1}
+  <meta charset="utf-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GCI - Terusan MOC</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #f5f5f0;
+      --bg-card: #ffffff;
+      --bg-panel: #fafaf7;
+      --border-default: #e8e6df;
+      --text-primary: #1a1a1a;
+      --text-secondary: #888;
+      --text-tertiary: #aaa;
+      --success: #22c55e;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --info: #3b82f6;
+      --purple: #8b5cf6;
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --font-sans: 'DM Sans', system-ui, sans-serif;
+      --font-mono: 'DM Mono', monospace;
+    }
 
-.page{max-width:1400px;margin:0 auto}
+    * {
+      box-sizing: border-box
+    }
 
-/* Summary card on top */
-.summary-card{
-  background:var(--bg-card);border:1px solid var(--border-default);border-radius:var(--radius-lg);
-  padding:16px;margin-bottom:14px;
-  display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
-}
-.sum-left{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-.sum-icon{
-  width:46px;height:46px;border-radius:10px;
-  background:rgba(245,158,11,0.12);
-  display:flex;align-items:center;justify-content:center;
-  font-size:22px;color:var(--warning);
-}
-.sum-info .lbl{font-size:11px;font-weight:500;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.3px}
-.sum-info .title{font-size:14px;font-weight:600;margin-top:2px}
-.sum-info .sub{font-size:12px;color:var(--text-secondary);margin-top:2px}
-.sum-right{display:flex;gap:10px;flex-wrap:wrap}
-.sum-metric{background:var(--bg-panel);border-radius:var(--radius-sm);padding:8px 14px;min-width:110px}
-.sum-metric .lbl{font-size:10px;font-weight:500;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.3px}
-.sum-metric .val{font-family:var(--font-mono);font-size:18px;font-weight:700;margin-top:2px;color:var(--warning)}
-.sum-metric .val .u{font-size:11px;color:var(--text-secondary);margin-left:3px;font-weight:500}
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      max-width: 100vw;
+      overflow-x: hidden
+    }
 
-/* 2x2 GCI grid */
-.gci-grid{display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:14px}
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-main);
+      color: var(--text-primary);
+      font-size: 13px;
+      line-height: 1.5;
+      padding: 16px;
+      min-height: 100vh
+    }
 
-.card{background:var(--bg-card);border:1px solid var(--border-default);border-radius:var(--radius-lg);padding:16px;min-width:0;transition:border-color .2s}
-.card.active{border-color:#fde68a}
-.card-title{font-size:12px;font-weight:600;color:var(--text-primary);text-transform:uppercase;letter-spacing:.3px;margin:0 0 12px;display:flex;align-items:center;justify-content:space-between;gap:8px}
-.card-title .left{display:flex;align-items:center;gap:8px}
-.card-title .dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+    .mono {
+      font-family: var(--font-mono);
+      font-feature-settings: "tnum" 1
+    }
 
-.pill{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:10px;font-size:11px;font-weight:500}
-.pill-ok{background:rgba(245,158,11,.10);color:var(--warning)}
-.pill-idle{background:var(--bg-panel);color:var(--text-secondary)}
-.pill .dot{width:6px;height:6px;border-radius:50%;display:inline-block}
-.dot-on{background:var(--warning)}
-.dot-off{background:var(--text-tertiary)}
+    .page {
+      max-width: 1400px;
+      margin: 0 auto
+    }
 
-/* Hero AC value */
-.hero{
-  display:flex;align-items:baseline;justify-content:space-between;gap:10px;
-  background:var(--bg-panel);border-radius:var(--radius-md);
-  padding:12px 14px;margin-bottom:12px;
-}
-.hero .lbl{font-size:11px;font-weight:500;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.3px}
-.hero .val{font-family:var(--font-mono);font-size:24px;font-weight:700;color:var(--warning)}
-.hero .val .u{font-size:13px;color:var(--text-secondary);margin-left:4px;font-weight:500}
-.hero .efficiency{font-size:11px;color:var(--text-secondary);margin-top:2px}
+    /* Summary card on top */
+    .summary-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
 
-/* PV strings: 3 inputs (PV1, PV2, PV3) */
-.section-label{font-size:11px;font-weight:600;color:var(--text-primary);text-transform:uppercase;letter-spacing:.3px;padding:10px 0 6px;border-bottom:1px solid var(--border-default);margin:6px 0 8px}
-.pv-table{width:100%;border-collapse:collapse}
-.pv-table th{font-size:9px;font-weight:500;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.3px;text-align:right;padding:5px 4px;border-bottom:1px solid var(--border-default)}
-.pv-table th:first-child{text-align:left}
-.pv-table td{font-family:var(--font-mono);font-size:12px;padding:6px 4px;text-align:right;border-bottom:1px solid var(--border-default)}
-.pv-table td:first-child{font-family:var(--font-sans);text-align:left;font-weight:500;font-size:11px}
-.pv-table tr:last-child td{border-bottom:none}
+    .sum-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap
+    }
 
-/* AC output 3-phase */
-.phase-chip{display:inline-block;width:6px;height:6px;border-radius:2px;margin-right:5px;vertical-align:middle}
-.phase-table{width:100%;border-collapse:collapse}
-.phase-table th{font-size:9px;font-weight:500;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.3px;text-align:right;padding:5px 4px;border-bottom:1px solid var(--border-default)}
-.phase-table th:first-child{text-align:left}
-.phase-table td{font-family:var(--font-mono);font-size:12px;padding:6px 4px;text-align:right;border-bottom:1px solid var(--border-default)}
-.phase-table td:first-child{font-family:var(--font-sans);text-align:left;font-weight:500;font-size:11px}
-.phase-table tr:last-child td{border-bottom:none}
+    .sum-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 10px;
+      background: rgba(245, 158, 11, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      color: var(--warning);
+    }
 
-/* Energy + freq */
-.kpi-row{display:grid;grid-template-columns:repeat(3, minmax(0, 1fr));gap:6px;margin-top:10px}
-.kpi-box{background:var(--bg-panel);border-radius:var(--radius-sm);padding:8px 10px;min-width:0;overflow:hidden}
-.kpi-box .lbl{font-size:9px;font-weight:500;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.kpi-box .val{font-family:var(--font-mono);font-size:13px;font-weight:600;margin-top:2px;white-space:nowrap}
-.kpi-box .val .u{font-size:10px;color:var(--text-secondary);margin-left:2px;font-weight:500}
+    .sum-info .lbl {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: .3px
+    }
 
-.stamp{font-size:11px;color:var(--text-tertiary);display:flex;justify-content:space-between;padding:4px;margin-top:4px}
-.stamp .live{display:inline-flex;align-items:center;gap:6px;color:var(--success);font-weight:500}
-.stamp .live::before{content:"";width:6px;height:6px;background:var(--success);border-radius:50%;animation:pulse 1.6s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+    .sum-info .title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-top: 2px
+    }
 
-@media(max-width:1024px){
-  .gci-grid{grid-template-columns:1fr}
-}
-@media(max-width:600px){
-  body{padding:10px}
-  .card{padding:12px}
-  .summary-card{padding:12px}
-  .sum-metric{min-width:90px;padding:6px 10px}
-  .sum-metric .val{font-size:15px}
-  .hero{padding:10px 12px}
-  .hero .val{font-size:20px}
-  .kpi-row{grid-template-columns:repeat(3, minmax(0, 1fr));gap:5px}
-  .kpi-box{padding:6px 8px}
-  .kpi-box .val{font-size:12px}
-}
-</style>
+    .sum-info .sub {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 2px
+    }
+
+    .sum-right {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap
+    }
+
+    .sum-metric {
+      background: var(--bg-panel);
+      border-radius: var(--radius-sm);
+      padding: 8px 14px;
+      min-width: 110px
+    }
+
+    .sum-metric .lbl {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: .3px
+    }
+
+    .sum-metric .val {
+      font-family: var(--font-mono);
+      font-size: 18px;
+      font-weight: 700;
+      margin-top: 2px;
+      color: var(--warning)
+    }
+
+    .sum-metric .val .u {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-left: 3px;
+      font-weight: 500
+    }
+
+    /* 2x2 GCI grid */
+    .gci-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      min-width: 0;
+      transition: border-color .2s
+    }
+
+    .card.active {
+      border-color: #fde68a
+    }
+
+    .card-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+      text-transform: uppercase;
+      letter-spacing: .3px;
+      margin: 0 0 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px
+    }
+
+    .card-title .left {
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .card-title .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 500
+    }
+
+    .pill-ok {
+      background: rgba(245, 158, 11, .10);
+      color: var(--warning)
+    }
+
+    .pill-idle {
+      background: var(--bg-panel);
+      color: var(--text-secondary)
+    }
+
+    .pill .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      display: inline-block
+    }
+
+    .dot-on {
+      background: var(--warning)
+    }
+
+    .dot-off {
+      background: var(--text-tertiary)
+    }
+
+    /* Hero AC value */
+    .hero {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      background: var(--bg-panel);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      margin-bottom: 12px;
+    }
+
+    .hero .lbl {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: .3px
+    }
+
+    .hero .val {
+      font-family: var(--font-mono);
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--warning)
+    }
+
+    .hero .val .u {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-left: 4px;
+      font-weight: 500
+    }
+
+    .hero .efficiency {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 2px
+    }
+
+    /* PV strings: 3 inputs (PV1, PV2, PV3) */
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-primary);
+      text-transform: uppercase;
+      letter-spacing: .3px;
+      padding: 10px 0 6px;
+      border-bottom: 1px solid var(--border-default);
+      margin: 6px 0 8px
+    }
+
+    .pv-table {
+      width: 100%;
+      border-collapse: collapse
+    }
+
+    .pv-table th {
+      font-size: 9px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      letter-spacing: .3px;
+      text-align: right;
+      padding: 5px 4px;
+      border-bottom: 1px solid var(--border-default)
+    }
+
+    .pv-table th:first-child {
+      text-align: left
+    }
+
+    .pv-table td {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      padding: 6px 4px;
+      text-align: right;
+      border-bottom: 1px solid var(--border-default)
+    }
+
+    .pv-table td:first-child {
+      font-family: var(--font-sans);
+      text-align: left;
+      font-weight: 500;
+      font-size: 11px
+    }
+
+    .pv-table tr:last-child td {
+      border-bottom: none
+    }
+
+    /* AC output 3-phase */
+    .phase-chip {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 2px;
+      margin-right: 5px;
+      vertical-align: middle
+    }
+
+    .phase-table {
+      width: 100%;
+      border-collapse: collapse
+    }
+
+    .phase-table th {
+      font-size: 9px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      letter-spacing: .3px;
+      text-align: right;
+      padding: 5px 4px;
+      border-bottom: 1px solid var(--border-default)
+    }
+
+    .phase-table th:first-child {
+      text-align: left
+    }
+
+    .phase-table td {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      padding: 6px 4px;
+      text-align: right;
+      border-bottom: 1px solid var(--border-default)
+    }
+
+    .phase-table td:first-child {
+      font-family: var(--font-sans);
+      text-align: left;
+      font-weight: 500;
+      font-size: 11px
+    }
+
+    .phase-table tr:last-child td {
+      border-bottom: none
+    }
+
+    /* Energy + freq */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+      margin-top: 10px
+    }
+
+    .kpi-box {
+      background: var(--bg-panel);
+      border-radius: var(--radius-sm);
+      padding: 8px 10px;
+      min-width: 0;
+      overflow: hidden
+    }
+
+    .kpi-box .lbl {
+      font-size: 9px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: .3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+
+    .kpi-box .val {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 600;
+      margin-top: 2px;
+      white-space: nowrap
+    }
+
+    .kpi-box .val .u {
+      font-size: 10px;
+      color: var(--text-secondary);
+      margin-left: 2px;
+      font-weight: 500
+    }
+
+    .stamp {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      display: flex;
+      justify-content: space-between;
+      padding: 4px;
+      margin-top: 4px
+    }
+
+    .stamp .live {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--success);
+      font-weight: 500
+    }
+
+    .stamp .live::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      background: var(--success);
+      border-radius: 50%;
+      animation: pulse 1.6s ease-in-out infinite
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .4
+      }
+    }
+
+    @media(max-width:1024px) {
+      .gci-grid {
+        grid-template-columns: 1fr
+      }
+    }
+
+    @media(max-width:600px) {
+      body {
+        padding: 10px
+      }
+
+      .card {
+        padding: 12px
+      }
+
+      .summary-card {
+        padding: 12px
+      }
+
+      .sum-metric {
+        min-width: 90px;
+        padding: 6px 10px
+      }
+
+      .sum-metric .val {
+        font-size: 15px
+      }
+
+      .hero {
+        padding: 10px 12px
+      }
+
+      .hero .val {
+        font-size: 20px
+      }
+
+      .kpi-row {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 5px
+      }
+
+      .kpi-box {
+        padding: 6px 8px
+      }
+
+      .kpi-box .val {
+        font-size: 12px
+      }
+    }
+  </style>
 </head>
-<body>
-<div class="page">
 
-  <!-- Summary card: total of all 4 GCIs -->
-  <div class="summary-card">
-    <div class="sum-left">
-      <div class="sum-icon">&#9728;</div>
-      <div class="sum-info">
-        <div class="lbl">Grid-Connected PV Inverters</div>
-        <div class="title">GCI 1 – 4 (AC-coupled solar)</div>
-        <div class="sub" id="sum-active">— units producing</div>
+<body>
+  <div class="page">
+
+    <!-- Summary card: total of all 4 GCIs -->
+    <div class="summary-card">
+      <div class="sum-left">
+        <div class="sum-icon">&#9728;</div>
+        <div class="sum-info">
+          <div class="lbl">Grid-Connected PV Inverters</div>
+          <div class="title">GCI 1 – 4 (AC-coupled solar)</div>
+          <div class="sub" id="sum-active">— units producing</div>
+        </div>
+      </div>
+      <div class="sum-right">
+        <div class="sum-metric">
+          <div class="lbl">Total AC</div>
+          <div class="val mono"><span id="sum-ac">—</span><span class="u">kW</span></div>
+        </div>
+        <div class="sum-metric">
+          <div class="lbl">Total PV</div>
+          <div class="val mono"><span id="sum-pv">—</span><span class="u">kW</span></div>
+        </div>
+        <div class="sum-metric">
+          <div class="lbl">Today AC</div>
+          <div class="val mono"><span id="sum-today-ac">—</span><span class="u">kWh</span></div>
+        </div>
+        <div class="sum-metric">
+          <div class="lbl">Today PV</div>
+          <div class="val mono"><span id="sum-today-pv">—</span><span class="u">kWh</span></div>
+        </div>
       </div>
     </div>
-    <div class="sum-right">
-      <div class="sum-metric"><div class="lbl">Total AC</div><div class="val mono"><span id="sum-ac">—</span><span class="u">kW</span></div></div>
-      <div class="sum-metric"><div class="lbl">Total PV</div><div class="val mono"><span id="sum-pv">—</span><span class="u">kW</span></div></div>
-      <div class="sum-metric"><div class="lbl">Today AC</div><div class="val mono"><span id="sum-today-ac">—</span><span class="u">kWh</span></div></div>
-      <div class="sum-metric"><div class="lbl">Today PV</div><div class="val mono"><span id="sum-today-pv">—</span><span class="u">kWh</span></div></div>
+
+    <!-- 2x2 GCI cards -->
+    <div class="gci-grid" id="gci-grid">
+      <!-- 4 GCI cards rendered by JS -->
+    </div>
+
+    <div class="stamp">
+      <span class="live">Live · refreshes every 2s</span>
+      <span>Last update: <span id="last-update" class="mono" style="color:#1a1a1a">—</span></span>
     </div>
   </div>
 
-  <!-- 2x2 GCI cards -->
-  <div class="gci-grid" id="gci-grid">
-    <!-- 4 GCI cards rendered by JS -->
-  </div>
+  <script>
+    const XML_URL = 'Xml/Main.xml';
+    const ENERGYLOG_URL = 'Xml/Energylog.xml';
+    const POLL_MS = 2000;
+    const $ = id => document.getElementById(id);
 
-  <div class="stamp">
-    <span class="live">Live · refreshes every 2s</span>
-    <span>Last update: <span id="last-update" class="mono" style="color:#1a1a1a">—</span></span>
-  </div>
-</div>
+    function num(xml, tag, d = 2) {
+      const el = xml.querySelector(tag); if (!el) return null;
+      const t = el.textContent.trim();
+      if (t === '' || t === 'Err' || t === 'err' || isNaN(parseFloat(t))) return null;
+      return Number(parseFloat(t).toFixed(d));
+    }
+    function fmt(v, d = 2) { return v === null || v === undefined ? '—' : Number(v).toFixed(d); }
 
-<script>
-const XML_URL = 'Xml/Main.xml';
-const ENERGYLOG_URL = 'Xml/Energylog.xml';
-const POLL_MS = 2000;
-const $ = id => document.getElementById(id);
+    function buildGciCard(xml, energyXml, n) {
+      const p = 'GCI' + n + '_';
+      const v = (tag, d = 2) => fmt(num(xml, p + tag, d), d);
+      const ev = (tag, d = 2) => fmt(num(energyXml, p + tag, d), d);
 
-function num(xml, tag, d=2){
-  const el = xml.querySelector(tag); if(!el) return null;
-  const t = el.textContent.trim();
-  if(t==='' || t==='Err' || t==='err' || isNaN(parseFloat(t))) return null;
-  return Number(parseFloat(t).toFixed(d));
-}
-function fmt(v, d=2){ return v===null||v===undefined ? '—' : Number(v).toFixed(d); }
+      const acP = num(xml, p + 'AC_Power_kW', 2) ?? 0;
+      const pvKw = num(xml, p + 'Sum_PV_kW', 2) ?? 0;
+      const active = acP > 0.5;
 
-function buildGciCard(xml, energyXml, n){
-  const p = 'GCI' + n + '_';
-  const v = (tag, d=2) => fmt(num(xml, p+tag, d), d);
-  const ev = (tag, d=2) => fmt(num(energyXml, p+tag, d), d);
+      // Efficiency %  = AC / PV  (DC→AC conversion)
+      const eff = pvKw > 0.5 ? Math.min(100, (acP / pvKw) * 100) : 0;
 
-  const acP   = num(xml, p+'AC_Power_kW', 2) ?? 0;
-  const pvKw  = num(xml, p+'Sum_PV_kW', 2) ?? 0;
-  const active = acP > 0.5;
-
-  // Efficiency %  = AC / PV  (DC→AC conversion)
-  const eff = pvKw > 0.5 ? Math.min(100, (acP / pvKw) * 100) : 0;
-
-  return `<div class="card${active ? ' active' : ''}">
+      return `<div class="card${active ? ' active' : ''}">
     <div class="card-title">
       <span class="left">
-        <span class="dot" style="background:${active?'#f59e0b':'#aaa'}"></span>
+        <span class="dot" style="background:${active ? '#f59e0b' : '#aaa'}"></span>
         GCI ${n}
         <span style="color:#888;font-weight:500;letter-spacing:0;text-transform:none;font-size:11px">· Grid-Connected Inverter</span>
       </span>
-      <span class="pill ${active?'pill-ok':'pill-idle'}">
-        <span class="dot ${active?'dot-on':'dot-off'}"></span>${active?'Producing':'Idle'}
+      <span class="pill ${active ? 'pill-ok' : 'pill-idle'}">
+        <span class="dot ${active ? 'dot-on' : 'dot-off'}"></span>${active ? 'Producing' : 'Idle'}
       </span>
     </div>
 
@@ -201,11 +598,11 @@ function buildGciCard(xml, energyXml, n){
     <table class="pv-table">
       <thead><tr><th></th><th>V</th><th>A</th><th>kW</th></tr></thead>
       <tbody>
-        <tr><td>PV 1</td><td>${v('PV1_Voltage',1)}</td><td>${v('PV1_Current',2)}</td><td>${v('PV1_Power_kW')}</td></tr>
-        <tr><td>PV 2</td><td>${v('PV2_Voltage',1)}</td><td>${v('PV2_Current',2)}</td><td>${v('PV2_Power_kW')}</td></tr>
-        <tr><td>PV 3</td><td>${v('PV3_Voltage',1)}</td><td>${v('PV3_Current',2)}</td><td>${v('PV3_Power_kW')}</td></tr>
+        <tr><td>PV 1</td><td>${v('PV1_Voltage', 1)}</td><td>${v('PV1_Current', 2)}</td><td>${v('PV1_Power_kW')}</td></tr>
+        <tr><td>PV 2</td><td>${v('PV2_Voltage', 1)}</td><td>${v('PV2_Current', 2)}</td><td>${v('PV2_Power_kW')}</td></tr>
+        <tr><td>PV 3</td><td>${v('PV3_Voltage', 1)}</td><td>${v('PV3_Current', 2)}</td><td>${v('PV3_Power_kW')}</td></tr>
         <tr><td style="font-weight:600">Sum</td><td>—</td>
-          <td>${v('Sum_PV_Current',2)}</td>
+          <td>${v('Sum_PV_Current', 2)}</td>
           <td style="font-weight:600">${v('Sum_PV_kW')}</td></tr>
       </tbody>
     </table>
@@ -216,17 +613,17 @@ function buildGciCard(xml, energyXml, n){
       <thead><tr><th></th><th>V</th><th>A</th><th>Hz</th></tr></thead>
       <tbody>
         <tr><td><span class="phase-chip" style="background:#ef4444"></span>L1</td>
-          <td>${v('AC_Voltage_L1',1)}</td>
-          <td>${v('AC_Current_I1',2)}</td>
-          <td>${v('Freq_L1_Hz',2)}</td></tr>
+          <td>${v('AC_Voltage_L1', 1)}</td>
+          <td>${v('AC_Current_I1', 2)}</td>
+          <td>${v('Freq_L1_Hz', 2)}</td></tr>
         <tr><td><span class="phase-chip" style="background:#f59e0b"></span>L2</td>
-          <td>${v('AC_Voltage_L2',1)}</td>
-          <td>${v('AC_Current_I2',2)}</td>
-          <td>${v('Freq_L2_Hz',2)}</td></tr>
+          <td>${v('AC_Voltage_L2', 1)}</td>
+          <td>${v('AC_Current_I2', 2)}</td>
+          <td>${v('Freq_L2_Hz', 2)}</td></tr>
         <tr><td><span class="phase-chip" style="background:#3b82f6"></span>L3</td>
-          <td>${v('AC_Voltage_L3',1)}</td>
-          <td>${v('AC_Current_I3',2)}</td>
-          <td>${v('Freq_L3_Hz',2)}</td></tr>
+          <td>${v('AC_Voltage_L3', 1)}</td>
+          <td>${v('AC_Current_I3', 2)}</td>
+          <td>${v('Freq_L3_Hz', 2)}</td></tr>
       </tbody>
     </table>
 
@@ -242,53 +639,54 @@ function buildGciCard(xml, energyXml, n){
       </div>
       <div class="kpi-box">
         <div class="lbl">PV Bus V</div>
-        <div class="val mono">${v('Pbus_Voltage',1)}<span class="u">V</span></div>
+        <div class="val mono">${v('Pbus_Voltage', 1)}<span class="u">V</span></div>
       </div>
     </div>
   </div>`;
-}
+    }
 
-async function fetchAndRender(){
-  try{
-    const [mainRes, energyRes] = await Promise.all([
-      fetch(XML_URL + '?_=' + Date.now(), {cache:'no-store'}),
-      fetch(ENERGYLOG_URL + '?_=' + Date.now(), {cache:'no-store'})
-    ]);
-    if(!mainRes.ok) throw new Error('Main XML HTTP ' + mainRes.status);
-    if(!energyRes.ok) throw new Error('Energylog XML HTTP ' + energyRes.status);
-    const [mainText, energyText] = await Promise.all([mainRes.text(), energyRes.text()]);
-    const xml = new DOMParser().parseFromString(mainText, 'text/xml');
-    const energyXml = new DOMParser().parseFromString(energyText, 'text/xml');
+    async function fetchAndRender() {
+      try {
+        const [mainRes, energyRes] = await Promise.all([
+          fetch(XML_URL + '?_=' + Date.now(), { cache: 'no-store' }),
+          fetch(ENERGYLOG_URL + '?_=' + Date.now(), { cache: 'no-store' })
+        ]);
+        if (!mainRes.ok) throw new Error('Main XML HTTP ' + mainRes.status);
+        if (!energyRes.ok) throw new Error('Energylog XML HTTP ' + energyRes.status);
+        const [mainText, energyText] = await Promise.all([mainRes.text(), energyRes.text()]);
+        const xml = new DOMParser().parseFromString(mainText, 'text/xml');
+        const energyXml = new DOMParser().parseFromString(energyText, 'text/xml');
 
-    // Render 4 GCI cards
-    let html = '';
-    for(let n=1; n<=4; n++) html += buildGciCard(xml, energyXml, n);
-    $('gci-grid').innerHTML = html;
+        // Render 4 GCI cards
+        let html = '';
+        for (let n = 1; n <= 4; n++) html += buildGciCard(xml, energyXml, n);
+        $('gci-grid').innerHTML = html;
 
-    // Summary totals
-    const sumAC = num(xml, 'GCI_Sum_AC_kW', 2)
-                  ?? [1,2,3,4].reduce((s,n)=>s+(num(xml,'GCI'+n+'_AC_Power_kW',2)||0), 0);
-    const sumPV = num(xml, 'GCI_Sum_PV_kW', 2) ?? 0;
-    const sumTodayAC = [1,2,3,4].reduce((s,n)=>s+(num(energyXml,'GCI'+n+'_AC_kWh',2)||0), 0);
-    const sumTodayPV = [1,2,3,4].reduce((s,n)=>s+(num(energyXml,'GCI'+n+'_PV_kWh',2)||0), 0);
-    const activeCount = [1,2,3,4].filter(n => (num(xml,'GCI'+n+'_AC_Power_kW',2)||0) > 0.5).length;
+        // Summary totals
+        const sumAC = num(xml, 'GCI_Sum_AC_kW', 2)
+          ?? [1, 2, 3, 4].reduce((s, n) => s + (num(xml, 'GCI' + n + '_AC_Power_kW', 2) || 0), 0);
+        const sumPV = num(xml, 'GCI_Sum_PV_kW', 2) ?? 0;
+        const sumTodayAC = [1, 2, 3, 4].reduce((s, n) => s + (num(energyXml, 'GCI' + n + '_AC_kWh', 2) || 0), 0);
+        const sumTodayPV = [1, 2, 3, 4].reduce((s, n) => s + (num(energyXml, 'GCI' + n + '_PV_kWh', 2) || 0), 0);
+        const activeCount = [1, 2, 3, 4].filter(n => (num(xml, 'GCI' + n + '_AC_Power_kW', 2) || 0) > 0.5).length;
 
-    $('sum-ac').textContent = fmt(sumAC, 2);
-    $('sum-pv').textContent = fmt(sumPV, 2);
-    $('sum-today-ac').textContent = fmt(sumTodayAC, 2);
-    $('sum-today-pv').textContent = fmt(sumTodayPV, 2);
-    $('sum-active').textContent = activeCount + ' / 4 units producing';
+        $('sum-ac').textContent = fmt(sumAC, 2);
+        $('sum-pv').textContent = fmt(sumPV, 2);
+        $('sum-today-ac').textContent = fmt(sumTodayAC, 2);
+        $('sum-today-pv').textContent = fmt(sumTodayPV, 2);
+        $('sum-active').textContent = activeCount + ' / 4 units producing';
 
-    const now = new Date(), pad = n => String(n).padStart(2,'0');
-    $('last-update').textContent = pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
-  }catch(e){
-    console.error('GCI fetch error:', e);
-    const lu = $('last-update');
-    if(lu){ lu.textContent = 'error: '+e.message; lu.style.color='#ef4444'; }
-  }
-}
-fetchAndRender();
-setInterval(fetchAndRender, POLL_MS);
-</script>
+        const now = new Date(), pad = n => String(n).padStart(2, '0');
+        $('last-update').textContent = pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds());
+      } catch (e) {
+        console.error('GCI fetch error:', e);
+        const lu = $('last-update');
+        if (lu) { lu.textContent = 'error: ' + e.message; lu.style.color = '#ef4444'; }
+      }
+    }
+    fetchAndRender();
+    setInterval(fetchAndRender, POLL_MS);
+  </script>
 </body>
+
 </html>
