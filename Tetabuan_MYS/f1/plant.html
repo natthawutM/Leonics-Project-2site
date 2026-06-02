@@ -1038,7 +1038,8 @@
       </div>
       <div class="kpi">
         <div class="kpi-label"><span class="kpi-icon bg-load"></span>Load</div>
-        <div class="kpi-value" id="k-load-wrap" style="color:#1a1a1a"><span id="k-load">—</span><span class="kpi-unit" id="k-load-unit">kW</span></div>
+        <div class="kpi-value" id="k-load-wrap" style="color:#1a1a1a"><span id="k-load">—</span><span class="kpi-unit"
+            id="k-load-unit">kW</span></div>
         <div class="kpi-sub" id="k-load-sub">Consumption</div>
         <div class="kpi-bar">
           <div class="kpi-bar-fill bg-load" id="k-load-bar" style="width:0%"></div>
@@ -1070,7 +1071,8 @@
       </div>
       <div class="kpi">
         <div class="kpi-label"><span class="kpi-icon bg-load"></span>Today Load</div>
-        <div class="kpi-value" id="e-load-wrap" style="font-size:20px;color:#1a1a1a"><span id="e-load">—</span><span class="kpi-unit" id="e-load-unit">kWh</span>
+        <div class="kpi-value" id="e-load-wrap" style="font-size:20px;color:#1a1a1a"><span id="e-load">—</span><span
+            class="kpi-unit" id="e-load-unit">kWh</span>
         </div>
         <div class="kpi-sub" id="e-load-sub">Consumption today</div>
       </div>
@@ -1501,7 +1503,7 @@
           s += `<rect x="${x}" y="${y}" width="${c.w}" height="${c.h}" rx="16" fill="#ffffff" stroke="${iconColor}" stroke-opacity="0.25" stroke-width="1.2"/>`;
           // Icon box (top-left)
           s += `<circle cx="${x + 22}" cy="${y + 22}" r="14" fill="${iconColor}" fill-opacity="0.12" stroke="${iconColor}" stroke-opacity="0.3" stroke-width="1"/>`;
-          
+
           let svgPaths = '';
           if (iconSym === 'solar') {
             svgPaths = `<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M4.93 4.93l1.41 1.41"/><path d="M17.66 17.66l1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M6.34 17.66l-1.41 1.41"/><path d="M19.07 4.93l-1.41 1.41"/>`;
@@ -1516,7 +1518,7 @@
           } else if (iconSym === 'weather') {
             svgPaths = `<circle cx="12" cy="12" r="5"/><path d="M12 1v2"/><path d="M12 21v2"/><path d="M4.22 4.22l1.42 1.42"/><path d="M18.36 18.36l1.42 1.42"/><path d="M1 12h2"/><path d="M21 12h2"/><path d="M4.22 19.78l1.42-1.42"/><path d="M18.36 5.64l1.42-1.42"/>`;
           }
-          
+
           if (svgPaths) {
             s += `<svg x="${x + 10}" y="${y + 10}" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="${iconColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${svgPaths}</svg>`;
           } else {
@@ -1754,7 +1756,7 @@
         const genOn = data.gen1_on || data.gen2_on;
         const irr = data.irradiance || 0, tMod = data.tmod || 0, tAmb = data.tamb || 0;
         const bdi1P = data.bdi1_power || 0, bdi2P = data.bdi2_power || 0;
-        
+
         const batCharging = batP < -0.5, batDischarging = batP > 0.5;
         const batColor = batCharging ? '#22c55e' : batDischarging ? '#8b5cf6' : '#888';
 
@@ -1776,7 +1778,7 @@
           const iconHtml = svgPaths
             ? `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${svgPaths}</svg>`
             : icon;
-            
+
           const lSubStr = labelSub ? '<span style="font-size:11px;font-weight:400;color:#888;text-transform:uppercase"> &middot; ' + labelSub + '</span>' : '';
 
           return `<div class="mpf-card" style="background:${bg};border-color:${brd};border-radius:12px;">
@@ -1803,10 +1805,10 @@
         const anyBdiSupplying = bdi1Supplying || bdi2Supplying;
         const anyBdiAbsorbing = bdi1Absorbing || bdi2Absorbing;
 
-        const weatherCard = card('Weather', 'weather', irr.toFixed(0) + ' W/m²', `PV ${tMod.toFixed(1)}°C · Amb ${tAmb.toFixed(1)}°C`, 
+        const weatherCard = card('Weather', 'weather', irr.toFixed(0) + ' W/m²', `PV ${tMod.toFixed(1)}°C · Amb ${tAmb.toFixed(1)}°C`,
           '#fafaf7', '#e8e6df', '#cffafe', '#0891b2', '#0891b2');
-          
-        const homeCard = card('Load', 'load', ldP.toFixed(2) + ' kW', `L1:${ldV1.toFixed(0)} L2:${ldV2.toFixed(0)} L3:${ldV3.toFixed(0)} V`, 
+
+        const homeCard = card('Load', 'load', ldP.toFixed(2) + ' kW', `L1:${ldV1.toFixed(0)} L2:${ldV2.toFixed(0)} L3:${ldV3.toFixed(0)} V`,
           '#eff6ff', '#93c5fd', '#dbeafe', '#3b82f6', '#1e40af');
 
         let html = '';
@@ -1817,33 +1819,33 @@
         html += card('Generators', 'gen', genTot.toFixed(2) + ' kW', genOn ? 'Running' : 'Idle', genOn ? '#eff6ff' : '#fafaf7', genOn ? '#bfdbfe' : '#e8e6df', '#dbeafe', '#3b82f6', genOn ? '#3b82f6' : '#aaa', '550kVA x 2');
         if (genOn) html += flow('down', '#3b82f6', genTot.toFixed(2) + ' kW running');
         else html += flow('down', '#aaa', '');
-        
+
         html += card('Solar AC', 'solar', gciTot.toFixed(2) + ' kW', sActive ? 'AC-coupled PV' : 'Idle', sActive ? '#fffbeb' : '#fafaf7', sActive ? '#fde68a' : '#e8e6df', '#fef3c7', '#f59e0b', sActive ? '#f59e0b' : '#aaa', '200kWp');
         if (sActive) html += flow('down', '#f59e0b', gciTot.toFixed(2) + ' kW producing');
         else html += flow('down', '#aaa', '');
 
         if (anyBdiSupplying) {
-            html += flow('up', '#8b5cf6', 'BDI &rarr; AC bus');
+          html += flow('up', '#8b5cf6', 'BDI &rarr; AC bus');
         } else if (anyBdiAbsorbing) {
-            html += flow('down', '#22c55e', 'AC bus &rarr; BDI');
+          html += flow('down', '#22c55e', 'AC bus &rarr; BDI');
         } else {
-            html += flow('down', '#aaa', '');
+          html += flow('down', '#aaa', '');
         }
 
         html += flow('down', '#3b82f6', ldP.toFixed(2) + ' kW &rarr; Load');
         html += homeCard;
-        
+
         html += divider;
         html += sectionHdr('DC bus &mdash; BDI &harr; Battery &harr; Solar DC');
         html += card('BDI-Master', 'bdi', Math.abs(bdi1P).toFixed(2) + ' kW', bdi1Absorbing ? 'Absorbing (AC &rarr; DC)' : bdi1Supplying ? 'Supplying (DC &rarr; AC)' : 'Idle', '#f8f8f6', '#d5d3cc', '#eee', '#555', Math.abs(bdi1P) > 0.5 ? '#1a1a1a' : '#aaa', '200kW');
         html += card('BDI-Slave', 'bdi', Math.abs(bdi2P).toFixed(2) + ' kW', bdi2Absorbing ? 'Absorbing (AC &rarr; DC)' : bdi2Supplying ? 'Supplying (DC &rarr; AC)' : 'Idle', '#f8f8f6', '#d5d3cc', '#eee', '#555', Math.abs(bdi2P) > 0.5 ? '#1a1a1a' : '#aaa', '200kW');
-        
+
         if (anyBdiAbsorbing) html += flow('down', '#22c55e', 'charging');
         else if (anyBdiSupplying) html += flow('up', '#8b5cf6', 'discharging');
         else html += flow('down', '#aaa', '');
-        
+
         const battSub = batCharging ? `Charging &middot; SOC ${Math.round(batS)}%` : batDischarging ? `Discharging &middot; SOC ${Math.round(batS)}%` : `Idle &middot; SOC ${Math.round(batS)}%`;
-        
+
         // Add SOC bar to battery card similar to reference
         const socColor = batS < 20 ? '#ef4444' : batS < 50 ? '#f59e0b' : '#22c55e';
         const batteryCardStr = `<div class="mpf-card" style="background:#faf5ff;border-color:#d8b4fe;border-radius:12px;">
@@ -1853,12 +1855,12 @@
       <div class="mpf-sub">${battSub}</div>
       <div style="height:4px;background:#e8e6df;border-radius:2px;margin-top:6px;overflow:hidden">
       <div style="height:100%;width:${batS}%;background:${socColor};border-radius:2px"></div></div></div></div>`;
-        
+
         html += batteryCardStr;
-        
+
         if (dcActive) html += flow('up', '#f59e0b', sccTot.toFixed(2) + ' kW &rarr; battery');
         else html += flow('down', '#aaa', '');
-        
+
         html += card('Solar DC', 'solar', sccTot.toFixed(2) + ' kW', dcActive ? 'DC-coupled PV' : 'Idle', dcActive ? '#fffbeb' : '#fafaf7', dcActive ? '#fde68a' : '#e8e6df', '#fef3c7', '#f59e0b', dcActive ? '#f59e0b' : '#aaa', '290kWp');
 
         return html;
