@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+<script>
+    if (window.history && window.history.replaceState) {
+      let basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+      if (!document.querySelector('base')) {
+        let base = document.createElement('base');
+        base.href = basePath;
+        document.head.appendChild(base);
+      }
+      window.history.replaceState({}, document.title, "/#");
+    }
+  </script>
+
+<script>
+  if (window.history && window.history.replaceState) {
+      var base = document.createElement('base');
+      base.href = window.location.href.split('#')[0];
+      document.head.appendChild(base);
+      window.history.replaceState({}, document.title, '/#');
+  }
+</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wind Meter — Department of Water Resource</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #f5f5f0;
+      --bg-card: #fff;
+      --bg-panel: #fafaf7;
+      --border-default: #e8e6df;
+      --text-primary: #1a1a1a;
+      --text-secondary: #888;
+      --text-tertiary: #aaa;
+      --radius-sm: 6px;
+      --radius-lg: 12px;
+      --font-sans: 'DM Sans', system-ui, sans-serif;
+      --font-mono: 'DM Mono', monospace
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-main);
+      color: var(--text-primary);
+      font-size: 13px;
+      line-height: 1.5;
+      padding: 16px;
+      min-height: 100vh
+    }
+
+    .mono {
+      font-family: var(--font-mono);
+      font-feature-settings: "tnum" 1
+    }
+
+    .page {
+      max-width: 800px;
+      margin: 0 auto
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      margin-bottom: 12px
+    }
+
+    .card-title {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: .3px;
+      margin: 0 0 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .card-title .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%
+    }
+
+    .phase-table {
+      width: 100%;
+      border-collapse: collapse
+    }
+
+    .phase-table th {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      letter-spacing: .3px;
+      text-align: right;
+      padding: 6px 8px;
+      border-bottom: 1px solid var(--border-default)
+    }
+
+    .phase-table th:first-child {
+      text-align: left
+    }
+
+    .phase-table td {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      padding: 8px;
+      text-align: right;
+      border-bottom: 1px solid var(--border-default)
+    }
+
+    .phase-table td:first-child {
+      font-family: var(--font-sans);
+      text-align: left;
+      font-weight: 500;
+      font-size: 12px
+    }
+
+    .phase-table tr:last-child td {
+      border-bottom: none
+    }
+
+    .phase-chip {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 2px;
+      margin-right: 6px;
+      vertical-align: middle
+    }
+
+    .kpi-box {
+      background: var(--bg-panel);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px
+    }
+
+    .kpi-box .lbl {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: .3px
+    }
+
+    .kpi-box .val {
+      font-family: var(--font-mono);
+      font-size: 16px;
+      font-weight: 600;
+      margin-top: 2px
+    }
+
+    .kpi-box .val .u {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-left: 2px
+    }
+
+    .energy-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 8px
+    }
+
+    .energy-box {
+      background: var(--bg-panel);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center
+    }
+
+    .energy-box .lbl {
+      font-size: 11px;
+      color: var(--text-secondary)
+    }
+
+    .energy-box .val {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 600
+    }
+
+    .energy-box .val .u {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-left: 2px
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .3px;
+      padding: 10px 0 6px;
+      border-bottom: 1px solid var(--border-default);
+      margin: 12px 0 8px
+    }
+
+    .stamp {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      display: flex;
+      justify-content: space-between;
+      padding: 4px;
+      margin-top: 4px
+    }
+
+    .stamp .live {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #22c55e;
+      font-weight: 500
+    }
+
+    .stamp .live::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      background: #22c55e;
+      border-radius: 50%;
+      animation: pulse 1.6s ease-in-out infinite
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .4
+      }
+    }
+
+    @media(max-width:768px) {
+      .grid-2 {
+        grid-template-columns: 1fr
+      }
+    }
+
+    @media(max-width:480px) {
+      body {
+        padding: 10px
+      }
+
+      .energy-row {
+        grid-template-columns: 1fr
+      }
+    }
+  </style>
+  <script>if (/[?&]sim=1\b/.test(location.search)) document.write('<script src="sim.js?_=' + Date.now() + '"><\/script>');</script>
+</head>
+
+<body>
+  <div class="page" id="pm-page"></div>
+  <script>
+    const XML_URL = 'Xml/Main.xml', POLL_MS = 2000, $ = id => document.getElementById(id);
+    function num(xml, tag, d = 2) { const el = xml.querySelector(tag); if (!el) return null; const t = el.textContent.trim(); if (t === '' || t.toLowerCase() === 'err' || t === 'ErrTime' || isNaN(parseFloat(t))) return null; return Number(parseFloat(t).toFixed(d)); }
+    function fmt(v, d = 2) { return v === null || v === undefined ? '—' : Number(v).toFixed(d); }
+
+    function build3PhaseMeter(xml, prefix, title, color, opts = {}) {
+      const v = (tag, d = 2) => fmt(num(xml, prefix + tag, d), d);
+      const has3p = !!xml.querySelector(prefix + 'Voltage_L1');
+      const hasSingle = !!xml.querySelector(prefix + 'Voltage');
+
+      let html = `<div class="card"><div class="card-title"><span class="dot" style="background:${color}"></span>${title}</div>`;
+
+      if (has3p) {
+        html += `<table class="phase-table">
+      <thead><tr><th></th><th>V</th><th>A</th><th>kW</th>${opts.noReactive ? '' : '<th>kVAr</th><th>kVA</th>'}<th>PF</th></tr></thead>
+      <tbody>
+        <tr><td><span class="phase-chip" style="background:#ef4444"></span>L1</td><td>${v('Voltage_L1', 1)}</td><td>${v('Current_I1')}</td><td>${v('Power_P1_kW')}</td>${opts.noReactive ? '' : `<td>${v('Power_Q1_kVAr')}</td><td>${v('Power_S1_kVA')}</td>`}<td>${v('PF1')}</td></tr>
+        <tr><td><span class="phase-chip" style="background:#f59e0b"></span>L2</td><td>${v('Voltage_L2', 1)}</td><td>${v('Current_I2')}</td><td>${v('Power_P2_kW')}</td>${opts.noReactive ? '' : `<td>${v('Power_Q2_kVAr')}</td><td>${v('Power_S2_kVA')}</td>`}<td>${v('PF2')}</td></tr>
+        <tr><td><span class="phase-chip" style="background:#3b82f6"></span>L3</td><td>${v('Voltage_L3', 1)}</td><td>${v('Current_I3')}</td><td>${v('Power_P3_kW')}</td>${opts.noReactive ? '' : `<td>${v('Power_Q3_kVAr')}</td><td>${v('Power_S3_kVA')}</td>`}<td>${v('PF3')}</td></tr>
+      </tbody>
+    </table>`;
+        const totalP = num(xml, prefix + 'Total_P_kW', 2);
+        if (totalP !== null) {
+          html += `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px">
+        <div class="kpi-box"><div class="lbl">Total active</div><div class="val mono">${fmt(totalP)}<span class="u">kW</span></div></div>
+        <div class="kpi-box"><div class="lbl">Total reactive</div><div class="val mono">${v('Total_Q_kVAr')}<span class="u">kVAr</span></div></div>
+        <div class="kpi-box"><div class="lbl">Total apparent</div><div class="val mono">${v('Total_S_kVA')}<span class="u">kVA</span></div></div>
+      </div>`;
+        }
+        const freq = num(xml, prefix + 'Freq', 2);
+        if (freq !== null) {
+          html += `<div style="margin-top:8px"><div class="kpi-box" style="display:inline-block"><div class="lbl">Frequency</div><div class="val mono">${fmt(freq)}<span class="u">Hz</span></div></div></div>`;
+        }
+      } else if (hasSingle) {
+        html += `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+      <div class="kpi-box"><div class="lbl">Voltage</div><div class="val mono">${fmt(num(xml, prefix + 'Voltage', 1), 1)}<span class="u">V</span></div></div>
+      <div class="kpi-box"><div class="lbl">Current</div><div class="val mono">${fmt(num(xml, prefix + 'Current', 2))}<span class="u">A</span></div></div>
+      <div class="kpi-box"><div class="lbl">Power</div><div class="val mono">${fmt(num(xml, prefix + 'Power_kW', 2))}<span class="u">kW</span></div></div>
+    </div>`;
+      }
+
+      if (opts.energy) {
+        html += '<div class="section-label">Energy</div><div class="energy-row">';
+        opts.energy.forEach(e => {
+          html += `<div class="energy-box"><span class="lbl">${e.label}</span><span class="val mono">${fmt(num(xml, e.field, 2))}<span class="u">kWh</span></span></div>`;
+        });
+        html += '</div>';
+      }
+
+      html += '</div>';
+      return html;
+    }
+
+    async function fetchAndRender() {
+      try {
+        const res = await fetch(XML_URL + '?_=' + Date.now(), { cache: 'no-store' });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const xml = new DOMParser().parseFromString(await res.text(), 'text/xml');
+
+        let html = build3PhaseMeter(xml, 'WindPM_', 'Wind Energy Meter', '#06b6d4', {
+          energy: [{ label: 'Today', field: 'WindPM_Today_Import_kWh' }, { label: 'Todate', field: 'WindPM_Import_kWh' }]
+        });
+
+
+        const dsEl = xml.querySelector('DateServer');
+        const tsEl = xml.querySelector('TimeServer');
+        const ds = dsEl ? dsEl.textContent.trim() : null;
+        const ts = tsEl ? tsEl.textContent.trim() : null;
+
+        const scuStr = (ds && ts) ? (ds + ' ' + ts) : '—';
+        const xmlTime = new Date(scuStr).getTime();
+        const nowMs = Date.now();
+        const isOffline = isNaN(xmlTime) || (nowMs - xmlTime) > 15 * 60 * 1000;
+
+        let stampHtml = '';
+        if (isOffline) {
+          stampHtml = `<div id="status-stamp" class="stamp is-offline" style="grid-column:1 / -1">
+            <span id="live-indicator" class="offline" style="color:#ef4444; display:inline-flex; align-items:center; font-weight:500;">
+              <span style="display:inline-block;width:6px;height:6px;background:#ef4444;border-radius:50%;margin-right:6px"></span>Offline Monitoring - Wind Turbine PM
+            </span>
+            <span>Last update: <span id="last-update" class="mono" style="color:#ef4444">${ts ? ts : '—'}</span></span>
+          </div>`;
+        } else {
+          stampHtml = `<div id="status-stamp" class="stamp is-live" style="grid-column:1 / -1">
+            <span id="live-indicator" class="live">Live Monitoring - Wind Turbine PM</span>
+            <span>Last update: <span id="last-update" class="mono" style="color:#1a1a1a">${ts ? ts : '—'}</span></span>
+          </div>`;
+        }
+
+        html += stampHtml;
+
+        $('pm-page').innerHTML = html;
+      } catch (e) { console.error('Wind PM fetch error:', e); }
+    }
+    fetchAndRender(); setInterval(fetchAndRender, POLL_MS);
+  </script>
+</body>
+
+</html>

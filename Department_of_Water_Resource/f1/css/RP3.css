@@ -1,0 +1,269 @@
+@charset "utf-8";
+/* Simple fluid media
+   Note: Fluid media requires that you remove the media's height and width attributes from the HTML
+   http://www.alistapart.com/articles/fluid-images/ 
+*/
+img, object, embed, video {
+	max-width: 100%;
+}
+/* IE 6 does not support max-width so default to width 100% */
+.ie6 img {
+	width:100%;
+}
+
+/*
+	Dreamweaver Fluid Grid Properties
+	----------------------------------
+	dw-num-cols-mobile:		5;
+	dw-num-cols-tablet:		8;
+	dw-num-cols-desktop:	10;
+	dw-gutter-percentage:	25;
+	
+	Inspiration from "Responsive Web Design" by Ethan Marcotte 
+	http://www.alistapart.com/articles/responsive-web-design
+	
+	and Golden Grid System by Joni Korpi
+	http://goldengridsystem.com/
+*/
+
+/* Mobile Layout: 480px and below. */
+
+.gridContainer {
+	margin-left: auto;
+	margin-right: auto;
+	width: 87.36%;
+	padding-left: 1.82%;
+	padding-right: 1.82%;
+}
+#LayoutDiv1 {
+	clear: both;
+	float: left;
+	margin-left: 0;
+	width: 100%;
+	display: block;
+}
+#Tim{  
+	position: absolute;
+	left:80%;
+  	top:  10px;
+  	width: 150px;
+	height:40px;
+	text-align: left;
+	z-index:1;
+	font-family:Calibri ;
+	  letter-spacing: 0.01em;
+	  line-height:7pt;
+	  font-size:0.7em;
+	  color:#000;
+}
+#main {
+	clear: both;
+	text-align:center;
+	margin-top:60px;
+	margin-left: 5px;
+	width: 98%;
+	height:1300px;
+	display: block;
+	border: 0px solid #c5c5c5; 
+  	padding: 10px 10px 10px 10px;
+	background:#FFF;
+}
+#ap1 {
+	clear: both;
+	float: left;
+	margin-left: 10px;
+	width: 100%;
+	height:300px;
+	display: block;
+}
+#ap2 {
+	clear: both;
+	float: left;
+	margin-left: 10px;
+	width: 100%;
+	height:800px;
+	display: block;
+	margin-top:-70px;
+}
+#if1{
+	width:100%; 
+	height:300px;  
+	text-align: center;
+}
+#if2{
+	width:100%; 
+	height:800px;  
+	text-align: center;
+}
+
+@media only screen and (min-width: 551px) {
+.gridContainer {
+	width: 90.675%;
+	padding-left: 1.1625%;
+	padding-right: 1.1625%;
+}
+#LayoutDiv1 {
+	clear: both;
+	float: left;
+	margin-left: 0;
+	width: 100%;
+	display: block;
+}
+#main {
+	clear: both;
+	text-align:center;
+	margin-top:60px;
+	margin-left: 30px;
+	width: 98%;
+	height:1400px;
+	display: block;
+	border: 0px solid #c5c5c5; 
+  	padding: 10px 10px 10px 10px;
+	background:#FFF;
+}
+#ap1 {
+	clear: both;
+	float: left;
+	margin-left: 0;
+	width: 100%;
+	height:300px;
+	display: block;
+}
+#ap2 {
+	clear: both;
+	float: left;
+	margin-left: 0;
+	width: 100%;
+	height:1000px;
+	display: block;
+	
+}
+#if1{
+	width:100%; 
+	height:300px;  
+	text-align: center;
+}
+#if2{
+	width:100%; 
+	height:1200px;  
+	text-align: center;
+}
+}
+
+/* Desktop Layout: 769px to a max of 1232px.  Inherits styles from: Mobile Layout and Tablet Layout. */
+
+@media only screen and (min-width: 769px) {
+.gridContainer {
+	width: 88.2%;
+	max-width: 1232px;
+	padding-left: 0.9%;
+	padding-right: 0.9%;
+	margin: auto;
+}
+#LayoutDiv1 {
+	clear: both;
+	float: left;
+	margin-left: 0;
+	width: 100%;
+	display: block;
+}
+#main {
+	clear: both;
+	text-align:center;
+	margin-top:100px;
+	margin-left: 0px;
+	width: 93vw;
+	height:900px;
+	display: block;
+	border: 0px solid #c5c5c5; 
+  	padding: 10px 0px 10px 10px;
+	background:#FFF;
+}
+#ap1 {
+	clear: both;
+	float: left;
+	margin-left: 0;
+	width: 93vw;
+	height:350px;
+	display: block;
+	margin-top:-10px;
+}
+#ap2 {
+	clear: both;
+	float: left;
+	margin-left: 0;
+	width: 93vw;
+	height:400px;
+	display: block;
+	margin-top:-50px;
+}
+#if1{
+	width:100%; 
+	height:440px;  
+	text-align: center;
+}
+#if2{
+	width:100%; 
+	height:450px;  
+	text-align: center;
+	
+}
+}
+@media only screen and (min-width: 1300px) {
+.gridContainer {
+	width: 88.2%;
+	max-width: 1232px;
+	padding-left: 0.9%;
+	padding-right: 0.9%;
+	margin: auto;
+}
+#LayoutDiv1 {
+	clear: both;
+	float: left;
+	margin-left: 0;
+	width: 100%;
+	display: block;
+}
+
+#main {
+	clear: both;
+	text-align:center;
+	margin-top:100px;
+	margin-left: 0px;
+	width: 99vw;
+	height:900px;
+	display: block;
+	border: 0px solid #c5c5c5; 
+  	padding: 10px 0px 10px 10px;
+	background:#FFF;
+}
+#ap1 {
+	clear: both;
+	float: left;
+	margin-left: 0px;
+	width: 99vw;
+	height:350px;
+	display: block;
+	margin-top:-10px;
+}
+#ap2 {
+	clear: both;
+	float: left;
+	margin-left: 0;
+	width: 99vw;
+	height:400px;
+	display: block;
+	margin-top:0px;
+}
+#if1{
+	width:100%; 
+	height:500px;  
+	text-align: center;
+}
+#if2{
+	width:100%; 
+	height:450px;  
+	text-align: center;
+	
+}
+}

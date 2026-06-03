@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+<script>
+    if (window.history && window.history.replaceState) {
+      let basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+      if (!document.querySelector('base')) {
+        let base = document.createElement('base');
+        base.href = basePath;
+        document.head.appendChild(base);
+      }
+      window.history.replaceState({}, document.title, "/#");
+    }
+  </script>
+
+<script>
+  if (window.history && window.history.replaceState) {
+      var base = document.createElement('base');
+      base.href = window.location.href.split('#')[0];
+      document.head.appendChild(base);
+      window.history.replaceState({}, document.title, '/#');
+  }
+</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SCC — Department of Water Resource</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #f5f5f0;
+      --bg-card: #fff;
+      --bg-panel: #fafaf7;
+      --border-default: #e8e6df;
+      --text-primary: #1a1a1a;
+      --text-secondary: #888;
+      --text-tertiary: #aaa;
+      --warning: #f59e0b;
+      --radius-sm: 6px;
+      --radius-lg: 12px;
+      --font-sans: 'DM Sans', system-ui, sans-serif;
+      --font-mono: 'DM Mono', monospace
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-main);
+      color: var(--text-primary);
+      font-size: 13px;
+      line-height: 1.5;
+      padding: 16px;
+      min-height: 100vh
+    }
+
+    .mono {
+      font-family: var(--font-mono);
+      font-feature-settings: "tnum" 1
+    }
+
+    .page {
+      max-width: 800px;
+      margin: 0 auto
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      margin-bottom: 12px
+    }
+
+    .card-title {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: .3px;
+      margin: 0 0 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .card-title .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px
+    }
+
+    .kpi-box {
+      background: var(--bg-panel);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px
+    }
+
+    .kpi-box .lbl {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: .3px
+    }
+
+    .kpi-box .val {
+      font-family: var(--font-mono);
+      font-size: 16px;
+      font-weight: 600;
+      margin-top: 2px
+    }
+
+    .kpi-box .val .u {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-left: 2px
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .3px;
+      padding: 10px 0 6px;
+      border-bottom: 1px solid var(--border-default);
+      margin: 12px 0 8px
+    }
+
+    .energy-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px
+    }
+
+    .energy-box {
+      background: var(--bg-panel);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center
+    }
+
+    .energy-box .lbl {
+      font-size: 11px;
+      color: var(--text-secondary)
+    }
+
+    .energy-box .val {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 600
+    }
+
+    .energy-box .val .u {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-left: 2px
+    }
+
+    .stamp {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      display: flex;
+      justify-content: space-between;
+      padding: 4px;
+      margin-top: 4px
+    }
+
+    .stamp .live {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #22c55e;
+      font-weight: 500
+    }
+
+    .stamp .live::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      background: #22c55e;
+      border-radius: 50%;
+      animation: pulse 1.6s ease-in-out infinite
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .4
+      }
+    }
+
+    @media(max-width:600px) {
+
+      .grid-2,
+      .grid-3 {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .energy-row {
+        grid-template-columns: 1fr
+      }
+
+      body {
+        padding: 10px
+      }
+    }
+  </style>
+  <script>if (/[?&]sim=1\b/.test(location.search)) document.write('<script src="sim.js?_=' + Date.now() + '"><\/script>');</script>
+</head>
+
+<body>
+  <div class="page">
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:#f59e0b"></span>Solar Charge Controller (SCC)</div>
+      <div class="section-label">PV Input</div>
+      <div class="grid-3">
+        <div class="kpi-box">
+          <div class="lbl">PV voltage</div>
+          <div class="val mono"><span id="pv-v">—</span><span class="u">V</span></div>
+        </div>
+        <div class="kpi-box">
+          <div class="lbl">PV current</div>
+          <div class="val mono"><span id="pv-i">—</span><span class="u">A</span></div>
+        </div>
+        <div class="kpi-box">
+          <div class="lbl">PV power</div>
+          <div class="val mono" style="color:#f59e0b"><span id="pv-p">—</span><span class="u">kW</span></div>
+        </div>
+      </div>
+      <div class="section-label">Charge Output</div>
+      <div class="grid-3">
+        <div class="kpi-box">
+          <div class="lbl">Charge voltage</div>
+          <div class="val mono"><span id="chg-v">—</span><span class="u">V</span></div>
+        </div>
+        <div class="kpi-box">
+          <div class="lbl">Charge current</div>
+          <div class="val mono"><span id="chg-i">—</span><span class="u">A</span></div>
+        </div>
+        <div class="kpi-box">
+          <div class="lbl">Charge power</div>
+          <div class="val mono" style="color:#22c55e"><span id="chg-p">—</span><span class="u">kW</span></div>
+        </div>
+      </div>
+      <div class="section-label">Energy</div>
+      <div class="energy-row">
+        <div class="energy-box"><span class="lbl">Today PV</span><span class="val mono"><span
+              id="pv-today">—</span><span class="u">kWh</span></span></div>
+        <div class="energy-box"><span class="lbl">Todate PV</span><span class="val mono"><span
+              id="pv-todate">—</span><span class="u">kWh</span></span></div>
+        <div class="energy-box"><span class="lbl">Today charge</span><span class="val mono"><span
+              id="chg-today">—</span><span class="u">kWh</span></span></div>
+        <div class="energy-box"><span class="lbl">Todate charge</span><span class="val mono"><span
+              id="chg-todate">—</span><span class="u">kWh</span></span></div>
+      </div>
+    </div>
+
+    <div id="status-stamp" class="stamp" style="grid-column:1 / -1">
+      <span id="live-indicator" class="live">Live Monitoring - SCC</span>
+      <span>Last update: <span id="last-update" class="mono" style="color:#1a1a1a">—</span></span>
+    </div>
+  </div>
+  <script>
+    const XML_URL = 'Xml/Main.xml', POLL_MS = 2000, $ = id => document.getElementById(id);
+    function num(xml, tag, d = 2) { const el = xml.querySelector(tag); if (!el) return null; const t = el.textContent.trim(); if (t === '' || t.toLowerCase() === 'err' || t === 'ErrTime' || isNaN(parseFloat(t))) return null; return Number(parseFloat(t).toFixed(d)); }
+    function fmt(v, d = 2) { return v === null || v === undefined ? '—' : Number(v).toFixed(d); }
+    function setVal(id, v, d = 2) { const el = $(id); if (el) el.textContent = fmt(v, d); }
+    async function fetchAndRender() { try { const res = await fetch(XML_URL + '?_=' + Date.now(), { cache: 'no-store' }); if (!res.ok) throw new Error('HTTP ' + res.status); const xml = new DOMParser().parseFromString(await res.text(), 'text/xml'); render(xml); } catch (e) { console.error('SCC fetch error:', e); } }
+    function render(xml) {
+      setVal('pv-v', num(xml, 'SCC_PV_Voltage', 1), 1); setVal('pv-i', num(xml, 'SCC_PV_Current', 2)); setVal('pv-p', num(xml, 'SCC_PV_Power_kW', 2));
+      setVal('chg-v', num(xml, 'SCC_Chg_Voltage', 1), 1); setVal('chg-i', num(xml, 'SCC_Chg_Current', 2)); setVal('chg-p', num(xml, 'SCC_Chg_Power_kW', 2));
+      setVal('pv-today', num(xml, 'SCC_Today_PV_kWh', 2)); setVal('pv-todate', num(xml, 'SCC_Todate_PV_kWh', 2));
+      setVal('chg-today', num(xml, 'SCC_Today_Chg_kWh', 2)); setVal('chg-todate', num(xml, 'SCC_Todate_Chg_kWh', 2));
+      const now = new Date(), pad = n => String(n).padStart(2, '0');
+      const el = $('last-update'); if (el) el.textContent = pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds());
+
+      // ---- Timestamps ----
+      const dsEl = xml.querySelector('DateServer');
+      const tsEl = xml.querySelector('TimeServer');
+      const ds = dsEl ? dsEl.textContent.trim() : null;
+      const ts = tsEl ? tsEl.textContent.trim() : null;
+
+      const scuStr = (ds && ts) ? (ds + ' ' + ts) : '—';
+      const xmlTime = new Date(scuStr).getTime();
+      const nowMs = Date.now();
+      const isOffline = isNaN(xmlTime) || (nowMs - xmlTime) > 15 * 60 * 1000;
+
+      const liveInd = $('live-indicator');
+      const statusStamp = $('status-stamp');
+
+      if (liveInd && statusStamp) {
+        if (isOffline) {
+          statusStamp.className = 'stamp is-offline';
+          liveInd.className = 'offline';
+          liveInd.innerHTML = '<span style="display:inline-block;width:6px;height:6px;background:#ef4444;border-radius:50%;margin-right:6px"></span>Offline Monitoring - SCC';
+          liveInd.style.color = '#ef4444';
+          liveInd.style.display = 'inline-flex';
+          liveInd.style.alignItems = 'center';
+          liveInd.style.fontWeight = '500';
+        } else {
+          statusStamp.className = 'stamp is-live';
+          liveInd.className = 'live';
+          liveInd.textContent = 'Live Monitoring - SCC';
+          liveInd.style.color = '';
+          liveInd.style.display = '';
+          liveInd.style.alignItems = '';
+          liveInd.style.fontWeight = '';
+        }
+      }
+
+      if ($('last-update')) {
+        $('last-update').textContent = ts ? ts : '—';
+        $('last-update').style.color = isOffline ? '#ef4444' : '#1a1a1a';
+      }
+
+    }
+    fetchAndRender(); setInterval(fetchAndRender, POLL_MS);
+  </script>
+</body>
+
+</html>

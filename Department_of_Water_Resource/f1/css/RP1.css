@@ -1,0 +1,332 @@
+@charset "utf-8";
+/* Simple fluid media
+   Note: Fluid media requires that you remove the media's height and width attributes from the HTML
+   http://www.alistapart.com/articles/fluid-images/ 
+*/
+img, object, embed, video {
+	max-width: 100%;
+}
+/* IE 6 does not support max-width so default to width 100% */
+.ie6 img {
+	width:100%;
+}
+
+/*
+	Dreamweaver Fluid Grid Properties
+	----------------------------------
+	dw-num-cols-mobile:		5;
+	dw-num-cols-tablet:		8;
+	dw-num-cols-desktop:	10;
+	dw-gutter-percentage:	25;
+	
+	Inspiration from "Responsive Web Design" by Ethan Marcotte 
+	http://www.alistapart.com/articles/responsive-web-design
+	
+	and Golden Grid System by Joni Korpi
+	http://goldengridsystem.com/
+*/
+
+/* Mobile Layout: 480px and below. */
+
+.gridContainer {
+	margin-left: auto;
+	margin-right: auto;
+	width: 87.36%;
+	padding-left: 1.82%;
+	padding-right: 1.82%;
+}
+#LayoutDiv1 {
+	clear: both;
+	float: left;
+	margin-left: 0;
+	width: 100%;
+	display: block;
+}
+#Tim{  
+	position: absolute;
+	left:80%;
+  	top:  10px;
+  	width: 150px;
+	height:40px;
+	text-align: left;
+	z-index:1;
+	font-family:Calibri ;
+	  letter-spacing: 0.01em;
+	  line-height:7pt;
+	  font-size:0.7em;
+	  color:#000;
+}
+#main {
+	clear: both;
+	text-align:center;
+	margin-top:0px;
+	margin-left: 10px;
+	width: 100vw;
+	height:1100px;
+	display: block;
+	border: 0px solid #c5c5c5; 
+  	padding: 10px 10px 10px 10px;
+	background:#FFF;
+}
+#ap1 {
+	clear: both;
+	float: left;
+	position:absolute;
+	margin-left: 0px;
+	width: 95vw;
+	height:500px;
+	display: block;
+	margin-top:20px;
+}
+#ap2 {
+	clear: both;
+	float: left;
+	margin-left: 0px;
+	width: 100vw;
+	height:500px;
+	display: block;
+	margin-top:55vw;
+}
+#if1{
+	width:100%; 
+	height:650px;  
+	text-align: center;
+}
+#if2{
+	width:100%; 
+	height:500px;  
+	text-align: center;
+}
+
+.style2 {font-family: Calibri ;font-size: 0.8em;color: #000000;font-weight: normal;}
+.style22 {font-family: Calibri ;font-size: 1em;color: #f69796;font-weight: normal;}
+/* Tablet Layout: 481px to 768px. Inherits styles from: Mobile Layout. */
+
+@media only screen and (min-width: 551px) {
+.gridContainer {
+	width: 90.675%;
+	padding-left: 1.1625%;
+	padding-right: 1.1625%;
+}
+#LayoutDiv1 {
+	clear: both;
+	float: left;
+	margin-left: 0;
+	width: 100%;
+	display: block;
+}
+#Tim{  
+	position: absolute;
+	left:80%;
+  	top:  22px;
+  	width: 150px;
+	height:40px;
+	text-align: left;
+	z-index:1;
+	font-family:Calibri ;
+	  letter-spacing: 0.01em;
+	  line-height:7pt;
+	  font-size:1.2em;
+	  color:#000;
+}
+#main {
+	clear: both;
+	text-align:center;
+	margin-top:10px;
+	margin-top:10px;
+	margin-left: 10px;
+	width: 99%;
+	height:1000px;
+	display: block;
+	border: 0px solid #c5c5c5; 
+  	padding: 10px 10px 10px 10px;
+	background:#FFF;
+}
+#ap1 {
+	clear: both;
+	float: left;
+	margin-left: 0;
+	width: 100%;
+	height:400px;
+	display: block;
+}
+#ap2 {
+	clear: both;
+	float: left;
+	margin-left: 0;
+	width: 100%;
+	height:500px;
+	margin-top:57vw;
+	display: block;
+	z-index:10px;
+}
+#if1{
+	width:100%; 
+	height:450px;  
+	text-align: center;
+}
+#if2{
+	width:100%; 
+	height:500px;  
+	text-align: center;
+}
+
+.style2 {font-family: Calibri ;font-size: 1em;color: #000000;font-weight: normal;}
+.style22 {font-family: Calibri ;font-size: 1.4em;color: #f69796;font-weight: normal;}
+}
+
+/* Desktop Layout: 769px to a max of 1232px.  Inherits styles from: Mobile Layout and Tablet Layout. */
+
+@media only screen and (min-width: 769px) {
+.gridContainer {
+	width: 88.2%;
+	max-width: 1232px;
+	padding-left: 0.9%;
+	padding-right: 0.9%;
+	margin: auto;
+}
+#LayoutDiv1 {
+	clear: both;
+	float: left;
+	margin-left: 0;
+	width: 100%;
+	display: block;
+}
+#Tim{  
+	position: absolute;
+	left:80%;
+  	top:  22px;
+  	width: 150px;
+	height:40px;
+	text-align: left;
+	z-index:1;
+	font-family:Calibri ;
+	  letter-spacing: 0.01em;
+	  line-height:7pt;
+	  font-size:1.2em;
+	  color:#000;
+}
+#main {
+	clear: both;
+	text-align:center;
+	margin-top:0px;
+	margin-left: 20px;
+	width: 98vw;
+	height:900px;
+	display: block;
+	border: 0px solid #c5c5c5; 
+  	padding: 10px 0px 10px 10px;
+	background:#FFF;
+}
+#ap1 {
+	clear: both;
+	float: left;
+	margin-left: 0;
+	width: 90vw;
+	height:500px;
+	display: block;
+	margin-top:-10px;
+	z-index:5;
+}
+#ap2 {
+	clear: both;
+	float: left;
+	margin-left: 0;
+	position: absolute;
+	width: 93vw;
+	height:400px;
+	display: block;
+	margin-top:47vw;
+	z-index:10;
+}
+#if1{
+	width:100%; 
+	height:500px;  
+	text-align: center;
+	z-index:5;
+}
+#if2{
+	width:100%; 
+	height:450px;  
+	text-align: center;
+	z-index:10;
+	
+}
+.style2 {font-family: Calibri ;font-size: 1.2em;color: #000000;font-weight: normal;}
+.style22 {font-family: Calibri ;font-size: 1.8em;color: #f69796;font-weight: normal;}
+}
+@media only screen and (min-width: 1300px) {
+.gridContainer {
+	width: 88.2%;
+	max-width: 1232px;
+	padding-left: 0.9%;
+	padding-right: 0.9%;
+	margin: auto;
+}
+#LayoutDiv1 {
+	clear: both;
+	float: left;
+	margin-left: 0;
+	width: 100%;
+	display: block;
+}
+#Tim{  
+	position: absolute;
+	left:80%;
+  	top:  22px;
+  	width: 150px;
+	height:40px;
+	text-align: left;
+	z-index:1;
+	font-family:Calibri ;
+	  letter-spacing: 0.01em;
+	  line-height:7pt;
+	  font-size:1.2em;
+	  color:#000;
+}
+#main {
+	clear: both;
+	text-align:center;
+	margin-top:0px;
+	margin-left: 20px;
+	width: 98vw;
+	height:1000px;
+	display: block;
+	border: 0px solid #c5c5c5; 
+  	padding: 10px 0px 10px 10px;
+	background:#FFF;
+}
+#ap1 {
+	clear: both;
+	float: left;
+	margin-left: 20px;
+	width: 75vw;
+	height:600px;
+	display: block;
+	margin-top:10px;
+}
+#ap2 {
+	clear: both;
+	float: left;
+	margin-left: 0px;
+	width: 75vw;
+	height:500px;
+	display: block;
+	margin-top:600px;
+	z-index:20px;
+}
+#if1{
+	width:100%; 
+	height:600px;  
+	text-align: center;
+}
+#if2{
+	width:100%; 
+	height:500px;  
+	text-align: center;
+	
+}
+
+.style2 {font-family: Calibri ;font-size: 1.2em;color: #000000;font-weight: normal;}
+.style22 {font-family: Calibri ;font-size: 1.8em;color: #f69796;font-weight: normal;}
+}

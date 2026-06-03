@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "dwr-static",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "8123", "--directory", "C:\\Claude Cowork\\Department_of_Water_Resource"],
+      "port": 8123
+    }
+  ]
+}
