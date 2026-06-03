@@ -17,26 +17,34 @@ $daysInMonth = cal_days_in_month(CAL_GREGORIAN, (int)$m_1, (int)$y_1);
 $date_name = $m_2." ".$y_1;
 
 // ── DB query ──
-include("../Includes/DBConn.php");
-$link = connectToDB1();
-
-$sql = "SELECT DatetimeLocal, Gen_kWh, Load_kWh, PV_kWh, Irrt_kWh_m2
-        FROM energylog
-        WHERE year(DatetimeLocal)='$y_1' AND month(DatetimeLocal)='$m_1'
-        ORDER BY DatetimeLocal ASC";
-$q = mysql_query($sql) or die("Query error: ".mysql_error());
-
+include(__DIR__ . "/../Includes/DBConn.php");
+$link = connectToDB1(false);
+$dbWarning = '';
 $rows = array();
-while($r = mysql_fetch_array($q)){
-    $rows[] = array(
-        'date' => substr($r['DatetimeLocal'],0,10),
-        'gen'  => (float)$r['Gen_kWh'],
-        'load' => (float)$r['Load_kWh'],
-        'pv'   => (float)$r['PV_kWh'],
-        'irr'  => (float)$r['Irrt_kWh_m2'],
-    );
+
+if($link){
+    $sql = "SELECT DatetimeLocal, Gen_kWh, Load_kWh, PV_kWh, Irrt_kWh_m2
+            FROM energylog
+            WHERE year(DatetimeLocal)='$y_1' AND month(DatetimeLocal)='$m_1'
+            ORDER BY DatetimeLocal ASC";
+    $q = mysql_query($sql, $link);
+    if($q){
+        while($r = mysql_fetch_array($q)){
+            $rows[] = array(
+                'date' => substr($r['DatetimeLocal'],0,10),
+                'gen'  => (float)$r['Gen_kWh'],
+                'load' => (float)$r['Load_kWh'],
+                'pv'   => (float)$r['PV_kWh'],
+                'irr'  => (float)$r['Irrt_kWh_m2'],
+            );
+        }
+    } else {
+        $dbWarning = 'Energy data query failed.';
+    }
+    mysql_close($link);
+} else {
+    $dbWarning = 'Database connection unavailable.';
 }
-mysql_close($link);
 
 // Aggregate per day
 $labels=$Genn=$PVn=$Loadn=$Irrn="";
@@ -63,6 +71,7 @@ for($i=1; $i<=$daysInMonth; $i++){
 $totalSupply = $totalGen + $totalPV;
 $solarRatio = $totalSupply > 0 ? round($totalPV / $totalSupply * 100, 1) : 0;
 $avgDayPV   = $daysInMonth > 0 ? round($totalPV / $daysInMonth, 1) : 0;
+$hasChartData = $totalSupply > 0 || $totalLoad > 0 || $totalIrr > 0;
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -91,8 +100,8 @@ $avgDayPV   = $daysInMonth > 0 ? round($totalPV / $daysInMonth, 1) : 0;
   }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
-  body{font-family:var(--font-sans);background:var(--bg-main);color:var(--text-primary);font-size:13px;line-height:1.5;padding:16px;min-height:100vh}
-  .wrap{max-width:1400px;margin:0 auto}
+  body{font-family:var(--font-sans);background:var(--bg-main);color:var(--text-primary);font-size:13px;line-height:1.5;min-height:100vh}
+  .wrap{max-width:1400px;margin:0 auto;padding:0 16px 16px}
   .card{background:var(--bg-card);border:1px solid var(--border-default);border-radius:var(--radius-lg);padding:16px}
   .card-title{font-size:11px;font-weight:500;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.3px;margin:0 0 12px;display:flex;align-items:center;gap:8px}
   .card-title .dot{width:6px;height:6px;border-radius:50%;background:var(--cyan)}
@@ -113,6 +122,9 @@ $avgDayPV   = $daysInMonth > 0 ? round($totalPV / $daysInMonth, 1) : 0;
   .range-info{font-size:12px;color:var(--text-secondary);font-family:var(--font-mono)}
 
   #chart-container{width:100%;height:380px;min-width:0}
+  .no-data{text-align:center;padding:60px 20px;color:var(--text-secondary);font-size:14px}
+  .no-data .icon{font-size:30px;color:var(--text-tertiary);margin-bottom:8px}
+  .notice{margin-top:12px;padding:10px 12px;border:1px solid #f3d6a0;background:#fff8e8;border-radius:var(--radius-md);color:#9a6700;font-size:12px}
 
   /* legend tiles below chart */
   .legend-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
@@ -122,13 +134,13 @@ $avgDayPV   = $daysInMonth > 0 ? round($totalPV / $daysInMonth, 1) : 0;
   .lg-tile .desc{font-size:11px;color:var(--text-tertiary);margin-top:2px}
 
   @media (max-width:768px){
-    body{padding:12px}
+    .wrap{padding:0 12px 12px}
     #chart-container{height:320px}
     .legend-grid{grid-template-columns:repeat(2,1fr)}
     .toolbar{flex-direction:column;align-items:stretch}
   }
   @media (max-width:480px){
-    body{padding:10px}
+    .wrap{padding:0 10px 10px}
     .card{padding:12px;border-radius:10px}
     #chart-container{height:280px}
     .legend-grid{grid-template-columns:1fr}
@@ -171,7 +183,18 @@ $avgDayPV   = $daysInMonth > 0 ? round($totalPV / $daysInMonth, 1) : 0;
       <div class="range-info">Showing <?php echo $date_name; ?></div>
     </div>
 
-    <div id="chart-container"></div>
+    <?php if(!$hasChartData): ?>
+      <div class="no-data">
+        <div class="icon">&#9888;</div>
+        <div>No energy data for <?php echo $date_name; ?></div>
+      </div>
+    <?php else: ?>
+      <div id="chart-container"></div>
+    <?php endif; ?>
+
+    <?php if($dbWarning !== ''): ?>
+      <div class="notice"><?php echo $dbWarning; ?></div>
+    <?php endif; ?>
 
     <div class="legend-grid">
       <div class="lg-tile"><span class="swatch" style="background:#ef4444"></span><div><div class="name" style="color:#ef4444">Solar (kWh)</div><div class="desc"><?php echo number_format($totalPV, 2); ?> kWh</div></div></div>
@@ -186,6 +209,7 @@ $avgDayPV   = $daysInMonth > 0 ? round($totalPV / $daysInMonth, 1) : 0;
 <script src="/highstock/js/highstock.js"></script>
 <script src="/highstock/js/modules/exporting.js"></script>
 
+<?php if($hasChartData): ?>
 <script type="text/javascript">
 var chart;
 $(document).ready(function() {
@@ -276,6 +300,45 @@ $(document).ready(function() {
     }]
   });
 });
+</script>
+<?php endif; ?>
+<script>
+function reportFrameHeight() {
+  var body = document.body;
+  var html = document.documentElement;
+  var height = Math.max(
+    body ? body.scrollHeight : 0,
+    body ? body.offsetHeight : 0,
+    html ? html.clientHeight : 0,
+    html ? html.scrollHeight : 0,
+    html ? html.offsetHeight : 0
+  );
+  window.parent.postMessage({ type: 'graph-frame-height', height: height }, '*');
+}
+
+window.addEventListener('load', function() {
+  reportFrameHeight();
+  setTimeout(reportFrameHeight, 50);
+  setTimeout(reportFrameHeight, 150);
+  setTimeout(reportFrameHeight, 600);
+  setTimeout(reportFrameHeight, 1200);
+  setTimeout(reportFrameHeight, 2000);
+});
+
+window.addEventListener('DOMContentLoaded', reportFrameHeight);
+
+window.addEventListener('resize', reportFrameHeight);
+window.addEventListener('message', function(event) {
+  if (event.data && event.data.type === 'request-graph-frame-height') {
+    reportFrameHeight();
+  }
+});
+
+if (window.ResizeObserver) {
+  var frameObserver = new ResizeObserver(reportFrameHeight);
+  frameObserver.observe(document.body);
+  frameObserver.observe(document.documentElement);
+}
 </script>
 </body>
 </html>

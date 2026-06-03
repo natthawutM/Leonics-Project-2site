@@ -35,6 +35,7 @@ function mysql_connect($server = null, $username = null, $password = null)
     } else {
         $GLOBALS['mysql_compat_last_error'] = mysqli_connect_error();
     }
+
     return $link;
 }
 
@@ -79,6 +80,7 @@ function mysql_fetch_array($result, $result_type = null)
     if ($result_type === null) {
         $result_type = MYSQLI_BOTH;
     }
+
     return mysqli_fetch_array($result, $result_type);
 }
 
@@ -115,3 +117,4 @@ function mysql_error($link_identifier = null)
 
     return isset($GLOBALS['mysql_compat_last_error']) ? $GLOBALS['mysql_compat_last_error'] : mysqli_connect_error();
 }
+?>

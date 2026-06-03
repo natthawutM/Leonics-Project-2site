@@ -13,26 +13,33 @@ $months_full = array(1=>'January',2=>'February',3=>'March',4=>'April',5=>'May',6
 $months_short = array(1=>'Jan',2=>'Feb',3=>'Mar',4=>'Apr',5=>'May',6=>'Jun',7=>'Jul',8=>'Aug',9=>'Sep',10=>'Oct',11=>'Nov',12=>'Dec');
 
 // ── DB query ──
-include("../Includes/DBConn.php");
-$link = connectToDB1();
-
-$sql = "SELECT DatetimeLocal, Gen_kWh, Load_kWh, PV_kWh, Irrt_kWh_m2
-        FROM energylog
-        WHERE year(DatetimeLocal)='$y_1'
-        ORDER BY DatetimeLocal ASC";
-$q = mysql_query($sql) or die("Query error: ".mysql_error());
-
+include(__DIR__ . "/../Includes/DBConn.php");
+$link = connectToDB1(false);
+$dbWarning = '';
 $rows = array();
-while($r = mysql_fetch_array($q)){
-    $rows[] = array(
-        'month' => (int)substr($r['DatetimeLocal'],5,2),
-        'gen'   => (float)$r['Gen_kWh'],
-        'load'  => (float)$r['Load_kWh'],
-        'pv'    => (float)$r['PV_kWh'],
-        'irr'   => (float)$r['Irrt_kWh_m2'],
-    );
+if($link){
+    $sql = "SELECT DatetimeLocal, Gen_kWh, Load_kWh, PV_kWh, Irrt_kWh_m2
+            FROM energylog
+            WHERE year(DatetimeLocal)='$y_1'
+            ORDER BY DatetimeLocal ASC";
+    $q = mysql_query($sql, $link);
+    if($q){
+        while($r = mysql_fetch_array($q)){
+            $rows[] = array(
+                'month' => (int)substr($r['DatetimeLocal'],5,2),
+                'gen'   => (float)$r['Gen_kWh'],
+                'load'  => (float)$r['Load_kWh'],
+                'pv'    => (float)$r['PV_kWh'],
+                'irr'   => (float)$r['Irrt_kWh_m2'],
+            );
+        }
+    } else {
+        $dbWarning = 'Energy data query failed.';
+    }
+    mysql_close($link);
+} else {
+    $dbWarning = 'Database connection unavailable.';
 }
-mysql_close($link);
 
 // Aggregate per month (1..12)
 $labels=$Genn=$PVn=$Loadn=$Irrn="";
@@ -94,8 +101,8 @@ $hasChartData = $totalSupply > 0 || $totalLoad > 0;
   }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
-  body{font-family:var(--font-sans);background:var(--bg-main);color:var(--text-primary);font-size:13px;line-height:1.5;padding:16px;min-height:100vh}
-  .wrap{max-width:1400px;margin:0 auto}
+  body{font-family:var(--font-sans);background:var(--bg-main);color:var(--text-primary);font-size:13px;line-height:1.5;min-height:100vh}
+  .wrap{max-width:1400px;margin:0 auto;padding:0 16px 16px}
   .card{background:var(--bg-card);border:1px solid var(--border-default);border-radius:var(--radius-lg);padding:16px}
   .card-title{font-size:11px;font-weight:500;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.3px;margin:0 0 12px;display:flex;align-items:center;gap:8px}
   .card-title .dot{width:6px;height:6px;border-radius:50%;background:var(--cyan)}
@@ -120,6 +127,7 @@ $hasChartData = $totalSupply > 0 || $totalLoad > 0;
     text-align:center;padding:60px 20px;color:var(--text-secondary);font-size:14px;
   }
   .no-data .icon{font-size:30px;color:var(--text-tertiary);margin-bottom:8px}
+  .notice{margin-top:12px;padding:10px 12px;border:1px solid #f3d6a0;background:#fff8e8;border-radius:var(--radius-md);color:#9a6700;font-size:12px}
 
   /* legend tiles below chart */
   .legend-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:14px}
@@ -132,13 +140,13 @@ $hasChartData = $totalSupply > 0 || $totalLoad > 0;
     .legend-grid{grid-template-columns:repeat(3,1fr)}
   }
   @media (max-width:768px){
-    body{padding:12px}
+    .wrap{padding:0 12px 12px}
     #chart-container{height:320px}
     .legend-grid{grid-template-columns:repeat(2,1fr)}
     .toolbar{flex-direction:column;align-items:stretch}
   }
   @media (max-width:480px){
-    body{padding:10px}
+    .wrap{padding:0 10px 10px}
     .card{padding:12px;border-radius:10px}
     #chart-container{height:280px}
     .legend-grid{grid-template-columns:1fr}
@@ -187,6 +195,10 @@ $hasChartData = $totalSupply > 0 || $totalLoad > 0;
       </div>
     <?php else: ?>
       <div id="chart-container"></div>
+    <?php endif; ?>
+
+    <?php if($dbWarning !== ''): ?>
+      <div class="notice"><?php echo $dbWarning; ?></div>
     <?php endif; ?>
 
     <div class="legend-grid">
@@ -309,6 +321,44 @@ document.getElementById('btnNext').addEventListener('click', () => {
   if(curY >= new Date().getFullYear()){ alert('Cannot go beyond current year'); return; }
   reload(curY + 1);
 });
+</script>
+<script>
+function reportFrameHeight() {
+  var body = document.body;
+  var html = document.documentElement;
+  var height = Math.max(
+    body ? body.scrollHeight : 0,
+    body ? body.offsetHeight : 0,
+    html ? html.clientHeight : 0,
+    html ? html.scrollHeight : 0,
+    html ? html.offsetHeight : 0
+  );
+  window.parent.postMessage({ type: 'graph-frame-height', height: height }, '*');
+}
+
+window.addEventListener('load', function() {
+  reportFrameHeight();
+  setTimeout(reportFrameHeight, 50);
+  setTimeout(reportFrameHeight, 150);
+  setTimeout(reportFrameHeight, 600);
+  setTimeout(reportFrameHeight, 1200);
+  setTimeout(reportFrameHeight, 2000);
+});
+
+window.addEventListener('DOMContentLoaded', reportFrameHeight);
+
+window.addEventListener('resize', reportFrameHeight);
+window.addEventListener('message', function(event) {
+  if (event.data && event.data.type === 'request-graph-frame-height') {
+    reportFrameHeight();
+  }
+});
+
+if (window.ResizeObserver) {
+  var frameObserver = new ResizeObserver(reportFrameHeight);
+  frameObserver.observe(document.body);
+  frameObserver.observe(document.documentElement);
+}
 </script>
 </body>
 </html>

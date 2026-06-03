@@ -18,33 +18,45 @@ if(!isset($m_2)){
     $m_2=isset($months[$m_1])?$months[$m_1]:$m_1;
 }
 
-include("../Includes/DBConn.php");
-$link1 = connectToDB1();
+include(__DIR__ . "/../Includes/DBConn.php");
+$link1 = connectToDB1(false);
+$db1Warning = '';
+$db2Warning = '';
 
-if($_POST==NULL){
-    $latestSql = "SELECT DATE(MAX(DatetimeLocal)) AS latest_date
-                  FROM graph
-                  WHERE COALESCE(PV_kW,0) > 0
-                     OR COALESCE(Gen_kW,0) > 0
-                     OR COALESCE(Load_PM_Total_P_kW,0) > 0
-                     OR COALESCE(Ctrl_PM_Total_P_kW,0) > 0
-                     OR COALESCE(Irradiance_W_m2,0) > 0";
-    $latestQuery = mysql_query($latestSql);
-    if($latestQuery && ($latestRow = mysql_fetch_array($latestQuery)) && !empty($latestRow['latest_date'])){
-        $date1_ = $latestRow['latest_date'];
-        $y_1 = substr($date1_, 0, 4);
-        $m_1 = substr($date1_, 5, 2);
-        $d_1 = substr($date1_, 8, 2);
-        $months=array('01'=>'Jan','02'=>'Feb','03'=>'Mar','04'=>'Apr','05'=>'May','06'=>'Jun','07'=>'Jul','08'=>'Aug','09'=>'Sep','10'=>'Oct','11'=>'Nov','12'=>'Dec');
-        $m_2=isset($months[$m_1])?$months[$m_1]:$m_1;
+if($link1){
+    if($_POST==NULL){
+        $latestSql = "SELECT DATE(MAX(DatetimeLocal)) AS latest_date
+                      FROM graph
+                      WHERE COALESCE(PV_kW,0) > 0
+                         OR COALESCE(Gen_kW,0) > 0
+                         OR COALESCE(Load_PM_Total_P_kW,0) > 0
+                         OR COALESCE(Ctrl_PM_Total_P_kW,0) > 0
+                         OR COALESCE(Irradiance_W_m2,0) > 0";
+        $latestQuery = mysql_query($latestSql, $link1);
+        if($latestQuery && ($latestRow = mysql_fetch_array($latestQuery)) && !empty($latestRow['latest_date'])){
+            $date1_ = $latestRow['latest_date'];
+            $y_1 = substr($date1_, 0, 4);
+            $m_1 = substr($date1_, 5, 2);
+            $d_1 = substr($date1_, 8, 2);
+            $months=array('01'=>'Jan','02'=>'Feb','03'=>'Mar','04'=>'Apr','05'=>'May','06'=>'Jun','07'=>'Jul','08'=>'Aug','09'=>'Sep','10'=>'Oct','11'=>'Nov','12'=>'Dec');
+            $m_2=isset($months[$m_1])?$months[$m_1]:$m_1;
+        } elseif(!$latestQuery) {
+            $db1Warning = 'Primary graph query failed.';
+        }
     }
-}
 
-$sql1 = "SELECT DatetimeLocal,PV_kW,Gen_kW,Load_PM_Total_P_kW,Ctrl_PM_Total_P_kW,Irradiance_W_m2
-         FROM graph
-         WHERE year(DatetimeLocal)=$y_1 AND month(DatetimeLocal)=$m_1 AND day(DatetimeLocal)=$d_1
-         ORDER BY DatetimeLocal ASC";
-$q1 = mysql_query($sql1) or die("Query error (DB1): " . mysql_error());
+    $sql1 = "SELECT DatetimeLocal,PV_kW,Gen_kW,Load_PM_Total_P_kW,Ctrl_PM_Total_P_kW,Irradiance_W_m2
+             FROM graph
+             WHERE year(DatetimeLocal)=$y_1 AND month(DatetimeLocal)=$m_1 AND day(DatetimeLocal)=$d_1
+             ORDER BY DatetimeLocal ASC";
+    $q1 = mysql_query($sql1, $link1);
+    if(!$q1){
+        $db1Warning = 'Primary graph query failed.';
+    }
+} else {
+    $db1Warning = 'Primary database connection unavailable.';
+    $q1 = false;
+}
 
 $nnPv=$nnGen=$nnLoad=$nnCtrl=$nnIrr="";
 $totalPoints=0;
@@ -55,45 +67,49 @@ $sumLoad=0;
 $sumCtrl=0;
 $lastIrr=0;
 
-while($r = mysql_fetch_array($q1)){
-    $Y=substr($r['DatetimeLocal'],0,4);
-    $M=substr($r['DatetimeLocal'],5,2);
-    $D=substr($r['DatetimeLocal'],8,2);
-    $H=substr($r['DatetimeLocal'],11,2);
-    $Mi=substr($r['DatetimeLocal'],14,2);
-    $S=substr($r['DatetimeLocal'],17,2);
-    $ts="Date.UTC($Y,".((int)$M-1).",$D,$H,$Mi,$S)";
+if($q1){
+    while($r = mysql_fetch_array($q1)){
+        $Y=substr($r['DatetimeLocal'],0,4);
+        $M=substr($r['DatetimeLocal'],5,2);
+        $D=substr($r['DatetimeLocal'],8,2);
+        $H=substr($r['DatetimeLocal'],11,2);
+        $Mi=substr($r['DatetimeLocal'],14,2);
+        $S=substr($r['DatetimeLocal'],17,2);
+        $ts="Date.UTC($Y,".((int)$M-1).",$D,$H,$Mi,$S)";
 
-    $pv  = ($r['PV_kW']==-0.999 || $r['PV_kW']===NULL) ? 0 : (float)$r['PV_kW'];
-    $gen = ($r['Gen_kW']==-0.999 || $r['Gen_kW']===NULL) ? 0 : (float)$r['Gen_kW'];
-    $ld  = ($r['Load_PM_Total_P_kW']==-0.999 || $r['Load_PM_Total_P_kW']===NULL) ? 0 : (float)$r['Load_PM_Total_P_kW'];
-    $cl  = ($r['Ctrl_PM_Total_P_kW']==-0.999 || $r['Ctrl_PM_Total_P_kW']===NULL) ? 0 : (float)$r['Ctrl_PM_Total_P_kW'];
-    $ir  = ($r['Irradiance_W_m2']==-0.999 || $r['Irradiance_W_m2']===NULL) ? 0 : (float)$r['Irradiance_W_m2'];
+        $pv  = ($r['PV_kW']==-0.999 || $r['PV_kW']===NULL) ? 0 : (float)$r['PV_kW'];
+        $gen = ($r['Gen_kW']==-0.999 || $r['Gen_kW']===NULL) ? 0 : (float)$r['Gen_kW'];
+        $ld  = ($r['Load_PM_Total_P_kW']==-0.999 || $r['Load_PM_Total_P_kW']===NULL) ? 0 : (float)$r['Load_PM_Total_P_kW'];
+        $cl  = ($r['Ctrl_PM_Total_P_kW']==-0.999 || $r['Ctrl_PM_Total_P_kW']===NULL) ? 0 : (float)$r['Ctrl_PM_Total_P_kW'];
+        $ir  = ($r['Irradiance_W_m2']==-0.999 || $r['Irradiance_W_m2']===NULL) ? 0 : (float)$r['Irradiance_W_m2'];
 
-    if($pv > 0 || $gen > 0 || $ld > 0 || $cl > 0 || $ir > 0){
-        $meaningfulPoints++;
+        if($pv > 0 || $gen > 0 || $ld > 0 || $cl > 0 || $ir > 0){
+            $meaningfulPoints++;
+        }
+
+        if($pv > 0){ $sumPv += $pv * (5/60); }
+        if($gen > 0){ $sumGen += $gen * (5/60); }
+        if($ld > 0){ $sumLoad += $ld * (5/60); }
+        if($cl > 0){ $sumCtrl += $cl * (5/60); }
+        $lastIrr = $ir;
+
+        $nnPv  .="[$ts,$pv],";
+        $nnGen .="[$ts,$gen],";
+        $nnLoad.="[$ts,$ld],";
+        $nnCtrl.="[$ts,$cl],";
+        $nnIrr .="[$ts,$ir],";
+        $totalPoints++;
     }
-
-    if($pv > 0){ $sumPv += $pv * (5/60); }
-    if($gen > 0){ $sumGen += $gen * (5/60); }
-    if($ld > 0){ $sumLoad += $ld * (5/60); }
-    if($cl > 0){ $sumCtrl += $cl * (5/60); }
-    $lastIrr = $ir;
-
-    $nnPv  .="[$ts,$pv],";
-    $nnGen .="[$ts,$gen],";
-    $nnLoad.="[$ts,$ld],";
-    $nnCtrl.="[$ts,$cl],";
-    $nnIrr .="[$ts,$ir],";
-    $totalPoints++;
 }
-mysql_close($link1);
+if($link1){
+    mysql_close($link1);
+}
 
 $nnBattV=$nnSoc="";
 $lastSoc=null;
 $lastBatt=0;
-include_once("../Includes/DBConn2.php");
-$link2 = function_exists('connectToDB2') ? @connectToDB2() : false;
+include_once(__DIR__ . "/../Includes/DBConn2.php");
+$link2 = function_exists('connectToDB2') ? @connectToDB2(false) : false;
 if($link2){
     $sql2 = "SELECT DatetimeLocal,Batt_Avg_Voltage,Batt_Avg_SOC
              FROM graph
@@ -120,8 +136,12 @@ if($link2){
                 $lastSoc=$soc;
             }
         }
+    } else {
+        $db2Warning = 'Battery data query failed.';
     }
     @mysql_close($link2);
+} else {
+    $db2Warning = 'Battery database connection unavailable.';
 }
 
 $dateLabel = $d_1."-".$m_2."-".$y_1;
@@ -136,8 +156,8 @@ $hasChartData = $totalPoints > 0 && $meaningfulPoints > 0;
   <link href="../css/log.css" rel="stylesheet" type="text/css">
   <style type="text/css">
   *{box-sizing:border-box}
-  body{margin:0;padding:16px;font-family:'DM Sans',system-ui,sans-serif;background:#f5f5f0;color:#1a1a1a;font-size:13px}
-  .wrap{max-width:1180px;margin:0 auto}
+  body{margin:0;font-family:'DM Sans',system-ui,sans-serif;background:#f5f5f0;color:#1a1a1a;font-size:13px}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 16px 16px}
   .card{background:#fff;border:1px solid #e8e6df;border-radius:12px;padding:16px}
   .card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
   .card-title{font-size:11px;font-weight:500;color:#888;text-transform:uppercase;letter-spacing:.3px;display:flex;align-items:center;gap:8px}
@@ -156,8 +176,9 @@ $hasChartData = $totalPoints > 0 && $meaningfulPoints > 0;
   .axis-guide b{color:#1a1a1a;font-weight:600}
   .note{font-size:11px;color:#aaa;margin-top:8px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
   .empty{padding:60px 20px;text-align:center;color:#888}
+  .notice{margin-top:12px;padding:10px 12px;border:1px solid #f3d6a0;background:#fff8e8;border-radius:8px;color:#9a6700;font-size:12px}
   @media(max-width:900px){.kpi-row{grid-template-columns:repeat(3,1fr)}}
-  @media(max-width:600px){body{padding:10px}.card{padding:12px}#chart-container{height:340px}}
+  @media(max-width:600px){.wrap{padding:0 10px 10px}.card{padding:12px}#chart-container{height:340px}}
   @media(max-width:480px){.kpi-row{grid-template-columns:repeat(2,1fr)}}
   </style>
 </head>
@@ -191,6 +212,10 @@ $hasChartData = $totalPoints > 0 && $meaningfulPoints > 0;
       <div id="chart-container"></div>
       <div class="axis-guide"><b>← Left axis</b>&nbsp;kW · SOC %&nbsp;&nbsp;|&nbsp;&nbsp;<b>Right axis →</b>&nbsp;Volt · W/m²</div>
       <div class="note">real data · same query logic · updated UI</div>
+      <?php endif; ?>
+
+      <?php if($db1Warning !== '' || $db2Warning !== ''): ?>
+      <div class="notice"><?php echo trim($db1Warning . ' ' . $db2Warning); ?></div>
       <?php endif; ?>
     </div>
   </div>

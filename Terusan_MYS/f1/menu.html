@@ -646,7 +646,7 @@
           </svg></span>
         Power
       </a>
-      <a href="graph_energy.php" target="IF_m" class="nav-btn" data-nav="energy">
+      <a href="graph_energy.php" target="IF_m" class="nav-btn" data-nav="energy" data-scroll="no">
         <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
             stroke-linecap="round" stroke-linejoin="round">
             <line x1="18" y1="20" x2="18" y2="10" />
@@ -655,7 +655,7 @@
           </svg></span>
         Energy
       </a>
-      <a href="data/data.php" target="IF_m" class="nav-btn" data-nav="download">
+      <a href="data/data.php" target="IF_m" class="nav-btn" data-nav="download" data-scroll="auto">
         <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
             stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -676,12 +676,26 @@
     // Active state for nav tabs (click highlight)
     (function () {
       const buttons = document.querySelectorAll('.nav-btn');
+      const mainFrame = document.getElementById('IF_m');
       buttons.forEach(btn => {
         btn.addEventListener('click', function () {
           buttons.forEach(b => b.classList.remove('active'));
           this.classList.add('active');
+          if (mainFrame) {
+            mainFrame.setAttribute('scrolling', this.dataset.scroll || 'auto');
+          }
         });
       });
+
+      if (mainFrame) {
+        mainFrame.addEventListener('load', function () {
+          try {
+            const src = mainFrame.contentWindow.location.pathname || '';
+            const isEnergyPage = src.indexOf('graph_energy.php') !== -1;
+            mainFrame.setAttribute('scrolling', isEnergyPage ? 'no' : 'auto');
+          } catch (err) {}
+        });
+      }
     })();
 
     // Live timestamp from Main.xml — updates every 2s
