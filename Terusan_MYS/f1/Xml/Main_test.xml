@@ -74,10 +74,10 @@
 <BDI1_Load_PF>0.61</BDI1_Load_PF>
 <BDI1_BDI_Heat_Sink_Temp>63</BDI1_BDI_Heat_Sink_Temp> **
 <BDI1_BDI_Batt_Voltage>2400.0</BDI1_BDI_Batt_Voltage>**
-<BDI1_BDI_DC_Current>0.2</BDI1_BDI_DC_Current>**
+<BDI1_BDI_DC_Current>0.8</BDI1_BDI_DC_Current>**
 <BDI1_BDI_Ext_DC_Current>0.1</BDI1_BDI_Ext_DC_Current>
 <BDI1_BDI_Battery_Current>0.3</BDI1_BDI_Battery_Current>**
-<BDI1_BDI_DC_Power_kW>0.2</BDI1_BDI_DC_Power_kW>**
+<BDI1_BDI_DC_Power_kW>-0.9</BDI1_BDI_DC_Power_kW>**
 <BDI1_BDI_Ext_DC_kW>0.24</BDI1_BDI_Ext_DC_kW>
 <BDI1_BDI_Batt_kW>0.72</BDI1_BDI_Batt_kW>**
 <BDI1_BDI_SOC>24</BDI1_BDI_SOC>
@@ -501,7 +501,7 @@
 <PV_kWh>762.8</PV_kWh>
 <DatetimeSCU>20250828135813</DatetimeSCU>
 <Gen1_Power_factor>1.000</Gen1_Power_factor>**
-<Gen1_Total_Power_kW>0.000</Gen1_Total_Power_kW>**
+<Gen1_Total_Power_kW>10.000</Gen1_Total_Power_kW>**
 <Gen1_I1>0.000</Gen1_I1>**
 <Gen1_I2>0.000</Gen1_I2>**
 <Gen1_I3>0.000</Gen1_I3>**
@@ -523,7 +523,7 @@
 <Gen1_Today_kWh>51150.00</Gen1_Today_kWh>**
 <Gen1_Today_Run_hour_h>538.48</Gen1_Today_Run_hour_h>*
 <Gen2_Power_factor>1.000</Gen2_Power_factor>
-<Gen2_Total_Power_kW>0.000</Gen2_Total_Power_kW>
+<Gen2_Total_Power_kW>15.000</Gen2_Total_Power_kW>
 <Gen2_I1>0.000</Gen2_I1>
 <Gen2_I2>0.000</Gen2_I2>
 <Gen2_I3>0.000</Gen2_I3>
