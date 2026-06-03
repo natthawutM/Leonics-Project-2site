@@ -7,17 +7,7 @@
 <!--<![endif]-->
 <head>
 
-  <script>
-    if (window.history && window.history.replaceState) {
-      var basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
-      if (!document.querySelector('base')) {
-        var base = document.createElement('base');
-        base.href = basePath;
-        document.head.appendChild(base);
-      }
-      window.history.replaceState({}, document.title, '/#');
-    }
-  </script>
+  <script src="js/path-mask.js"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Leonics monitoring and Operation Center</title>
