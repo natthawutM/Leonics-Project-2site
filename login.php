@@ -23,7 +23,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     // Login success → set cookie + redirect
     $token = $user . '|' . md5($user . 'leonics_moc_salt_2024');
     setcookie($COOKIE_NAME, $token, time() + 86400 * $COOKIE_DAYS, '/');
-    header('Location: /BELB_Sabah/fleet.php');
+    header('Location: /BELB_Sabah/fleet.html');
     exit();
   } else {
     $error = 'Invalid username or password';
