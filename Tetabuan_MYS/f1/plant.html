@@ -1542,7 +1542,7 @@
         const svgH = batY + cardH / 2 + 30;
 
         const node = (x, y, opts) => {
-          const { iconSym, iconColor, title, titleSub, value, subLabel, bg, border, valueColor, subColor, w, h, borderWidth } = opts;
+          const { iconSym, iconColor, title, titleSub, value, subLabel, bg, border, valueColor, subColor, w, h, borderWidth, weatherRows } = opts;
           const cw = w || cardW;
           const ch = h || cardH;
           const x0 = x - cw / 2, y0 = y - ch / 2;
@@ -1553,12 +1553,27 @@
           let svgPaths = '';
           if (iconSym === 'solar') svgPaths = `<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M4.93 4.93l1.41 1.41"/><path d="M17.66 17.66l1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M6.34 17.66l-1.41 1.41"/><path d="M19.07 4.93l-1.41 1.41"/>`;
           else if (iconSym === 'gen') svgPaths = `<path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>`;
-          else if (iconSym === 'load') svgPaths = `<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>`;
+          else if (iconSym === 'load') svgPaths = `<path d="M4 21V6a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v15"/><line x1="2" y1="21" x2="22" y2="21"/><line x1="8" y1="9" x2="8" y2="10.5"/><line x1="12" y1="9" x2="12" y2="10.5"/><line x1="16" y1="9" x2="16" y2="10.5"/><path d="M10 21v-4h4v4"/>`;
           else if (iconSym === 'batt') svgPaths = `<rect x="2" y="7" width="16" height="10" rx="2"/><path d="M20 10v4"/><line x1="6" y1="10" x2="6" y2="14"/><line x1="10" y1="10" x2="10" y2="14"/><line x1="14" y1="10" x2="14" y2="14"/>`;
           else if (iconSym === 'bdi') svgPaths = `<rect x="3" y="6" width="18" height="12" rx="2"/><line x1="7" y1="10" x2="15" y2="10"/><polyline points="13 8 16 10 13 12"/><line x1="17" y1="14" x2="9" y2="14"/><polyline points="11 12 8 14 11 16"/>`;
           else if (iconSym === 'weather') svgPaths = `<circle cx="12" cy="12" r="5"/><path d="M12 1v2"/><path d="M12 21v2"/><path d="M4.22 4.22l1.42 1.42"/><path d="M18.36 18.36l1.42 1.42"/><path d="M1 12h2"/><path d="M21 12h2"/><path d="M4.22 19.78l1.42-1.42"/><path d="M18.36 5.64l1.42-1.42"/>`;
 
           s += `<svg x="${x0 + 14}" y="${y0 + 12}" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="${iconColor}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">${svgPaths}</svg>`;
+
+          if (iconSym === 'weather' && weatherRows) {
+            s += `<text x="${x0 + 40}" y="${y0 + 24}" font-size="10" font-weight="600" fill="#888" font-family="DM Sans,sans-serif">${title}</text>`;
+            const rowY = [48, 70, 92, 114];
+            weatherRows.forEach((row, i) => {
+              const yy = y0 + rowY[i];
+              const valueX = x0 + cw - (i === 0 ? 40 : 28);
+              const unitX = x0 + cw - (i === 0 ? 36 : 24);
+              s += `<text x="${x0 + 14}" y="${yy}" font-size="10.5" font-weight="500" fill="#666" font-family="DM Sans,sans-serif">${row.label}</text>`;
+              s += `<text x="${valueX}" y="${yy}" text-anchor="end" font-size="${i === 0 ? 20 : 19}" font-weight="600" fill="${valueColor || '#0891b2'}" font-family="DM Mono,monospace">${row.value}</text>`;
+              s += `<text x="${unitX}" y="${yy}" font-size="10.5" font-weight="500" fill="#666" font-family="DM Sans,sans-serif">${row.unit}</text>`;
+            });
+            return s;
+          }
+
           s += `<text x="${x0 + 40}" y="${y0 + 24}" font-size="10.5" font-weight="500" fill="#888" font-family="DM Sans,sans-serif">${title}${titleSub ? '<tspan fill="#888" font-size="10.5" font-weight="400"> &middot; ' + titleSub + '</tspan>' : ''}</text>`;
           s += `<text x="${x}" y="${y + 6}" text-anchor="middle" font-size="20" font-weight="600" fill="${valueColor || '#1a1a1a'}" font-family="DM Mono,monospace">${value}</text>`;
           if (subLabel) s += `<text x="${x}" y="${y + 24}" text-anchor="middle" font-size="10.5" fill="${subColor || '#888'}" font-family="DM Sans,sans-serif">${subLabel}</text>`;
@@ -1654,12 +1669,18 @@
         svg += node(weatherX, weatherY, {
           iconSym: 'weather', iconColor: '#0891b2',
           title: 'WEATHER',
-          value: fmt(irr, 0) + ' W/m²',
-          subLabel: `Amb ${fmt(tAmb, 1)}°C · RH ${fmt(rh, 0)}%`,
-          subColor: '#0891b2',
-          bg: '#f0f9ff',
-          border: '#bae6fd',
-          valueColor: irr > 50 ? '#0891b2' : '#1a1a1a',
+          bg: '#ecfeff',
+          border: '#8be4ff',
+          valueColor: '#0891b2',
+          w: 190,
+          h: 136,
+          borderWidth: 2,
+          weatherRows: [
+            { label: 'Irradiance', value: fmt(irr, 0), unit: 'W/m²' },
+            { label: 'PV Temp', value: fmt(data.tmod || 0, 1), unit: '°C' },
+            { label: 'Am Temp', value: fmt(tAmb, 1), unit: '°C' },
+            { label: 'Humidity', value: fmt(rh, 0), unit: '%' },
+          ],
         });
 
         const essColor = batCharging ? '#22c55e' : batDischarging ? '#8b5cf6' : '#888';
@@ -1704,7 +1725,7 @@
         const genTot = (data.gen1_power || 0) + (data.gen2_power || 0);
         const genOn = data.gen1_on || data.gen2_on;
         const genActive = genTot > 0.5;
-        const irr = data.irradiance || 0, tMod = data.tmod || 0, tAmb = data.tamb || 0;
+        const irr = data.irradiance || 0, tMod = data.tmod || 0, tAmb = data.tamb || 0, rh = data.rh || 0;
         const bdi1P = data.bdi1_power || 0, bdi2P = data.bdi2_power || 0;
 
         const batCharging = batP < -0.5, batDischarging = batP > 0.5;
@@ -1717,7 +1738,7 @@
           } else if (icon === 'gen') {
             svgPaths = `<path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>`;
           } else if (icon === 'load') {
-            svgPaths = `<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>`;
+            svgPaths = `<path d="M4 21V6a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v15"/><line x1="2" y1="21" x2="22" y2="21"/><line x1="8" y1="9" x2="8" y2="10.5"/><line x1="12" y1="9" x2="12" y2="10.5"/><line x1="16" y1="9" x2="16" y2="10.5"/><path d="M10 21v-4h4v4"/>`;
           } else if (icon === 'batt') {
             svgPaths = `<rect x="2" y="7" width="16" height="10" rx="2"/><path d="M20 10v4"/><line x1="6" y1="10" x2="6" y2="14"/><line x1="10" y1="10" x2="10" y2="14"/><line x1="14" y1="10" x2="14" y2="14"/>`;
           } else if (icon === 'bdi') {
@@ -1755,8 +1776,26 @@
         const anyBdiSupplying = bdi1Supplying || bdi2Supplying;
         const anyBdiAbsorbing = bdi1Absorbing || bdi2Absorbing;
 
-        const weatherCard = card('Weather', 'weather', irr.toFixed(0) + ' W/m²', `PV ${tMod.toFixed(1)}°C · Amb ${tAmb.toFixed(1)}°C`,
-          '#fafaf7', '#e8e6df', '#cffafe', '#0891b2', '#0891b2');
+        const weatherCard = `<div class="mpf-card" style="background:#ecfeff;border-color:#a5f3fc;border-radius:18px;padding:14px 16px;align-items:flex-start">
+        <div class="mpf-ic" style="width:34px;height:34px;background:#dff7fb;color:#0891b2">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"/><path d="M12 1v2"/><path d="M12 21v2"/><path d="M4.22 4.22l1.42 1.42"/><path d="M18.36 18.36l1.42 1.42"/><path d="M1 12h2"/><path d="M21 12h2"/><path d="M4.22 19.78l1.42-1.42"/><path d="M18.36 5.64l1.42-1.42"/>
+          </svg>
+        </div>
+        <div class="mpf-body">
+          <div class="mpf-l" style="font-size:11px;color:#6b7280;letter-spacing:.2px">Weather</div>
+          <div style="margin-top:8px;display:grid;grid-template-columns:86px 1fr;row-gap:6px;column-gap:6px;align-items:baseline">
+            <div style="font-size:11px;color:#6b7280">Irradiance</div>
+            <div style="font-family:var(--font-mono);font-size:15px;font-weight:600;color:#0891b2">${irr.toFixed(0)} <span style="font-size:11px;color:#6b7280">W/m²</span></div>
+            <div style="font-size:11px;color:#6b7280">PV Temp</div>
+            <div style="font-family:var(--font-mono);font-size:15px;font-weight:600;color:#0891b2">${tMod.toFixed(1)} <span style="font-size:11px;color:#6b7280">°C</span></div>
+            <div style="font-size:11px;color:#6b7280">Am Temp</div>
+            <div style="font-family:var(--font-mono);font-size:15px;font-weight:600;color:#0891b2">${tAmb.toFixed(1)} <span style="font-size:11px;color:#6b7280">°C</span></div>
+            <div style="font-size:11px;color:#6b7280">Humidity</div>
+            <div style="font-family:var(--font-mono);font-size:15px;font-weight:600;color:#0891b2">${rh.toFixed(0)} <span style="font-size:11px;color:#6b7280">%</span></div>
+          </div>
+        </div>
+      </div>`;
 
         const homeCard = card('Load', 'load', ldP.toFixed(2) + ' kW', `L1:${ldV1.toFixed(0)} L2:${ldV2.toFixed(0)} L3:${ldV3.toFixed(0)} V`,
           '#eff6ff', '#93c5fd', '#dbeafe', '#3b82f6', '#1e40af');
