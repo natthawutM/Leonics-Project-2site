@@ -1181,6 +1181,19 @@
           </div>
         </div>
       </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot" style="background:#06b6d4"></span>Weather &amp; environment</div>
+        <div class="weather-grid">
+          <div class="w-tile"><span class="l">Module temp</span><span class="r mono"><span id="w-tmod">—</span>°C</span>
+          </div>
+          <div class="w-tile"><span class="l">Ambient</span><span class="r mono"><span id="w-tamb">—</span>°C</span>
+          </div>
+          <div class="w-tile"><span class="l">Humidity</span><span class="r mono"><span id="w-rh">—</span>%</span></div>
+          <div class="w-tile"><span class="l">Today Irr.</span><span class="r mono"><span id="w-irrkwh">—</span>
+              kWh/m²</span></div>
+        </div>
+      </div>
     </div>
 
     <!-- Column 2: SCC + Load -->
@@ -1261,23 +1274,110 @@
           </tbody>
         </table>
       </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot" style="background:#8b5cf6"></span>BDI inverter output (AC)</div>
+
+        <div class="section-label">BDI 1 — Master</div>
+        <table class="phase-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>V</th>
+              <th>A</th>
+              <th>kW</th>
+              <th>kVAr</th>
+              <th>kVA</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="phase-chip" style="background:#ef4444"></span>L1</td>
+              <td id="bdi1o-v1">—</td>
+              <td id="bdi1o-i1">—</td>
+              <td id="bdi1o-p1">—</td>
+              <td id="bdi1o-q1">—</td>
+              <td id="bdi1o-s1">—</td>
+            </tr>
+            <tr>
+              <td><span class="phase-chip" style="background:#f59e0b"></span>L2</td>
+              <td id="bdi1o-v2">—</td>
+              <td id="bdi1o-i2">—</td>
+              <td id="bdi1o-p2">—</td>
+              <td id="bdi1o-q2">—</td>
+              <td id="bdi1o-s2">—</td>
+            </tr>
+            <tr>
+              <td><span class="phase-chip" style="background:#3b82f6"></span>L3</td>
+              <td id="bdi1o-v3">—</td>
+              <td id="bdi1o-i3">—</td>
+              <td id="bdi1o-p3">—</td>
+              <td id="bdi1o-q3">—</td>
+              <td id="bdi1o-s3">—</td>
+            </tr>
+            <tr>
+              <td style="font-weight:600">Total</td>
+              <td>—</td>
+              <td id="bdi1o-it" style="font-weight:600">—</td>
+              <td id="bdi1o-pt" style="font-weight:600">—</td>
+              <td id="bdi1o-qt">—</td>
+              <td id="bdi1o-st">—</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="section-label" style="margin-top:16px">BDI 2 — Slave</div>
+        <table class="phase-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>V</th>
+              <th>A</th>
+              <th>kW</th>
+              <th>kVAr</th>
+              <th>kVA</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="phase-chip" style="background:#ef4444"></span>L1</td>
+              <td id="bdi2o-v1">—</td>
+              <td id="bdi2o-i1">—</td>
+              <td id="bdi2o-p1">—</td>
+              <td id="bdi2o-q1">—</td>
+              <td id="bdi2o-s1">—</td>
+            </tr>
+            <tr>
+              <td><span class="phase-chip" style="background:#f59e0b"></span>L2</td>
+              <td id="bdi2o-v2">—</td>
+              <td id="bdi2o-i2">—</td>
+              <td id="bdi2o-p2">—</td>
+              <td id="bdi2o-q2">—</td>
+              <td id="bdi2o-s2">—</td>
+            </tr>
+            <tr>
+              <td><span class="phase-chip" style="background:#3b82f6"></span>L3</td>
+              <td id="bdi2o-v3">—</td>
+              <td id="bdi2o-i3">—</td>
+              <td id="bdi2o-p3">—</td>
+              <td id="bdi2o-q3">—</td>
+              <td id="bdi2o-s3">—</td>
+            </tr>
+            <tr>
+              <td style="font-weight:600">Total</td>
+              <td>—</td>
+              <td id="bdi2o-it" style="font-weight:600">—</td>
+              <td id="bdi2o-pt" style="font-weight:600">—</td>
+              <td id="bdi2o-qt">—</td>
+              <td id="bdi2o-st">—</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <!-- Column 3: Generator + Weather + AC Input -->
     <div class="col">
-      <div class="card">
-        <div class="card-title"><span class="dot" style="background:#06b6d4"></span>Weather &amp; environment</div>
-        <div class="weather-grid">
-          <div class="w-tile"><span class="l">Module temp</span><span class="r mono"><span id="w-tmod">—</span>°C</span>
-          </div>
-          <div class="w-tile"><span class="l">Ambient</span><span class="r mono"><span id="w-tamb">—</span>°C</span>
-          </div>
-          <div class="w-tile"><span class="l">Humidity</span><span class="r mono"><span id="w-rh">—</span>%</span></div>
-          <div class="w-tile"><span class="l">Today Irr.</span><span class="r mono"><span id="w-irrkwh">—</span>
-              kWh/m²</span></div>
-        </div>
-      </div>
-
       <div class="card">
         <div class="card-title"><span class="dot" style="background:#3b82f6"></span>AC Buts — Ctrl PM</div>
         <table class="phase-table">
@@ -1418,8 +1518,8 @@
         const batDischarging = essP > 0.5;
 
         const W = 760;
-        const cardW = 150;
-        const cardH = 96;
+        const cardW = 160;
+        const cardH = 100;
         const genX = 110, genY = 180;
         const busY = genY;
         const loadX = W - 110, loadY = busY;
@@ -1801,6 +1901,38 @@
       setVal('ld-pf1', ldPF1); setVal('ld-pf2', ldPF2); setVal('ld-pf3', ldPF3);
       setVal('ld-it', ldIt);
       setVal('ld-pt', ldPt);
+
+      // ---- BDI 1 + BDI 2 inverter output (AC) ----
+      function setBdiOutput(prefix, idPrefix) {
+        const v1 = num(xml, prefix + 'Voltage_L1', 1);
+        const v2 = num(xml, prefix + 'Voltage_L2', 1);
+        const v3 = num(xml, prefix + 'Voltage_L3', 1);
+        const i1 = num(xml, prefix + 'Current_I1', 2);
+        const i2 = num(xml, prefix + 'Current_I2', 2);
+        const i3 = num(xml, prefix + 'Current_I3', 2);
+        const p1 = num(xml, prefix + 'Power_P1_kW', 2);
+        const p2 = num(xml, prefix + 'Power_P2_kW', 2);
+        const p3 = num(xml, prefix + 'Power_P3_kW', 2);
+        const q1 = num(xml, prefix + 'Power_Q1_kVAr', 2);
+        const q2 = num(xml, prefix + 'Power_Q2_kVAr', 2);
+        const q3 = num(xml, prefix + 'Power_Q3_kVAr', 2);
+        const s1 = num(xml, prefix + 'Power_S1_kVA', 2);
+        const s2 = num(xml, prefix + 'Power_S2_kVA', 2);
+        const s3 = num(xml, prefix + 'Power_S3_kVA', 2);
+        const it = num(xml, prefix + 'Total_Current_I', 2) ?? ((i1 || 0) + (i2 || 0) + (i3 || 0));
+        const pt = num(xml, prefix + 'Total_Power_kW', 2) ?? ((p1 || 0) + (p2 || 0) + (p3 || 0));
+        const qt = num(xml, prefix + 'Total_Power_kVAr', 2) ?? ((q1 || 0) + (q2 || 0) + (q3 || 0));
+        const st = num(xml, prefix + 'Total_Power_kVA', 2) ?? ((s1 || 0) + (s2 || 0) + (s3 || 0));
+
+        setVal(idPrefix + '-v1', v1, 1); setVal(idPrefix + '-v2', v2, 1); setVal(idPrefix + '-v3', v3, 1);
+        setVal(idPrefix + '-i1', i1); setVal(idPrefix + '-i2', i2); setVal(idPrefix + '-i3', i3);
+        setVal(idPrefix + '-p1', p1); setVal(idPrefix + '-p2', p2); setVal(idPrefix + '-p3', p3);
+        setVal(idPrefix + '-q1', q1); setVal(idPrefix + '-q2', q2); setVal(idPrefix + '-q3', q3);
+        setVal(idPrefix + '-s1', s1); setVal(idPrefix + '-s2', s2); setVal(idPrefix + '-s3', s3);
+        setVal(idPrefix + '-it', it); setVal(idPrefix + '-pt', pt); setVal(idPrefix + '-qt', qt); setVal(idPrefix + '-st', st);
+      }
+      setBdiOutput('BDI1_BDI_', 'bdi1o');
+      setBdiOutput('BDI2_BDI_', 'bdi2o');
 
       // ---- SCC 1 + SCC 2 ----
       const scc1Pv = num(xml, 'SCC1_PV_Power_kW', 2);
