@@ -1,0 +1,217 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<script>
+    if (window.history && window.history.replaceState) {
+      let basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+      if (!document.querySelector('base')) {
+        let base = document.createElement('base');
+        base.href = basePath;
+        document.head.appendChild(base);
+      }
+      window.history.replaceState({}, document.title, "/#");
+    }
+  </script>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script src="../SpryAssets/xpath.js" type="text/javascript"></script>
+<script src="../SpryAssets/SpryData.js" type="text/javascript"></script>
+<script src="../Scripts/swfobject_modified.js" type="text/javascript"></script>
+<!--Load Xml------------------------------------------------------------------------------>
+<script type="text/javascript"> 
+url2 = './Xml/Chk_Alarm.php' + "?" + new Date().getTime();
+var plant = new Spry.Data.XMLDataSet(url2,"plant/item",{method:"POST",useCache:false,loadInterval:2000});
+</script>
+
+<title>ICT Nectec</title>
+<style>
+body {
+	margin-left: 60px;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+  border: 1px solid #ddd;
+}
+tr:nth-child(2n+1){background-color: #f2f2f2}
+th {
+  text-align: left;
+  padding: 8px;
+  font-family:Calibri;font-size: 0.6em;font-weight: bold;valign: middle;color: #fff;
+  background-color: #666;
+}
+.alt3 td {
+  text-align: left;
+  padding: 8px;
+  font-family:Calibri;font-size: 0.6em;font-weight: normal;valign: middle;color: #000;background: #f2f2f2;
+}
+.alt2 td {
+  text-align: left;
+  padding: 8px;
+  font-family:Calibri;font-size: 0.6em;font-weight: normal;valign: middle;color: #000;background: #fff;
+}
+.dot_gray {
+  height: 10px;
+  width: 10px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+}
+.dot_red {
+  height: 10px;
+  width: 10px;
+  background-color: #fe0606;
+  border-radius: 50%;
+  display: inline-block;
+}
+.dot_green {
+  height: 10px;
+  width: 10px;
+  background-color: #08f003;
+  border-radius: 50%;
+  display: inline-block;
+}
+#Tim{
+	position: absolute;
+	left:82%;
+  	top:  -10px;
+  	width: 150px;
+	height:40px;
+	text-align: left;
+	z-index:1;
+	font-family:Calibri ;
+	line-height:16pt;
+	font-size:0.8em;
+	color:#000;}
+@media only screen and (min-width: 551px) {
+th {
+  text-align: left;
+  padding: 8px;
+  font-family:Calibri;font-size: 0.9em;font-weight: normal;valign: middle;color: #fff;
+  background-color: #666;
+}
+.alt3 td {
+  text-align: left;
+  padding: 8px;
+  font-family:Calibri;font-size: 0.8em;font-weight: normal;valign: middle;color: #000;background: #f2f2f2;
+}
+.alt2 td {
+  text-align: left;
+  padding: 8px;
+  font-family:Calibri;font-size: 0.8em;font-weight: normal;valign: middle;color: #000;background: #fff;
+}
+.dot_gray {
+  height: 15px;
+  width: 15px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+}
+.dot_red {
+  height: 15px;
+  width: 15px;
+  background-color: #fe0606;
+  border-radius: 50%;
+  display: inline-block;
+}
+.dot_green {
+  height: 15px;
+  width: 15px;
+  background-color: #08f003;
+  border-radius: 50%;
+  display: inline-block;
+}
+#Tim{
+	position: absolute;
+	left:82%;
+  	top:  25px;
+  	width: 150px;
+	height:40px;
+	text-align: left;
+	z-index:1;
+	font-family:Calibri ;
+	  line-height:16pt;
+	  font-size:1em;
+	  color:#000;}
+}
+@media only screen and (min-width: 1000px) {
+th {
+  text-align: left;
+  padding: 8px;
+  font-family:Calibri;font-size: 1.1em;font-weight: normal;valign: middle;color: #fff;
+  background-color: #666;
+}
+.alt3 td {
+  text-align: left;
+  padding: 8px;
+  font-family:Calibri;font-size: 1em;font-weight: normal;valign: middle;color: #000;background: #f2f2f2;
+}
+.alt2 td {
+  text-align: left;
+  padding: 8px;
+  font-family:Calibri;font-size: 1em;font-weight: normal;valign: middle;color: #000;background: #fff;
+}
+.dot_gray {
+  height: 15px;
+  width: 15px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+}
+.dot_red {
+  height: 15px;
+  width: 15px;
+  background-color: #fe0606;
+  border-radius: 50%;
+  display: inline-block;
+}
+.dot_green {
+  height: 15px;
+  width: 15px;
+  background-color: #08f003;
+  border-radius: 50%;
+  display: inline-block;
+}
+#Tim{
+	position: absolute;
+	left:82%;
+  	top:  25px;
+  	width: 150px;
+	height:40px;
+	text-align: left;
+	z-index:1;
+	font-family:Calibri ;
+	line-height:16pt;
+	font-size:1em;
+	color:#000;}
+}
+
+
+</style>
+</head>
+
+<body>
+<div id="Tim" spry:region="plant" spry:setrow="plant">{DateTimeHccu}</div>
+<br><br><br><br><br>
+
+<div  spry:region="plant">
+        <table>
+          <thead>
+            <tr>
+              <th valign="top"> Name</th>
+              <th valign="top">Status</th>
+              <th valign="top">Alarm</th>
+            </tr>
+          </thead>
+          <tbody spry:repeat="plant" spry:setrow="plant">
+            <tr class='{Line}'>
+              <td valign="top">{name}</td>
+              <td valign="top">{alarm}</td>
+              <td valign="top"><span class='{status}'></span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+</body>
+</html>

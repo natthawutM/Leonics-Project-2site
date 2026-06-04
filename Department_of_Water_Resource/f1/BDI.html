@@ -1,0 +1,693 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <script>
+    if (window.history && window.history.replaceState) {
+      let basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+      if (!document.querySelector('base')) {
+        let base = document.createElement('base');
+        base.href = basePath;
+        document.head.appendChild(base);
+      }
+      window.history.replaceState({}, document.title, "/#");
+    }
+  </script>
+
+  <script>
+    if (window.history && window.history.replaceState) {
+      var base = document.createElement('base');
+      base.href = window.location.href.split('#')[0];
+      document.head.appendChild(base);
+      window.history.replaceState({}, document.title, '/#');
+    }
+  </script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BDI — Department of Water Resource</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #f5f5f0;
+      --bg-card: #ffffff;
+      --bg-panel: #fafaf7;
+      --border-default: #e8e6df;
+      --text-primary: #1a1a1a;
+      --text-secondary: #888;
+      --text-tertiary: #aaa;
+      --success: #22c55e;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --info: #3b82f6;
+      --purple: #8b5cf6;
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --font-sans: 'DM Sans', system-ui, sans-serif;
+      --font-mono: 'DM Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-main);
+      color: var(--text-primary);
+      font-size: 13px;
+      line-height: 1.5;
+      padding: 16px;
+      min-height: 100vh
+    }
+
+    .mono {
+      font-family: var(--font-mono);
+      font-feature-settings: "tnum" 1
+    }
+
+    .page {
+      max-width: 1200px;
+      margin: 0 auto
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      margin-bottom: 12px
+    }
+
+    .card-title {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: .3px;
+      margin: 0 0 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .card-title .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%
+    }
+
+    /* SOC gauge */
+    .soc-wrap {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 16px
+    }
+
+    .soc-ring {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      flex-shrink: 0
+    }
+
+    .soc-ring svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg)
+    }
+
+    .soc-ring .bg {
+      fill: none;
+      stroke: #e8e6df;
+      stroke-width: 8
+    }
+
+    .soc-ring .fg {
+      fill: none;
+      stroke-width: 8;
+      stroke-linecap: round;
+      transition: stroke-dashoffset .6s ease, stroke .3s
+    }
+
+    .soc-pct {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 22px;
+      font-weight: 600
+    }
+
+    .soc-info {
+      flex: 1
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 8px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 500
+    }
+
+    .pill-ok {
+      background: rgba(34, 197, 94, .1);
+      color: var(--success)
+    }
+
+    .pill-warn {
+      background: rgba(139, 92, 246, .1);
+      color: var(--purple)
+    }
+
+    .pill-idle {
+      background: var(--bg-panel);
+      color: var(--text-secondary)
+    }
+
+    .pill .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      display: inline-block
+    }
+
+    .dot-ok {
+      background: var(--success)
+    }
+
+    .dot-warn {
+      background: var(--purple)
+    }
+
+    .dot-off {
+      background: var(--text-tertiary)
+    }
+
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 16px
+    }
+
+    .kpi-box {
+      background: var(--bg-panel);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px
+    }
+
+    .kpi-box .lbl {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: .3px
+    }
+
+    .kpi-box .val {
+      font-family: var(--font-mono);
+      font-size: 16px;
+      font-weight: 600;
+      margin-top: 2px
+    }
+
+    .kpi-box .val .u {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-left: 2px;
+      font-weight: 500
+    }
+
+    .phase-table {
+      width: 100%;
+      border-collapse: collapse
+    }
+
+    .phase-table th {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      letter-spacing: .3px;
+      text-align: right;
+      padding: 6px 8px;
+      border-bottom: 1px solid var(--border-default)
+    }
+
+    .phase-table th:first-child {
+      text-align: left
+    }
+
+    .phase-table td {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      padding: 8px;
+      text-align: right;
+      border-bottom: 1px solid var(--border-default)
+    }
+
+    .phase-table td:first-child {
+      font-family: var(--font-sans);
+      text-align: left;
+      font-weight: 500;
+      font-size: 12px
+    }
+
+    .phase-table tr:last-child td {
+      border-bottom: none
+    }
+
+    .phase-chip {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 2px;
+      margin-right: 6px;
+      vertical-align: middle
+    }
+
+    .energy-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 8px
+    }
+
+    .energy-box {
+      background: var(--bg-panel);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center
+    }
+
+    .energy-box .lbl {
+      font-size: 11px;
+      color: var(--text-secondary)
+    }
+
+    .energy-box .val {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 600
+    }
+
+    .energy-box .val .u {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-left: 2px
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-primary);
+      text-transform: uppercase;
+      letter-spacing: .3px;
+      padding: 10px 0 6px;
+      border-bottom: 1px solid var(--border-default);
+      margin-bottom: 8px
+    }
+
+    .stamp {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      display: flex;
+      justify-content: space-between;
+      padding: 4px;
+      margin-top: 4px
+    }
+
+    .stamp .live {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--success);
+      font-weight: 500
+    }
+
+    .stamp .live::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      background: var(--success);
+      border-radius: 50%;
+      animation: pulse 1.6s ease-in-out infinite
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .4
+      }
+    }
+
+    @media(max-width:768px) {
+      .grid-2 {
+        grid-template-columns: 1fr
+      }
+
+      .kpi-row {
+        grid-template-columns: repeat(2, 1fr)
+      }
+    }
+
+    @media(max-width:480px) {
+      body {
+        padding: 10px
+      }
+
+      .card {
+        padding: 12px
+      }
+
+      .kpi-row {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .energy-row {
+        grid-template-columns: 1fr
+      }
+    }
+  </style>
+  <script>if (/[?&]sim=1\b/.test(location.search)) document.write('<script src="sim.js?_=' + Date.now() + '"><\/script>');</script>
+</head>
+
+<body>
+  <div class="page">
+
+    <!-- SOC + Status + KPIs -->
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:#8b5cf6"></span>Bi-Directional Inverter (BDI)</div>
+      <div class="soc-wrap">
+        <div class="soc-ring">
+          <svg viewBox="0 0 100 100">
+            <circle class="bg" cx="50" cy="50" r="42" />
+            <circle id="soc-arc" class="fg" cx="50" cy="50" r="42" stroke="#8b5cf6" stroke-dasharray="263.9"
+              stroke-dashoffset="263.9" />
+          </svg>
+          <div id="soc-pct" class="soc-pct mono">—</div>
+        </div>
+        <div class="soc-info">
+          <div style="font-size:15px;font-weight:600" id="bdi-status-text">Idle</div>
+          <div id="bdi-status-pill" class="pill pill-idle" style="margin-top:4px"><span class="dot dot-off"></span>Idle
+          </div>
+          <div style="margin-top:8px;font-size:12px;color:#888">DC Power: <span id="dc-power" class="mono"
+              style="color:#1a1a1a">—</span> kW</div>
+          <div style="margin-top:2px;font-size:12px;color:#888">Heat Sink: <span id="heat-sink" class="mono"
+              style="color:#1a1a1a">—</span> °C</div>
+        </div>
+      </div>
+      <div class="kpi-row">
+        <div class="kpi-box">
+          <div class="lbl">Batt voltage</div>
+          <div class="val mono"><span id="batt-v">—</span><span class="u">V</span></div>
+        </div>
+        <div class="kpi-box">
+          <div class="lbl">Batt current</div>
+          <div class="val mono"><span id="batt-i">—</span><span class="u">A</span></div>
+        </div>
+        <div class="kpi-box">
+          <div class="lbl">Batt power</div>
+          <div class="val mono"><span id="batt-p">—</span><span class="u">kW</span></div>
+        </div>
+        <div class="kpi-box">
+          <div class="lbl">DC current</div>
+          <div class="val mono"><span id="dc-i">—</span><span class="u">A</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <!-- Inverter Output -->
+      <div class="card">
+        <div class="card-title"><span class="dot" style="background:#8b5cf6"></span>Inverter Output</div>
+        <table class="phase-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>V</th>
+              <th>A</th>
+              <th>kW</th>
+              <th>kVAr</th>
+              <th>kVA</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="phase-chip" style="background:#ef4444"></span>L1</td>
+              <td id="inv-v1">—</td>
+              <td id="inv-i1">—</td>
+              <td id="inv-p1">—</td>
+              <td id="inv-q1">—</td>
+              <td id="inv-s1">—</td>
+            </tr>
+            <tr>
+              <td><span class="phase-chip" style="background:#f59e0b"></span>L2</td>
+              <td id="inv-v2">—</td>
+              <td id="inv-i2">—</td>
+              <td id="inv-p2">—</td>
+              <td id="inv-q2">—</td>
+              <td id="inv-s2">—</td>
+            </tr>
+            <tr>
+              <td><span class="phase-chip" style="background:#3b82f6"></span>L3</td>
+              <td id="inv-v3">—</td>
+              <td id="inv-i3">—</td>
+              <td id="inv-p3">—</td>
+              <td id="inv-q3">—</td>
+              <td id="inv-s3">—</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="energy-row" style="margin-top:12px">
+          <div class="kpi-box">
+            <div class="lbl">Frequency</div>
+            <div class="val mono"><span id="inv-freq">—</span><span class="u">Hz</span></div>
+          </div>
+          <div class="kpi-box">
+            <div class="lbl">Power factor</div>
+            <div class="val mono"><span id="inv-pf">—</span></div>
+          </div>
+        </div>
+        <div class="section-label" style="margin-top:12px">Inverter energy</div>
+        <div class="energy-row">
+          <div class="energy-box"><span class="lbl">Today supply</span><span class="val mono"><span
+                id="inv-today-supply">—</span><span class="u">kWh</span></span></div>
+          <div class="energy-box"><span class="lbl">Todate supply</span><span class="val mono"><span
+                id="inv-todate-supply">—</span><span class="u">kWh</span></span></div>
+          <div class="energy-box"><span class="lbl">Today charge</span><span class="val mono"><span
+                id="inv-today-chg">—</span><span class="u">kWh</span></span></div>
+          <div class="energy-box"><span class="lbl">Todate charge</span><span class="val mono"><span
+                id="inv-todate-chg">—</span><span class="u">kWh</span></span></div>
+        </div>
+      </div>
+
+      <!-- AC Input -->
+      <div class="card">
+        <div class="card-title"><span class="dot" style="background:#3b82f6"></span>AC Input</div>
+        <table class="phase-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>V</th>
+              <th>A</th>
+              <th>kW</th>
+              <th>kVAr</th>
+              <th>kVA</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="phase-chip" style="background:#ef4444"></span>L1</td>
+              <td id="ac-v1">—</td>
+              <td id="ac-i1">—</td>
+              <td id="ac-p1">—</td>
+              <td id="ac-q1">—</td>
+              <td id="ac-s1">—</td>
+            </tr>
+            <tr>
+              <td><span class="phase-chip" style="background:#f59e0b"></span>L2</td>
+              <td id="ac-v2">—</td>
+              <td id="ac-i2">—</td>
+              <td id="ac-p2">—</td>
+              <td id="ac-q2">—</td>
+              <td id="ac-s2">—</td>
+            </tr>
+            <tr>
+              <td><span class="phase-chip" style="background:#3b82f6"></span>L3</td>
+              <td id="ac-v3">—</td>
+              <td id="ac-i3">—</td>
+              <td id="ac-p3">—</td>
+              <td id="ac-q3">—</td>
+              <td id="ac-s3">—</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="energy-row" style="margin-top:12px">
+          <div class="kpi-box">
+            <div class="lbl">Frequency</div>
+            <div class="val mono"><span id="ac-freq">—</span><span class="u">Hz</span></div>
+          </div>
+          <div class="kpi-box">
+            <div class="lbl">Power factor</div>
+            <div class="val mono"><span id="ac-pf">—</span></div>
+          </div>
+        </div>
+        <div class="section-label" style="margin-top:12px">AC Input energy</div>
+        <div class="energy-row">
+          <div class="energy-box"><span class="lbl">Today energy</span><span class="val mono"><span
+                id="ac-today">—</span><span class="u">kWh</span></span></div>
+          <div class="energy-box"><span class="lbl">Todate energy</span><span class="val mono"><span
+                id="ac-todate">—</span><span class="u">kWh</span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="status-stamp" class="stamp" style="grid-column:1 / -1">
+      <span id="live-indicator" class="live">Live Monitoring - BDI</span>
+      <span>Last update: <span id="last-update" class="mono" style="color:#1a1a1a">—</span></span>
+    </div>
+  </div>
+
+  <script>
+    const XML_URL = 'Xml/Main.xml';
+    const POLL_MS = 2000;
+    const $ = id => document.getElementById(id);
+    function num(xml, tag, d = 2) { const el = xml.querySelector(tag); if (!el) return null; const t = el.textContent.trim(); if (t === '' || t.toLowerCase() === 'err' || t === 'ErrTime' || isNaN(parseFloat(t))) return null; return Number(parseFloat(t).toFixed(d)); }
+    function fmt(v, d = 2) { return v === null || v === undefined ? '—' : Number(v).toFixed(d); }
+    function setText(id, v) { const el = $(id); if (el) el.textContent = v; }
+    function setVal(id, v, d = 2) { setText(id, fmt(v, d)); }
+
+    async function fetchAndRender() {
+      try {
+        const res = await fetch(XML_URL + '?_=' + Date.now(), { cache: 'no-store' });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const text = await res.text();
+        const xml = new DOMParser().parseFromString(text, 'text/xml');
+        render(xml);
+      } catch (e) { console.error('BDI fetch error:', e); }
+    }
+
+    function render(xml) {
+      setVal('batt-v', num(xml, 'BDI_Batt_Voltage', 1), 1);
+      setVal('batt-i', num(xml, 'BDI_Battery_Current', 2));
+      setVal('batt-p', num(xml, 'BDI_Batt_kW', 2));
+      setVal('dc-i', num(xml, 'BDI_DC_Current', 2));
+      const dcP = num(xml, 'BDI_DC_Power_kW', 2);
+      setText('dc-power', fmt(dcP));
+      setVal('heat-sink', num(xml, 'BDI_Heat_Sink_Temp', 1), 1);
+
+      // SOC gauge
+      const soc = num(xml, 'BDI_SOC', 0);
+      const socVal = soc !== null ? Math.min(100, Math.max(0, soc)) : 0;
+      const circ = 2 * Math.PI * 42;
+      const arc = $('soc-arc');
+      if (arc) { arc.style.strokeDashoffset = circ * (1 - socVal / 100); arc.setAttribute('stroke', socVal < 20 ? '#ef4444' : socVal < 50 ? '#f59e0b' : '#8b5cf6'); }
+      setText('soc-pct', soc !== null ? Math.round(soc) + '%' : '—');
+
+      // Status (Leonics BDI: DC < -0.5 charging, > 0.5 discharging)
+      const sp = $('bdi-status-pill'), st = $('bdi-status-text');
+      if (dcP !== null && dcP < -0.5) { st.textContent = 'Charging'; st.style.color = '#22c55e'; sp.className = 'pill pill-ok'; sp.innerHTML = '<span class="dot dot-ok"></span>Charging'; }
+      else if (dcP !== null && dcP > 0.5) { st.textContent = 'Discharging'; st.style.color = '#8b5cf6'; sp.className = 'pill pill-warn'; sp.innerHTML = '<span class="dot dot-warn"></span>Discharging'; }
+      else { st.textContent = 'Idle'; st.style.color = '#888'; sp.className = 'pill pill-idle'; sp.innerHTML = '<span class="dot dot-off"></span>Idle'; }
+
+      // Inverter Output
+      for (let i = 1; i <= 3; i++) {
+        setVal('inv-v' + i, num(xml, 'BDI_Voltage_L' + i, 1), 1);
+        setVal('inv-i' + i, num(xml, 'BDI_Current_I' + i, 2));
+        setVal('inv-p' + i, num(xml, 'BDI_Power_P' + i + '_kW', 2));
+        setVal('inv-q' + i, num(xml, 'BDI_Power_Q' + i + '_kVAr', 2));
+        setVal('inv-s' + i, num(xml, 'BDI_Power_S' + i + '_kVA', 2));
+      }
+      setVal('inv-freq', num(xml, 'BDI_Freq', 2));
+      setVal('inv-pf', num(xml, 'BDI_PF', 2));
+      setVal('inv-today-supply', num(xml, 'BDI_Today_Supply_AC_kWh', 2));
+      setVal('inv-todate-supply', num(xml, 'BDI_Todate_Supply_AC_kWh', 2));
+      setVal('inv-today-chg', num(xml, 'BDI_Today_AC_Chg_kWh', 2));
+      setVal('inv-todate-chg', num(xml, 'BDI_Todate_AC_Chg_kWh', 2));
+
+      // AC Input
+      for (let i = 1; i <= 3; i++) {
+        setVal('ac-v' + i, num(xml, 'ACin_Voltage_L' + i, 1), 1);
+        setVal('ac-i' + i, num(xml, 'ACin_Current_I' + i, 2));
+        setVal('ac-p' + i, num(xml, 'ACin_Power_P' + i + '_kW', 2));
+        setVal('ac-q' + i, num(xml, 'ACin_Power_Q' + i + '_kVAr', 2));
+        setVal('ac-s' + i, num(xml, 'ACin_Power_S' + i + '_kVA', 2));
+      }
+      setVal('ac-freq', num(xml, 'ACin_Freq', 2));
+      setVal('ac-pf', num(xml, 'ACin_PF', 2));
+      setVal('ac-today', num(xml, 'BDI_Today_ACin_kWh', 2));
+      setVal('ac-todate', num(xml, 'BDI_Todate_ACin_kWh', 2));
+
+      // ---- Timestamps ----
+      const dsEl = xml.querySelector('DateServer');
+      const tsEl = xml.querySelector('TimeServer');
+      const ds = dsEl ? dsEl.textContent.trim() : null;
+      const ts = tsEl ? tsEl.textContent.trim() : null;
+
+      const scuStr = (ds && ts) ? (ds + ' ' + ts) : '—';
+      const xmlTime = new Date(scuStr).getTime();
+      const nowMs = Date.now();
+      const isOffline = isNaN(xmlTime) || (nowMs - xmlTime) > 15 * 60 * 1000;
+
+      const liveInd = $('live-indicator');
+      const statusStamp = $('status-stamp');
+
+      if (liveInd && statusStamp) {
+        if (isOffline) {
+          statusStamp.className = 'stamp is-offline';
+          liveInd.className = 'offline';
+          liveInd.innerHTML = '<span style="display:inline-block;width:6px;height:6px;background:#ef4444;border-radius:50%;margin-right:6px"></span>Offline Monitoring - BDI';
+          liveInd.style.color = '#ef4444';
+          liveInd.style.display = 'inline-flex';
+          liveInd.style.alignItems = 'center';
+          liveInd.style.fontWeight = '500';
+        } else {
+          statusStamp.className = 'stamp is-live';
+          liveInd.className = 'live';
+          liveInd.textContent = 'Live Monitoring - BDI';
+          liveInd.style.color = '';
+          liveInd.style.display = '';
+          liveInd.style.alignItems = '';
+          liveInd.style.fontWeight = '';
+        }
+      }
+
+      if ($('last-update')) {
+        $('last-update').textContent = ts ? ts : '—';
+        $('last-update').style.color = isOffline ? '#ef4444' : '#1a1a1a';
+      }
+    }
+    fetchAndRender();
+    setInterval(fetchAndRender, POLL_MS);
+  </script>
+</body>
+
+</html>

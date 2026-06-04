@@ -1,0 +1,139 @@
+@charset "utf-8";
+/* Simple fluid media
+   Note: Fluid media requires that you remove the media's height and width attributes from the HTML
+   http://www.alistapart.com/articles/fluid-images/ 
+*/
+img, object, embed, video {
+	max-width: 100%;
+}
+/* IE 6 does not support max-width so default to width 100% */
+.ie6 img {
+	width:100%;
+}
+
+/*
+	Dreamweaver Fluid Grid Properties
+	----------------------------------
+	dw-num-cols-mobile:		5;
+	dw-num-cols-tablet:		8;
+	dw-num-cols-desktop:	10;
+	dw-gutter-percentage:	25;
+	
+	Inspiration from "Responsive Web Design" by Ethan Marcotte 
+	http://www.alistapart.com/articles/responsive-web-design
+	
+	and Golden Grid System by Joni Korpi
+	http://goldengridsystem.com/
+*/
+
+/* Mobile Layout: 480px and below. */
+
+.gridContainer {
+	margin-left: auto;
+	margin-right: auto;
+	width: 87.36%;
+	padding-left: 1.82%;
+	padding-right: 1.82%;
+}
+#LayoutDiv1 {
+	clear: both;
+	float: left;
+	margin-left: 0;
+	width: 100%;
+	display: block;
+}
+#d3 {
+	clear: both;
+	float: left;
+	width: 80%;
+	display: block;
+	margin-left: 10px;
+	margin-top:10px;
+}
+#d1 {
+	clear: both;
+	float: left;
+	width: 90%;
+	display: block;
+	margin-left: 10px;
+}
+.style3 {font-family: Arial, Helvetica, sans-serif;font-size: 0.5em;font-align: center;color: #000000;	font-weight: bold;}
+.style1 {font-family: Arial, Helvetica, sans-serif;font-size: 0.5em;font-align: center;color: #000000;	font-weight: normal;}
+.txt_blue {font-family: Arial, Helvetica, sans-serif;font-size: 0.5em;font-align: center;color: #099cc4;	font-weight: bold;}
+.txt_org {font-family: Arial, Helvetica, sans-serif;font-size: 0.5em;font-align: center;color: #f08d55;	font-weight: bold;}
+.txt_yellow {font-family: Arial, Helvetica, sans-serif;font-size: 0.5em;font-align: center;color: #ffbe00;	font-weight: bold;}
+/* Tablet Layout: 481px to 768px. Inherits styles from: Mobile Layout. */
+
+@media only screen and (min-width: 551px) {
+.gridContainer {
+	width: 90.675%;
+	padding-left: 1.1625%;
+	padding-right: 1.1625%;
+}
+#LayoutDiv1 {
+	clear: both;
+	float: left;
+	margin-left: 0;
+	width: 100%;
+	display: block;
+}
+#d3 {
+	clear: both;
+	float: left;
+	width: 90%;
+	display: block;
+	margin-left: 40px;
+	margin-top:40px;
+}
+#d1 {
+	clear: both;
+	float: left;
+	width: 90%;
+	display: block;
+	margin-left: 40px;
+}
+.style3 {font-family: Arial, Helvetica, sans-serif;font-size: 0.8em;font-align: center;color: #000000;	font-weight: bold;}
+.style1 {font-family: Arial, Helvetica, sans-serif;font-size: 0.8em;font-align: center;color: #000000;	font-weight: normal;}
+.txt_blue {font-family: Arial, Helvetica, sans-serif;font-size: 0.8em;font-align: center;color: #099cc4;	font-weight: bold;}
+.txt_org {font-family: Arial, Helvetica, sans-serif;font-size: 0.8em;font-align: center;color: #f08d55;	font-weight: bold;}
+.txt_yellow {font-family: Arial, Helvetica, sans-serif;font-size: 0.8em;font-align: center;color: #ffbe00;	font-weight: bold;}
+}
+
+/* Desktop Layout: 769px to a max of 1232px.  Inherits styles from: Mobile Layout and Tablet Layout. */
+
+@media only screen and (min-width: 769px) {
+.gridContainer {
+	width: 88.2%;
+	max-width: 1232px;
+	padding-left: 0.9%;
+	padding-right: 0.9%;
+	margin: auto;
+}
+#LayoutDiv1 {
+	clear: both;
+	float: left;
+	margin-left: 0;
+	width: 100%;
+	display: block;
+}
+#d3 {
+	clear: both;
+	float: left;
+	width: 80%;
+	display: block;
+	margin-left: 10px;
+	margin-top:20px;
+}
+#d1 {
+	clear: both;
+	float: left;
+	width: 70%;
+	display: block;
+	margin-left: 10px;
+}
+.style3 {font-family: Arial, Helvetica, sans-serif;font-size: 1.05em;font-align: center;color: #000000;	font-weight: bold;}
+.style1 {font-family: Arial, Helvetica, sans-serif;font-size: 1.05em;font-align: center;color: #000000;	font-weight: normal;}
+.txt_blue {font-family: Arial, Helvetica, sans-serif;font-size: 1.05em;font-align: center;color: #099cc4;	font-weight: bold;}
+.txt_org {font-family: Arial, Helvetica, sans-serif;font-size: 1.05em;font-align: center;color: #f08d55;	font-weight: bold;}
+.txt_yellow {font-family: Arial, Helvetica, sans-serif;font-size: 1.05em;font-align: center;color: #ffbe00;	font-weight: bold;}
+}

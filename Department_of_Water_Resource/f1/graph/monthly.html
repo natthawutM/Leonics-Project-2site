@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+<script>
+    if (window.history && window.history.replaceState) {
+      let basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+      if (!document.querySelector('base')) {
+        let base = document.createElement('base');
+        base.href = basePath;
+        document.head.appendChild(base);
+      }
+      window.history.replaceState({}, document.title, "/#");
+    }
+  </script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Monthly Energy — Department of Water Resource</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      padding: 16px;
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: #f5f5f0;
+      color: #1a1a1a;
+      font-size: 13px
+    }
+
+    .wrap {
+      max-width: 1180px;
+      margin: 0 auto
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid #e8e6df;
+      border-radius: 12px;
+      padding: 16px
+    }
+
+    .card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 14px
+    }
+
+    .card-title {
+      font-size: 11px;
+      font-weight: 500;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: .3px;
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .card-title .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #f59e0b
+    }
+
+    .card-title b {
+      color: #1a1a1a;
+      font-weight: 600;
+      font-size: 13px;
+      text-transform: none;
+      letter-spacing: 0
+    }
+
+    .sim-tag {
+      font-size: 10px;
+      font-weight: 600;
+      color: #b45309;
+      background: #fef3c7;
+      border: 1px solid #fde68a;
+      border-radius: 6px;
+      padding: 2px 7px;
+      letter-spacing: .3px
+    }
+
+    .date-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap
+    }
+
+    .date-row select {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      padding: 7px 12px;
+      border: 1px solid #e8e6df;
+      border-radius: 8px;
+      background: #fafaf7;
+      color: #1a1a1a;
+      outline: none
+    }
+
+    .date-row select:focus {
+      border-color: #999
+    }
+
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px;
+      margin-bottom: 16px
+    }
+
+    .kpi-box {
+      background: #fafaf7;
+      border-radius: 6px;
+      padding: 10px 12px
+    }
+
+    .kpi-box .lbl {
+      font-size: 10px;
+      font-weight: 500;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: .3px
+    }
+
+    .kpi-box .val {
+      font-family: 'DM Mono', monospace;
+      font-size: 17px;
+      font-weight: 600;
+      margin-top: 2px
+    }
+
+    .kpi-box .val .u {
+      font-size: 10px;
+      color: #888;
+      margin-left: 2px
+    }
+
+    #container {
+      width: 100%;
+      height: 340px
+    }
+
+    @media(max-width:700px) {
+      .kpi-row {
+        grid-template-columns: repeat(3, 1fr)
+      }
+
+      body {
+        padding: 10px
+      }
+
+      .card {
+        padding: 12px
+      }
+
+      #container {
+        height: 300px
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title"><span class="dot"></span>Monthly Energy Report — <b id="lbl">—</b> <span
+            class="sim-tag">SIMULATED</span></div>
+        <div class="date-row">
+          <select id="m"></select>
+          <select id="y"></select>
+        </div>
+      </div>
+      <div class="kpi-row">
+        <div class="kpi-box">
+          <div class="lbl">PV</div>
+          <div class="val" style="color:#f59e0b"><span id="t-pv">—</span><span class="u">kWh</span></div>
+        </div>
+        <div class="kpi-box">
+          <div class="lbl">AC Input</div>
+          <div class="val" style="color:#3b82f6"><span id="t-gen">—</span><span class="u">kWh</span></div>
+        </div>
+        <div class="kpi-box">
+          <div class="lbl">Load</div>
+          <div class="val" style="color:#1a1a1a"><span id="t-load">—</span><span class="u">kWh</span></div>
+        </div>
+        <div class="kpi-box">
+          <div class="lbl">Wind</div>
+          <div class="val" style="color:#06b6d4"><span id="t-wt">—</span><span class="u">kWh</span></div>
+        </div>
+        <div class="kpi-box">
+          <div class="lbl">AC to Grid</div>
+          <div class="val" style="color:#22c55e"><span id="t-out">—</span><span class="u">kWh</span></div>
+        </div>
+        <div class="kpi-box">
+          <div class="lbl">Renewable %</div>
+          <div class="val" style="color:#22c55e"><span id="t-ratio">—</span><span class="u">%</span></div>
+        </div>
+      </div>
+      <div id="container"></div>
+    </div>
+  </div>
+
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="https://code.highcharts.com/modules/exporting.js"></script>
+  <script>
+    var MN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    function rnd(s) { var x = Math.sin(s * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); }
+    function daysIn(y, m) { return new Date(y, m, 0).getDate(); }   // m=1..12
+
+    function build(y, m) {
+      var nd = daysIn(y, m), cat = [], pv = [], gen = [], ld = [], wt = [], out = [], irr = [];
+      var tp = 0, tg = 0, tl = 0, tw = 0, to = 0;
+      for (var d = 1; d <= nd; d++) {
+        var s = y * 372 + m * 31 + d;
+        var wx = 0.7 + 0.55 * rnd(s);                    // daily weather factor
+        var pvD = 175 * wx + (rnd(s + 1) * 30 - 15);
+        var wtD = 45 + 35 * Math.sin(d * 0.5 + m) + (rnd(s + 2) * 20 - 10); if (wtD < 0) wtD = 2;
+        var ldD = 250 + 20 * Math.sin(d * 0.4) + (rnd(s + 3) * 30 - 15);
+        var gnD = Math.max(0, ldD - pvD - wtD) * (0.5 + 0.3 * rnd(s + 4));
+        var ouD = Math.max(0, (pvD + wtD - ldD)) * 0.4 * rnd(s + 5);
+        var irD = 4.0 * wx + (rnd(s + 6) * 1.2 - 0.6);
+        pvD = Math.round(pvD * 10) / 10; wtD = Math.round(wtD * 10) / 10; ldD = Math.round(ldD * 10) / 10;
+        gnD = Math.round(gnD * 10) / 10; ouD = Math.round(ouD * 10) / 10; irD = Math.round(irD * 100) / 100;
+        cat.push(d); pv.push(pvD); gen.push(gnD); ld.push(ldD); wt.push(wtD); out.push(ouD); irr.push(irD);
+        tp += pvD; tg += gnD; tl += ldD; tw += wtD; to += ouD;
+      }
+      return { cat: cat, pv: pv, gen: gen, ld: ld, wt: wt, out: out, irr: irr, tp: tp, tg: tg, tl: tl, tw: tw, to: to };
+    }
+
+    var chart;
+    function render() {
+      var y = parseInt(document.getElementById('y').value, 10), m = parseInt(document.getElementById('m').value, 10);
+      var B = build(y, m);
+      document.getElementById('lbl').textContent = y + '-' + MN[m - 1];
+      var f1 = function (n) { return (Math.round(n * 10) / 10).toLocaleString(); };
+      document.getElementById('t-pv').textContent = f1(B.tp);
+      document.getElementById('t-gen').textContent = f1(B.tg);
+      document.getElementById('t-load').textContent = f1(B.tl);
+      document.getElementById('t-wt').textContent = f1(B.tw);
+      document.getElementById('t-out').textContent = f1(B.to);
+      var renew = B.tp + B.tw, supply = renew + B.tg;
+      document.getElementById('t-ratio').textContent = supply > 0.1 ? Math.round(renew / supply * 100) : 0;
+      if (chart) chart.destroy();
+      chart = Highcharts.chart('container', {
+        chart: { backgroundColor: 'transparent', style: { fontFamily: "'DM Sans',sans-serif" }, zoomType: 'xy' },
+        credits: { enabled: false }, title: { text: null },
+        xAxis: {
+          categories: B.cat, title: { text: 'Day', style: { color: '#888' } },
+          gridLineColor: '#e8e6df', lineColor: '#e8e6df', tickColor: '#e8e6df', labels: { style: { color: '#aaa' } }
+        },
+        yAxis: [
+          {
+            min: 0, startOnTick: true, endOnTick: false, gridLineColor: '#e8e6df',
+            title: { text: 'kWh', style: { color: '#888' } }, labels: { style: { color: '#aaa' } }
+          }
+          /*,
+          {
+            min: 0, max: 8, tickInterval: 2, startOnTick: false, endOnTick: false, opposite: true,
+            gridLineColor: 'transparent', title: { text: 'kWh/m²', style: { color: '#888' } }, labels: { style: { color: '#aaa' } }
+          }*/
+        ],
+        legend: { layout: 'horizontal', align: 'center', itemStyle: { fontFamily: "'DM Sans',sans-serif", fontSize: '12px', color: '#555' } },
+        tooltip: {
+          shared: true, backgroundColor: '#fff', borderColor: '#e8e6df', borderRadius: 8, borderWidth: 1,
+          shadow: false, style: { fontFamily: "'DM Mono',monospace", fontSize: '12px', color: '#1a1a1a' }
+        },
+        plotOptions: { column: { pointPadding: 0.04, borderWidth: 0, borderRadius: 3 } },
+        series: [
+          { type: 'column', color: '#f59e0b', name: 'PV (kWh)', data: B.pv },
+          { type: 'column', color: '#3b82f6', name: 'AC Input (kWh)', data: B.gen },
+          { type: 'column', color: '#1a1a1a', name: 'Load (kWh)', data: B.ld },
+          { type: 'column', color: '#06b6d4', name: 'Wind (kWh)', data: B.wt },
+          { type: 'column', color: '#22c55e', name: 'AC to Grid (kWh)', data: B.out }
+          //,{ type: 'spline', color: '#ea580c', yAxis: 1, name: 'Irradiation (kWh/m²)', data: B.irr, lineWidth: 1.6, dashStyle: 'Dot', marker: { enabled: false } }
+        ]
+      });
+    }
+
+    (function () {
+      var d = new Date(), cm = d.getMonth() + 1, cy = d.getFullYear();
+      var ms = document.getElementById('m'); for (var i = 1; i <= 12; i++) { ms.insertAdjacentHTML('beforeend', '<option value="' + i + '"' + (i === cm ? ' selected' : '') + '>' + MN[i - 1] + '</option>'); }
+      var ys = document.getElementById('y'); for (var yv = 2026; yv <= cy; yv++) { ys.insertAdjacentHTML('beforeend', '<option value="' + yv + '"' + (yv === cy ? ' selected' : '') + '>' + yv + '</option>'); }
+      if (ys.options.length === 0) { ys.insertAdjacentHTML('beforeend', '<option value="' + cy + '" selected>' + cy + '</option>'); }
+      ms.addEventListener('change', render); ys.addEventListener('change', render);
+      render();
+    })();
+  </script>
+</body>
+
+</html>

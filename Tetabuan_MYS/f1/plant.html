@@ -69,10 +69,10 @@
     /* ---------- LAYOUT ---------- */
     .dash {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px;
-      max-width: none;
-      margin: 0;
+      grid-template-columns: 2fr 1fr;
+      gap: 16px;
+      max-width: 1400px;
+      margin: 0 auto;
     }
 
     .col {
@@ -238,11 +238,12 @@
 
     /* ---------- POWER FLOW DIAGRAM (full-width, landscape) ---------- */
     .flow-card {
-      grid-column: 1 / -1;
+      grid-column: 1 / 2;
       background: var(--bg-card);
       border: 1px solid var(--border-default);
       border-radius: var(--radius-lg);
       padding: 16px;
+      min-width: 0;
     }
 
     .flow-wrap {
@@ -252,14 +253,15 @@
       padding: 12px;
       margin-top: 4px;
       overflow-x: auto;
+      min-height: 120px;
+      max-width: none;
     }
 
     .flow-wrap svg {
       display: block;
       width: 100%;
       height: auto;
-      max-width: 1400px;
-      margin: 0 auto;
+      margin: 0;
     }
 
     /* Mobile stacked cards */
@@ -771,8 +773,12 @@
     /* ---------- RESPONSIVE ---------- */
     @media (max-width: 1280px) {
       .dash {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: 1fr;
         gap: 12px
+      }
+
+      .flow-card {
+        grid-column: 1 / -1;
       }
     }
 
@@ -1149,6 +1155,45 @@
           </div>
         </div>
       </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot" style="background:#ea580c"></span>Diesel generators</div>
+        <div class="gen-row">
+          <div>
+            <div class="gen-name">Generator 1</div>
+            <div class="gen-sub">Runtime: <span id="g1-hr" class="mono">—</span> h • Today: <span id="g1-td"
+                class="mono">—</span> kWh</div>
+          </div>
+          <div class="gen-right">
+            <span id="g1-pill" class="pill pill-neutral"><span class="dot dot-off"></span>—</span>
+            <div style="margin-top:4px;font-size:11px;color:#888">Power <span id="g1-p" class="v">—</span> kW</div>
+          </div>
+        </div>
+        <div class="gen-row">
+          <div>
+            <div class="gen-name">Generator 2</div>
+            <div class="gen-sub">Runtime: <span id="g2-hr" class="mono">—</span> h • Today: <span id="g2-td"
+                class="mono">—</span> kWh</div>
+          </div>
+          <div class="gen-right">
+            <span id="g2-pill" class="pill pill-neutral"><span class="dot dot-off"></span>—</span>
+            <div style="margin-top:4px;font-size:11px;color:#888">Power <span id="g2-p" class="v">—</span> kW</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot" style="background:#06b6d4"></span>Weather &amp; environment</div>
+        <div class="weather-grid">
+          <div class="w-tile"><span class="l">Module temp</span><span class="r mono"><span id="w-tmod">—</span>°C</span>
+          </div>
+          <div class="w-tile"><span class="l">Ambient</span><span class="r mono"><span id="w-tamb">—</span>°C</span>
+          </div>
+          <div class="w-tile"><span class="l">Humidity</span><span class="r mono"><span id="w-rh">—</span>%</span></div>
+          <div class="w-tile"><span class="l">Today Irr.</span><span class="r mono"><span id="w-irrkwh">—</span>
+              kWh/m²</span></div>
+        </div>
+      </div>
     </div>
 
     <!-- Column 2: SCC + Load -->
@@ -1229,49 +1274,110 @@
           </tbody>
         </table>
       </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot" style="background:#8b5cf6"></span>BDI inverter output (AC)</div>
+
+        <div class="section-label">BDI 1 — Master</div>
+        <table class="phase-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>V</th>
+              <th>A</th>
+              <th>kW</th>
+              <th>kVAr</th>
+              <th>kVA</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="phase-chip" style="background:#ef4444"></span>L1</td>
+              <td id="bdi1o-v1">—</td>
+              <td id="bdi1o-i1">—</td>
+              <td id="bdi1o-p1">—</td>
+              <td id="bdi1o-q1">—</td>
+              <td id="bdi1o-s1">—</td>
+            </tr>
+            <tr>
+              <td><span class="phase-chip" style="background:#f59e0b"></span>L2</td>
+              <td id="bdi1o-v2">—</td>
+              <td id="bdi1o-i2">—</td>
+              <td id="bdi1o-p2">—</td>
+              <td id="bdi1o-q2">—</td>
+              <td id="bdi1o-s2">—</td>
+            </tr>
+            <tr>
+              <td><span class="phase-chip" style="background:#3b82f6"></span>L3</td>
+              <td id="bdi1o-v3">—</td>
+              <td id="bdi1o-i3">—</td>
+              <td id="bdi1o-p3">—</td>
+              <td id="bdi1o-q3">—</td>
+              <td id="bdi1o-s3">—</td>
+            </tr>
+            <tr>
+              <td style="font-weight:600">Total</td>
+              <td>—</td>
+              <td id="bdi1o-it" style="font-weight:600">—</td>
+              <td id="bdi1o-pt" style="font-weight:600">—</td>
+              <td id="bdi1o-qt">—</td>
+              <td id="bdi1o-st">—</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="section-label" style="margin-top:16px">BDI 2 — Slave</div>
+        <table class="phase-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>V</th>
+              <th>A</th>
+              <th>kW</th>
+              <th>kVAr</th>
+              <th>kVA</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="phase-chip" style="background:#ef4444"></span>L1</td>
+              <td id="bdi2o-v1">—</td>
+              <td id="bdi2o-i1">—</td>
+              <td id="bdi2o-p1">—</td>
+              <td id="bdi2o-q1">—</td>
+              <td id="bdi2o-s1">—</td>
+            </tr>
+            <tr>
+              <td><span class="phase-chip" style="background:#f59e0b"></span>L2</td>
+              <td id="bdi2o-v2">—</td>
+              <td id="bdi2o-i2">—</td>
+              <td id="bdi2o-p2">—</td>
+              <td id="bdi2o-q2">—</td>
+              <td id="bdi2o-s2">—</td>
+            </tr>
+            <tr>
+              <td><span class="phase-chip" style="background:#3b82f6"></span>L3</td>
+              <td id="bdi2o-v3">—</td>
+              <td id="bdi2o-i3">—</td>
+              <td id="bdi2o-p3">—</td>
+              <td id="bdi2o-q3">—</td>
+              <td id="bdi2o-s3">—</td>
+            </tr>
+            <tr>
+              <td style="font-weight:600">Total</td>
+              <td>—</td>
+              <td id="bdi2o-it" style="font-weight:600">—</td>
+              <td id="bdi2o-pt" style="font-weight:600">—</td>
+              <td id="bdi2o-qt">—</td>
+              <td id="bdi2o-st">—</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <!-- Column 3: Generator + Weather + AC Input -->
     <div class="col">
-      <div class="card">
-        <div class="card-title"><span class="dot" style="background:#ea580c"></span>Diesel generators</div>
-        <div class="gen-row">
-          <div>
-            <div class="gen-name">Generator 1</div>
-            <div class="gen-sub">Runtime: <span id="g1-hr" class="mono">—</span> h • Today: <span id="g1-td"
-                class="mono">—</span> kWh</div>
-          </div>
-          <div class="gen-right">
-            <span id="g1-pill" class="pill pill-neutral"><span class="dot dot-off"></span>—</span>
-            <div style="margin-top:4px;font-size:11px;color:#888">Power <span id="g1-p" class="v">—</span> kW</div>
-          </div>
-        </div>
-        <div class="gen-row">
-          <div>
-            <div class="gen-name">Generator 2</div>
-            <div class="gen-sub">Runtime: <span id="g2-hr" class="mono">—</span> h • Today: <span id="g2-td"
-                class="mono">—</span> kWh</div>
-          </div>
-          <div class="gen-right">
-            <span id="g2-pill" class="pill pill-neutral"><span class="dot dot-off"></span>—</span>
-            <div style="margin-top:4px;font-size:11px;color:#888">Power <span id="g2-p" class="v">—</span> kW</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-title"><span class="dot" style="background:#06b6d4"></span>Weather &amp; environment</div>
-        <div class="weather-grid">
-          <div class="w-tile"><span class="l">Module temp</span><span class="r mono"><span id="w-tmod">—</span>°C</span>
-          </div>
-          <div class="w-tile"><span class="l">Ambient</span><span class="r mono"><span id="w-tamb">—</span>°C</span>
-          </div>
-          <div class="w-tile"><span class="l">Humidity</span><span class="r mono"><span id="w-rh">—</span>%</span></div>
-          <div class="w-tile"><span class="l">Today Irr.</span><span class="r mono"><span id="w-irrkwh">—</span>
-              kWh/m²</span></div>
-        </div>
-      </div>
-
       <div class="card">
         <div class="card-title"><span class="dot" style="background:#3b82f6"></span>AC Buts — Ctrl PM</div>
         <table class="phase-table">
@@ -1388,356 +1494,188 @@
 
       renderDesktop(data) {
         this._pid = 0;
+        const self = this;
 
-        // ─────────────────────────────────────────────────────
-        // LAYOUT v4 (matches reference image 1)
-        //   Top row (4 cards): Gen | Weather | PV Inv | Load
-        //   AC BUS ──────────────────────────────────────────
-        //   Middle (2 cards): BDI-Master | BDI-Slave   ← FULL CARDS
-        //   DC BUS  ─────────────────────────────────────────
-        //   Bottom row (2 cards): SCC | ESS  (no BDI summary)
-        //   All cards same size 250×130, all lines orthogonal
-        // ─────────────────────────────────────────────────────
-        const W = 1200, H = 640;
-        const cardW = 250, cardH = 130;
-        const topY = 80;       // top cards center y  → top=15, bottom=145
-        const busY = 200;      // AC bus
-        const midY = 320;      // BDI middle cards   → top=255, bottom=385
-        const dcY = 440;      // DC bus
-        const botY = 560;      // bottom cards       → top=495, bottom=625
-
-        // Top cards (4) — evenly spaced
-        const cGen = { x: 155, y: topY, w: cardW, h: cardH };
-        const cWeather = { x: 450, y: topY, w: cardW, h: cardH };
-        const cGci = { x: 745, y: topY, w: cardW, h: cardH };
-        const cLoad = { x: 1045, y: topY, w: cardW, h: cardH };
-
-        // Middle BDI cards (2) — aligned with Weather and PV columns
-        const cBdi1 = { x: 450, y: midY, w: cardW, h: cardH };  // BDI-Master
-        const cBdi2 = { x: 745, y: midY, w: cardW, h: cardH };  // BDI-Slave
-
-        // Bottom cards (2)
-        const cScc = { x: 300, y: botY, w: cardW, h: cardH };                // moved left to clear ESS
-        const cEss = { x: (450 + 745) / 2, y: botY, w: cardW, h: cardH };    // center between BDI-Master & BDI-Slave
-
-        // ── Data ──
-        const g1P = data.gen1_power || 0, g1On = data.gen1_on;
-        const g2P = data.gen2_power || 0, g2On = data.gen2_on;
+        const g1P = data.gen1_power || 0;
+        const g2P = data.gen2_power || 0;
         const gTot = g1P + g2P;
-        const genOn = g1On || g2On;
-        const gciP = [data.gci1_power || 0, data.gci2_power || 0, data.gci3_power || 0, data.gci4_power || 0];
-        const gciTot = gciP.reduce((a, b) => a + b, 0);
+        const genOn = data.gen1_on || data.gen2_on;
+        const gciTot = (data.gci1_power || 0) + (data.gci2_power || 0) + (data.gci3_power || 0) + (data.gci4_power || 0);
         const bdi1P = data.bdi1_power || 0;
-        const bdi2P = data.bdi2_power || 0;
-        const bdi1Soc = data.bdi1_soc || 0;
-        const bdi1Current = data.bdi1_current || 0;
-        const bdi2Soc = data.bdi2_soc || 0;
-        const bdi2Current = data.bdi2_current || 0;
         const batP = data.battery_power || 0;
         const essP = data.ess_power ?? batP;
         const batS = data.ess_soc ?? data.battery_soc ?? 0;
-        const battV = data.battery_voltage || 0;
-        const battI = data.battery_current || 0;
-        const scc1P = data.scc1_power || 0;
-        const scc2P = data.scc2_power || 0;
-        const sccTot = scc1P + scc2P;
+        const sccTot = (data.scc1_power || 0) + (data.scc2_power || 0);
         const ldP = data.load_power || 0;
-        const ldV1 = data.load_v1 || 0, ldV2 = data.load_v2 || 0, ldV3 = data.load_v3 || 0;
         const irr = data.irradiance || 0;
-        const tMod = data.tmod || 0, tAmb = data.tamb || 0, rh = data.rh || 0;
+        const tAmb = data.tamb || 0;
+        const rh = data.rh || 0;
 
-        const batCharging = batP < -0.5;
-        const batDischarging = batP > 0.5;
-        const essFlowDown = essP > 0.5;
-        const essFlowUp = essP < -0.5;
-        const bdi1Charging = bdi1P < -0.5;
-        const bdi1Discharging = bdi1P > 0.5;
-        const bdi2Charging = bdi2P < -0.5;
-        const bdi2Discharging = bdi2P > 0.5;
+        const genActive = gTot > 0.5;
+        const bdiCharging = bdi1P < -0.5;
+        const bdiDischarging = bdi1P > 0.5;
+        const batCharging = essP < -0.5;
+        const batDischarging = essP > 0.5;
 
-        const self = this;
-        const LN_COLOR = '#7a8493', LN_W = 1.8, LN_OP = 0.6;
+        const W = 760;
+        const cardW = 160;
+        const cardH = 100;
+        const genX = 110, genY = 180;
+        const busY = genY;
+        const loadX = W - 110, loadY = busY;
+        const busL = genX + cardW / 2, busR = loadX - cardW / 2;
+        const bdiX = Math.round((busL + busR) / 2) - 60;
+        const bdiY = busY + 150;
+        const gciX = 470, gciY = 70;
+        const weatherX = 650, weatherY = bdiY;
+        const batX = bdiX, batY = bdiY + 170;
+        const sccX = genX, sccY = Math.round((bdiY + batY) / 2);
+        const svgH = batY + cardH / 2 + 30;
 
-        // ── Helpers ──
-        const ln = (x1, y1, x2, y2) =>
-          `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${LN_COLOR}" stroke-width="${LN_W}" opacity="${LN_OP}"/>`;
-
-        const FLOW_DOT_DURATION = 2.2;
-        const FLOW_DOT_PATTERN = [0.00, 0.08, 0.16, 0.24, 0.95, 1.03, 1.11, 1.19];
-        const flowClockSec = Date.now() / 1000;
-        const dots = (x1, y1, x2, y2, col, del) => {
-          const id = 'fp' + (++self._pid) + '_' + Math.round(Math.random() * 9999);
-          const pd = `M${x1.toFixed(1)},${y1.toFixed(1)} L${x2.toFixed(1)},${y2.toFixed(1)}`;
-          let s = `<path id="${id}" d="${pd}" fill="none" stroke="none"/>`;
-          FLOW_DOT_PATTERN.forEach((phase, i) => {
-            const dotDelay = del + phase;
-            const elapsed = ((flowClockSec - dotDelay) % FLOW_DOT_DURATION + FLOW_DOT_DURATION) % FLOW_DOT_DURATION;
-            const begin = `-${elapsed.toFixed(3)}s`;
-            const isLeadDot = i % 4 === 0;
-            s += `<circle r="${isLeadDot ? 4 : 3}" fill="${col}" opacity="0"><animateMotion dur="${FLOW_DOT_DURATION}s" begin="${begin}" repeatCount="indefinite"><mpath href="#${id}"/></animateMotion><animate attributeName="opacity" values="0;.95;.95;0" dur="${FLOW_DOT_DURATION}s" begin="${begin}" repeatCount="indefinite"/></circle>`;
-          });
-          return s;
-        };
-        const routeDots = (points, col, del) => {
-          if (!points || points.length < 2) return '';
-          const id = 'fp' + (++self._pid) + '_' + Math.round(Math.random() * 9999);
-          const pd = points.map((p, idx) => `${idx === 0 ? 'M' : 'L'}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
-          let s = `<path id="${id}" d="${pd}" fill="none" stroke="none"/>`;
-          FLOW_DOT_PATTERN.forEach((phase, i) => {
-            const dotDelay = del + phase;
-            const elapsed = ((flowClockSec - dotDelay) % FLOW_DOT_DURATION + FLOW_DOT_DURATION) % FLOW_DOT_DURATION;
-            const begin = `-${elapsed.toFixed(3)}s`;
-            const isLeadDot = i % 4 === 0;
-            s += `<circle r="${isLeadDot ? 4 : 3}" fill="${col}" opacity="0"><animateMotion dur="${FLOW_DOT_DURATION}s" begin="${begin}" repeatCount="indefinite"><mpath href="#${id}"/></animateMotion><animate attributeName="opacity" values="0;.95;.95;0" dur="${FLOW_DOT_DURATION}s" begin="${begin}" repeatCount="indefinite"/></circle>`;
-          });
-          return s;
-        };
-
-        // ── Card helper — WHITE background, accent on activity via text colors only ──
-        const card = (c, opts) => {
-          const { title, titleSub, iconSym, iconColor, mainLabel, mainValue, mainUnit, subRows,
-            valueColor } = opts;
-          const x = c.x - c.w / 2, y = c.y - c.h / 2;
+        const node = (x, y, opts) => {
+          const { iconSym, iconColor, title, titleSub, value, subLabel, bg, border, valueColor, subColor, w, h, borderWidth } = opts;
+          const cw = w || cardW;
+          const ch = h || cardH;
+          const x0 = x - cw / 2, y0 = y - ch / 2;
           let s = '';
-          // White card with subtle border
-          s += `<rect x="${x}" y="${y}" width="${c.w}" height="${c.h}" rx="16" fill="#ffffff" stroke="${iconColor}" stroke-opacity="0.25" stroke-width="1.2"/>`;
-          // Icon box (top-left)
-          s += `<circle cx="${x + 22}" cy="${y + 22}" r="14" fill="${iconColor}" fill-opacity="0.12" stroke="${iconColor}" stroke-opacity="0.3" stroke-width="1"/>`;
+          s += `<rect x="${x0}" y="${y0}" width="${cw}" height="${ch}" rx="13" fill="${bg}" stroke="${border}" stroke-width="${borderWidth || 1.5}"/>`;
+          s += `<circle cx="${x0 + 22}" cy="${y0 + 20}" r="12" fill="${iconColor}" fill-opacity="0.12"/>`;
 
           let svgPaths = '';
-          if (iconSym === 'solar') {
-            svgPaths = `<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M4.93 4.93l1.41 1.41"/><path d="M17.66 17.66l1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M6.34 17.66l-1.41 1.41"/><path d="M19.07 4.93l-1.41 1.41"/>`;
-          } else if (iconSym === 'gen') {
-            svgPaths = `<rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><circle cx="12" cy="12" r="3"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M2 12h2"/><path d="M20 12h2"/>`;
-          } else if (iconSym === 'load') {
-            svgPaths = `<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>`;
-          } else if (iconSym === 'batt') {
-            svgPaths = `<rect x="2" y="7" width="16" height="10" rx="2"/><path d="M20 10v4"/><line x1="6" y1="10" x2="6" y2="14"/><line x1="10" y1="10" x2="10" y2="14"/><line x1="14" y1="10" x2="14" y2="14"/>`;
-          } else if (iconSym === 'bdi') {
-            svgPaths = `<rect x="3" y="6" width="18" height="12" rx="2"/><line x1="7" y1="10" x2="15" y2="10"/><polyline points="13 8 16 10 13 12"/><line x1="17" y1="14" x2="9" y2="14"/><polyline points="11 12 8 14 11 16"/>`;
-          } else if (iconSym === 'weather') {
-            svgPaths = `<circle cx="12" cy="12" r="5"/><path d="M12 1v2"/><path d="M12 21v2"/><path d="M4.22 4.22l1.42 1.42"/><path d="M18.36 18.36l1.42 1.42"/><path d="M1 12h2"/><path d="M21 12h2"/><path d="M4.22 19.78l1.42-1.42"/><path d="M18.36 5.64l1.42-1.42"/>`;
-          }
+          if (iconSym === 'solar') svgPaths = `<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M4.93 4.93l1.41 1.41"/><path d="M17.66 17.66l1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M6.34 17.66l-1.41 1.41"/><path d="M19.07 4.93l-1.41 1.41"/>`;
+          else if (iconSym === 'gen') svgPaths = `<rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><circle cx="12" cy="12" r="3"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M2 12h2"/><path d="M20 12h2"/>`;
+          else if (iconSym === 'load') svgPaths = `<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>`;
+          else if (iconSym === 'batt') svgPaths = `<rect x="2" y="7" width="16" height="10" rx="2"/><path d="M20 10v4"/><line x1="6" y1="10" x2="6" y2="14"/><line x1="10" y1="10" x2="10" y2="14"/><line x1="14" y1="10" x2="14" y2="14"/>`;
+          else if (iconSym === 'bdi') svgPaths = `<rect x="3" y="6" width="18" height="12" rx="2"/><line x1="7" y1="10" x2="15" y2="10"/><polyline points="13 8 16 10 13 12"/><line x1="17" y1="14" x2="9" y2="14"/><polyline points="11 12 8 14 11 16"/>`;
+          else if (iconSym === 'weather') svgPaths = `<circle cx="12" cy="12" r="5"/><path d="M12 1v2"/><path d="M12 21v2"/><path d="M4.22 4.22l1.42 1.42"/><path d="M18.36 18.36l1.42 1.42"/><path d="M1 12h2"/><path d="M21 12h2"/><path d="M4.22 19.78l1.42-1.42"/><path d="M18.36 5.64l1.42-1.42"/>`;
 
-          if (svgPaths) {
-            s += `<svg x="${x + 10}" y="${y + 10}" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="${iconColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${svgPaths}</svg>`;
-          } else {
-            s += `<text x="${x + 22}" y="${y + 27}" text-anchor="middle" font-size="14" fill="${iconColor}">${iconSym}</text>`;
-          }
-          // Title text
-          s += `<text x="${x + 42}" y="${y + 27}" font-size="13" font-weight="500" fill="#1a1a1a" font-family="DM Sans,sans-serif">${title}${opts.titleSub ? '<tspan fill="#888" font-size="11" font-weight="400"> &middot; ' + opts.titleSub + '</tspan>' : ''}</text>`;
-          // Main label (left) + main value (right)
-          s += `<text x="${x + 14}" y="${y + 66}" font-size="15" font-weight="700" fill="#1a1a1a" font-family="DM Sans,sans-serif">${mainLabel}</text>`;
-          s += `<text x="${x + c.w - 14}" y="${y + 68}" text-anchor="end" font-size="22" font-weight="700" fill="${valueColor || '#1a1a1a'}" font-family="DM Mono,monospace">${mainValue}<tspan font-size="14" fill="#666" font-weight="500" dx="6">${mainUnit || ''}</tspan></text>`;
-          // (gray horizontal divider removed per request)
-          // Sub rows: N columns, label on top + value below
-          if (subRows && subRows.length) {
-            const rowY0 = y + 100;
-            const n = subRows.length;
-            // Find shared unit (shown once at far-right, not inline)
-            let unit = '';
-            subRows.forEach(r => { if (r.unit && !r.inlineUnit) unit = r.unit; });
-            // Reserve right area for unit text
-            const colArea = unit ? c.w - 50 : c.w - 20;
-            const colW = colArea / n;
-            subRows.forEach((r, i) => {
-              const cx = x + 10 + colW * (i + 0.5);
-              s += `<text x="${cx}" y="${rowY0}" text-anchor="middle" font-size="11" fill="#666" font-family="DM Sans,sans-serif" font-weight="500">${r.label}</text>`;
-              s += `<text x="${cx}" y="${rowY0 + 22}" text-anchor="middle" font-size="15" font-weight="600" fill="${r.color || '#1a1a1a'}" font-family="DM Mono,monospace">${r.value}${r.unit && r.inlineUnit ? `<tspan font-size="11" fill="#666" font-weight="500" dx="4">${r.unit}</tspan>` : ''}</text>`;
-            });
-            if (unit) {
-              s += `<text x="${x + c.w - 14}" y="${rowY0 + 22}" text-anchor="end" font-size="12" fill="#666" font-family="DM Sans,sans-serif" font-weight="500">${unit}</text>`;
-            }
+          s += `<svg x="${x0 + 14}" y="${y0 + 12}" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="${iconColor}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">${svgPaths}</svg>`;
+          s += `<text x="${x0 + 40}" y="${y0 + 24}" font-size="10.5" font-weight="500" fill="#888" font-family="DM Sans,sans-serif">${title}${titleSub ? '<tspan fill="#888" font-size="10.5" font-weight="400"> &middot; ' + titleSub + '</tspan>' : ''}</text>`;
+          s += `<text x="${x}" y="${y + 6}" text-anchor="middle" font-size="20" font-weight="600" fill="${valueColor || '#1a1a1a'}" font-family="DM Mono,monospace">${value}</text>`;
+          if (subLabel) s += `<text x="${x}" y="${y + 24}" text-anchor="middle" font-size="10.5" fill="${subColor || '#888'}" font-family="DM Sans,sans-serif">${subLabel}</text>`;
+          return s;
+        };
+
+        const LN = '#999', OP = '0.35';
+        const ln = (x1, y1, x2, y2) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${LN}" stroke-width="2" opacity="${OP}"/>`;
+        const dots = (x1, y1, x2, y2, col, del) => {
+          const id = 'fp' + (++self._pid) + '_' + Math.round(Math.random() * 999);
+          const pd = `M${x1.toFixed(1)},${y1.toFixed(1)} L${x2.toFixed(1)},${y2.toFixed(1)}`;
+          let s = `<path id="${id}" d="${pd}" fill="none" stroke="none"/>`;
+          for (let i = 0; i < 3; i++) {
+            s += `<circle r="${i === 0 ? 4 : 3}" fill="${col}" opacity="0"><animateMotion dur="1.5s" begin="${del + i * 0.45}s" repeatCount="indefinite"><mpath href="#${id}"/></animateMotion><animate attributeName="opacity" values="0;.9;.9;0" dur="1.5s" begin="${del + i * 0.45}s" repeatCount="indefinite"/></circle>`;
           }
           return s;
         };
 
-        // ── BDI inverter icon (clean, NO diagonal divider) ──
-        const bdiIcon = (cx, cy, label, opts) => {
-          const w = 70, h = 70;
-          const x = cx - w / 2, y = cy - h / 2;
-          const stroke = opts.active ? opts.color : '#5b6b80';
-          let s = '';
-          s += `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="6" fill="#fff" stroke="${stroke}" stroke-width="2"/>`;
-          // Sine wave (top half) — represents AC
-          s += `<path d="M ${x + 12} ${y + 22} q 6 -10 12 0 t 12 0 t 12 0" stroke="${stroke}" stroke-width="2" fill="none"/>`;
-          // Horizontal divider (NOT diagonal)
-          s += `<line x1="${x + 10}" y1="${y + h / 2}" x2="${x + w - 10}" y2="${y + h / 2}" stroke="${stroke}" stroke-width="1.2" opacity="0.6"/>`;
-          // DC dashes (bottom half)
-          [14, 25, 36, 47].forEach(dx => {
-            s += `<line x1="${x + dx}" y1="${y + 50}" x2="${x + dx + 8}" y2="${y + 50}" stroke="${stroke}" stroke-width="2"/>`;
-          });
-          // Label below
-          s += `<text x="${cx}" y="${cy + h / 2 + 18}" text-anchor="middle" font-size="11" font-weight="500" fill="#222" font-family="DM Sans,sans-serif">${label}</text>`;
-          return s;
-        };
+        let svg = `<svg viewBox="0 0 ${W} ${svgH}" style="width:100%;height:${svgH}px" xmlns="http://www.w3.org/2000/svg">`;
+        svg += `<rect x="${busL}" y="${busY - 2}" width="${busR - busL}" height="4" rx="2" fill="${LN}" opacity="0.18"/>`;
+        svg += ln(gciX, gciY + cardH / 2, gciX, busY);
+        svg += ln(bdiX, busY, bdiX, bdiY - cardH / 2);
+        svg += ln(batX, bdiY + cardH / 2, batX, batY - cardH / 2);
+        svg += ln(batX, sccY, sccX + cardW / 2, sccY);
 
-        // ──────────────── BUILD SVG ────────────────
-        let svg = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" style="width:100%;height:auto" xmlns="http://www.w3.org/2000/svg">`;
-
-        // ── AC BUS line — from leftmost (Gen) to rightmost (Load) connection ──
-        const acL = cGen.x, acR = cLoad.x;
-        svg += `<line x1="${acL}" y1="${busY}" x2="${acR}" y2="${busY}" stroke="${LN_COLOR}" stroke-width="2.2" opacity="0.7"/>`;
-        svg += `<text x="${acL}" y="${busY - 8}" font-size="11" fill="#444" font-family="DM Sans,sans-serif" font-weight="600" letter-spacing="0.5">AC BUS</text>`;
-
-        // ── DC BUS line — from leftmost (SCC/BDI-M) to rightmost (BDI-S) connection ──
-        const dcL = Math.min(cScc.x, cBdi1.x), dcR = Math.max(cEss.x, cBdi2.x);
-        const AC_ROUTE_SPAN = 180;
-        svg += `<line x1="${dcL}" y1="${dcY}" x2="${dcR}" y2="${dcY}" stroke="${LN_COLOR}" stroke-width="2.2" opacity="0.7"/>`;
-        svg += `<text x="${dcL}" y="${dcY - 8}" font-size="11" fill="#444" font-family="DM Sans,sans-serif" font-weight="600" letter-spacing="0.5">DC BUS</text>`;
-
-        // ── Top cards → AC bus ──
-        svg += ln(cGen.x, cGen.y + cGen.h / 2, cGen.x, busY);
-        svg += ln(cGci.x, cGci.y + cGci.h / 2, cGci.x, busY);
-        svg += ln(cLoad.x, busY, cLoad.x, cLoad.y + cLoad.h / 2);
-        // Weather card has NO flow connection (info-only)
-
-        // ── AC bus → BDI middle cards (top edge) ──
-        svg += ln(cBdi1.x, busY, cBdi1.x, cBdi1.y - cBdi1.h / 2);
-        svg += ln(cBdi2.x, busY, cBdi2.x, cBdi2.y - cBdi2.h / 2);
-
-        // ── BDI middle cards (bottom edge) → DC bus ──
-        svg += ln(cBdi1.x, cBdi1.y + cBdi1.h / 2, cBdi1.x, dcY);
-        svg += ln(cBdi2.x, cBdi2.y + cBdi2.h / 2, cBdi2.x, dcY);
-
-        // ── DC bus → bottom cards ──
-        svg += ln(cScc.x, dcY, cScc.x, cScc.y - cScc.h / 2);
-        svg += ln(cEss.x, dcY, cEss.x, cEss.y - cEss.h / 2);
-
-        // ──────────────── ANIMATED FLOW DOTS ────────────────
-        // Sources → AC bus
-        if (genOn && gTot > 0.5) svg += dots(cGen.x, cGen.y + cGen.h / 2, cGen.x, busY, '#ea580c', 0.1);
-        if (gciTot > 0.5) svg += dots(cGci.x, cGci.y + cGci.h / 2, cGci.x, busY, '#f59e0b', 0.2);
-        // AC bus → Load
+        if (genActive) svg += dots(busL, busY, bdiX, busY, '#3b82f6', 0.1);
+        if (gciTot > 0.5) svg += dots(gciX, gciY + cardH / 2, gciX, busY, '#f59e0b', 0.2);
         if (ldP > 0.5) {
-          const startX = (gciTot > 0.5) ? cGci.x : (genOn && gTot > 0.5) ? cGen.x : cBdi1.x;
-          svg += dots(startX, busY, cLoad.x, busY, '#3b82f6', 0.15);
-          svg += dots(cLoad.x, busY, cLoad.x, cLoad.y + cLoad.h / 2, '#3b82f6', 0.4);
+          const startX = gciTot > 0.5 ? gciX : (genActive ? busL : bdiX);
+          svg += dots(startX, busY, busR, busY, '#3b82f6', 0.35);
         }
-        // Per-BDI direction: negative = down, positive = up
-        if (bdi1Charging) {
-          svg += routeDots([{ x: cBdi2.x, y: busY }, { x: cBdi1.x, y: busY }, { x: cBdi1.x, y: cBdi1.y - cBdi1.h / 2 }], '#8b5cf6', 0.2);
-          svg += routeDots([{ x: cBdi1.x, y: cBdi1.y + cBdi1.h / 2 }, { x: cBdi1.x, y: dcY }, { x: cEss.x, y: dcY }], '#8b5cf6', 0.55);
-        } else if (bdi1Discharging) {
-          svg += routeDots([{ x: cEss.x, y: dcY }, { x: cBdi1.x, y: dcY }, { x: cBdi1.x, y: cBdi1.y + cBdi1.h / 2 }], '#8b5cf6', 0.2);
-          svg += routeDots([{ x: cBdi1.x, y: cBdi1.y - cBdi1.h / 2 }, { x: cBdi1.x, y: busY }, { x: cBdi2.x, y: busY }], '#8b5cf6', 0.55);
+        if (bdiCharging) {
+          svg += dots(bdiX, busY, bdiX, bdiY - cardH / 2, '#22c55e', 0.3);
+          svg += dots(bdiX, bdiY + cardH / 2, bdiX, sccY, '#22c55e', 0.4);
+        } else if (bdiDischarging) {
+          svg += dots(bdiX, bdiY - cardH / 2, bdiX, busY, '#8b5cf6', 0.3);
+          svg += dots(bdiX, sccY, bdiX, bdiY + cardH / 2, '#8b5cf6', 0.4);
         }
+        if (batCharging) svg += dots(batX, sccY, batX, batY - cardH / 2, '#22c55e', 0.5);
+        else if (batDischarging) svg += dots(batX, batY - cardH / 2, batX, sccY, '#8b5cf6', 0.5);
+        if (sccTot > 0.5) svg += dots(sccX + cardW / 2, sccY, batX, sccY, '#f59e0b', 0.6);
 
-        if (bdi2Charging) {
-          svg += dots(cBdi2.x, busY, cBdi2.x, cBdi2.y - cBdi2.h / 2, '#8b5cf6', 0.3);
-          svg += routeDots([{ x: cBdi2.x, y: cBdi2.y + cBdi2.h / 2 }, { x: cBdi2.x, y: dcY }, { x: cEss.x, y: dcY }], '#8b5cf6', 0.65);
-        } else if (bdi2Discharging) {
-          svg += routeDots([{ x: cEss.x, y: dcY }, { x: cBdi2.x, y: dcY }, { x: cBdi2.x, y: cBdi2.y + cBdi2.h / 2 }], '#8b5cf6', 0.25);
-          svg += dots(cBdi2.x, cBdi2.y - cBdi2.h / 2, cBdi2.x, busY, '#8b5cf6', 0.6);
-        }
-
-        if (essFlowDown) {
-          svg += dots(cEss.x, dcY, cEss.x, cEss.y - cEss.h / 2, '#8b5cf6', 0.1);
-        } else if (essFlowUp) {
-          svg += dots(cEss.x, cEss.y - cEss.h / 2, cEss.x, dcY, '#8b5cf6', 0.85);
-        }
-        // SCC → DC bus → ESS (DC-coupled solar charging)
-        if (sccTot > 0.5) {
-          svg += dots(cScc.x, cScc.y - cScc.h / 2, cScc.x, dcY, '#f59e0b', 0.3);
-          svg += dots(cScc.x, dcY, cBdi1.x, dcY, '#f59e0b', 0.5);
-        }
-
-        // ──────────────── TOP CARDS ────────────────
-
-        // 1. Diesel Generators — show value (not "Off")
-        svg += card(cGen, {
-          title: 'Diesel Generators', titleSub: '550kVA x 2', iconSym: 'gen', iconColor: '#3b82f6',
-          mainLabel: 'Power', mainValue: fmt(gTot, 1), mainUnit: 'kW',
-          valueColor: '#3b82f6',
-          subRows: [
-            { label: 'GEN-1', value: fmt(g1P, 1), color: '#3b82f6' },
-            { label: 'GEN-2', value: fmt(g2P, 1), color: '#3b82f6', unit: 'kW' },
-          ],
+        const genColor = genActive ? '#3b82f6' : '#999';
+        svg += node(genX, genY, {
+          iconSym: 'gen', iconColor: '#3b82f6',
+          title: 'GEN', titleSub: '550kVA x 2',
+          value: fmt(gTot, 1) + ' kW',
+          subLabel: genActive ? 'Running' : 'Idle',
+          subColor: genColor,
+          bg: genActive ? '#eff6ff' : '#fafaf7',
+          border: genActive ? '#bfdbfe' : '#e8e6df',
+          valueColor: genActive ? '#1e40af' : '#aaa',
         });
 
-        // 2. Meteorological Data (combined: Irradiance + PV/Ambient/RH)
-        svg += card(cWeather, {
-          title: 'Meteorological Data', iconSym: 'weather', iconColor: '#0891b2',
-          mainLabel: 'Irradiance', mainValue: fmt(irr, 0), mainUnit: 'W/m²',
+        const gciActive = gciTot > 0.5;
+        svg += node(gciX, gciY, {
+          iconSym: 'solar', iconColor: '#f59e0b',
+          title: 'SOLAR AC', titleSub: '200kWp',
+          value: fmt(gciTot, 1) + ' kW',
+          subLabel: gciActive ? 'GCI producing' : 'Idle',
+          subColor: gciActive ? '#f59e0b' : '#aaa',
+          bg: gciActive ? '#fffbeb' : '#fafaf7',
+          border: gciActive ? '#fde68a' : '#e8e6df',
+          valueColor: gciActive ? '#f59e0b' : '#aaa',
+        });
+
+        svg += node(loadX, loadY, {
+          iconSym: 'load', iconColor: '#3b82f6',
+          title: 'LOAD',
+          value: fmt(ldP, 1) + ' kW',
+          subLabel: 'Consumption',
+          subColor: '#3b82f6',
+          bg: '#eff6ff',
+          border: '#93c5fd',
+          borderWidth: 2,
+          valueColor: '#1e40af',
+        });
+
+        const bdiColor = bdiCharging ? '#22c55e' : bdiDischarging ? '#8b5cf6' : '#888';
+        svg += node(bdiX, bdiY, {
+          iconSym: 'bdi', iconColor: '#555',
+          title: 'BDI-Master', titleSub: '200kW',
+          value: (bdi1P > 0 ? '+' : '') + fmt(bdi1P, 1) + ' kW',
+          subLabel: bdiCharging ? 'Absorbing' : bdiDischarging ? 'Supplying' : 'Idle',
+          subColor: bdiColor,
+          bg: '#f8f8f6',
+          border: '#d5d3cc',
+          valueColor: Math.abs(bdi1P) > 0.5 ? '#1a1a1a' : '#aaa',
+        });
+
+        svg += node(weatherX, weatherY, {
+          iconSym: 'weather', iconColor: '#0891b2',
+          title: 'WEATHER',
+          value: fmt(irr, 0) + ' W/m²',
+          subLabel: `Amb ${fmt(tAmb, 1)}°C · RH ${fmt(rh, 0)}%`,
+          subColor: '#0891b2',
+          bg: '#f0f9ff',
+          border: '#bae6fd',
           valueColor: irr > 50 ? '#0891b2' : '#1a1a1a',
-          subRows: [
-            { label: 'PV Temp', value: fmt(tMod, 1), color: '#1a1a1a' },
-            { label: 'Ambient', value: fmt(tAmb, 1), color: '#1a1a1a' },
-            { label: 'Humidity', value: fmt(rh, 0), color: '#1a1a1a', unit: '°C / %' },
-          ],
         });
 
-        // 3. PV Inverters (GCI 1-4)
-        svg += card(cGci, {
-          title: 'Solar AC', titleSub: '200kWp', iconSym: 'solar', iconColor: '#f59e0b',
-          mainLabel: 'Power', mainValue: fmt(gciTot, 1), mainUnit: 'kW',
-          valueColor: gciTot > 0.5 ? '#f59e0b' : '#1a1a1a',
-          subRows: [
-            { label: 'GCI-1', value: fmt(gciP[0], 1), color: gciP[0] > 0.5 ? '#f59e0b' : '#1a1a1a' },
-            { label: 'GCI-2', value: fmt(gciP[1], 1), color: gciP[1] > 0.5 ? '#f59e0b' : '#1a1a1a' },
-            { label: 'GCI-3', value: fmt(gciP[2], 1), color: gciP[2] > 0.5 ? '#f59e0b' : '#1a1a1a' },
-            { label: 'GCI-4', value: fmt(gciP[3], 1), color: gciP[3] > 0.5 ? '#f59e0b' : '#1a1a1a', unit: 'kW' },
-          ],
+        const essColor = batCharging ? '#22c55e' : batDischarging ? '#8b5cf6' : '#888';
+        svg += node(batX, batY, {
+          iconSym: 'batt', iconColor: '#a855f7',
+          title: 'BATTERY', titleSub: '1,575.526kWh',
+          value: (essP > 0 ? '+' : '') + fmt(essP, 1) + ' kW',
+          subLabel: 'SOC ' + Math.round(batS) + '%',
+          subColor: '#888',
+          bg: '#faf5ff',
+          border: '#d8b4fe',
+          valueColor: essColor,
         });
+        const bw = 96;
+        svg += `<rect x="${batX - bw / 2}" y="${batY + cardH / 2 - 11}" width="${bw}" height="4" rx="2" fill="#e8e6df"/>`;
+        svg += `<rect x="${batX - bw / 2}" y="${batY + cardH / 2 - 11}" width="${(Math.max(0, Math.min(100, batS)) / 100) * bw}" height="4" rx="2" fill="${batS < 20 ? '#ef4444' : '#22c55e'}"/>`;
 
-        // 4. Load
-        svg += card(cLoad, {
-          title: 'Load', iconSym: 'load', iconColor: '#3b82f6',
-          mainLabel: 'Power', mainValue: fmt(ldP, 1), mainUnit: 'kW',
-          valueColor: ldP > 0.5 ? '#3b82f6' : '#1a1a1a',
-          subRows: [
-            { label: 'L1', value: fmt(ldV1, 0), color: '#1a1a1a' },
-            { label: 'L2', value: fmt(ldV2, 0), color: '#1a1a1a' },
-            { label: 'L3', value: fmt(ldV3, 0), color: '#1a1a1a', unit: 'V' },
-          ],
-        });
-
-        // ──────────────── MIDDLE BDI CARDS ────────────────
-        const bdiColor = '#8b5cf6';
-
-        // BDI-Master
-        svg += card(cBdi1, {
-          title: 'BDI-Master', titleSub: '200kW', iconSym: 'bdi', iconColor: '#6b7280',
-          mainLabel: 'Power', mainValue: (bdi1P > 0 ? '+' : '') + fmt(bdi1P, 1), mainUnit: 'kW',
-          valueColor: Math.abs(bdi1P) > 0.5 ? bdiColor : '#1a1a1a',
-          subRows: [
-            { label: 'SOC', value: fmt(bdi1Soc, 0), color: '#1a1a1a' },
-            { label: 'Current', value: fmt(bdi1Current, 2), color: '#1a1a1a', unit: '% / A' },
-          ],
-        });
-
-        // BDI-Slave
-        svg += card(cBdi2, {
-          title: 'BDI-Slave', titleSub: '200kW', iconSym: 'bdi', iconColor: '#6b7280',
-          mainLabel: 'Power', mainValue: (bdi2P > 0 ? '+' : '') + fmt(bdi2P, 1), mainUnit: 'kW',
-          valueColor: Math.abs(bdi2P) > 0.5 ? bdiColor : '#1a1a1a',
-          subRows: [
-            { label: 'SOC', value: fmt(bdi2Soc, 0), color: '#1a1a1a' },
-            { label: 'Current', value: fmt(bdi2Current, 2), color: '#1a1a1a', unit: '% / A' },
-          ],
-        });
-
-        // ──────────────── BOTTOM CARDS ────────────────
-        // 5. Solar Charge Controllers (SCC 1-2)
-        svg += card(cScc, {
-          title: 'Solar DC', titleSub: '290kWp', iconSym: 'solar', iconColor: '#f59e0b',
-          mainLabel: 'Power', mainValue: fmt(sccTot, 2), mainUnit: 'kW',
-          valueColor: sccTot > 0.5 ? '#f59e0b' : '#1a1a1a',
-          subRows: [
-            { label: 'SCC-1', value: fmt(scc1P, 2), color: scc1P > 0.5 ? '#f59e0b' : '#1a1a1a' },
-            { label: 'SCC-2', value: fmt(scc2P, 2), color: scc2P > 0.5 ? '#f59e0b' : '#1a1a1a', unit: 'kW' },
-          ],
-        });
-
-        // 6. Energy Storage System (Battery)
-        svg += card(cEss, {
-          title: 'Battery', titleSub: '1,575.526kWh', iconSym: 'batt', iconColor: '#a855f7',
-          mainLabel: 'SOC', mainValue: fmt(batS, 0), mainUnit: '%',
-          valueColor: '#22c55e',
-          subRows: [
-            { label: 'Voltage', value: fmt(battV, 0), color: '#1a1a1a' },
-            { label: 'Power', value: fmt(essP, 1), color: '#1a1a1a', unit: 'kW' },
-          ],
+        const sccActive = sccTot > 0.5;
+        svg += node(sccX, sccY, {
+          iconSym: 'solar', iconColor: '#f59e0b',
+          title: 'SOLAR DC', titleSub: '290kWp',
+          value: fmt(sccTot, 2) + ' kW',
+          subLabel: sccActive ? 'SCC charging' : 'Idle',
+          subColor: sccActive ? '#f59e0b' : '#888',
+          bg: sccActive ? '#fffbeb' : '#fafaf7',
+          border: sccActive ? '#fde68a' : '#e8e6df',
+          valueColor: sccActive ? '#f59e0b' : '#aaa',
         });
 
         svg += '</svg>';
@@ -1754,6 +1692,7 @@
         const sccTot = (data.scc1_power || 0) + (data.scc2_power || 0);
         const genTot = (data.gen1_power || 0) + (data.gen2_power || 0);
         const genOn = data.gen1_on || data.gen2_on;
+        const genActive = genTot > 0.5;
         const irr = data.irradiance || 0, tMod = data.tmod || 0, tAmb = data.tamb || 0;
         const bdi1P = data.bdi1_power || 0, bdi2P = data.bdi2_power || 0;
 
@@ -1816,8 +1755,8 @@
         html += divider;
 
         html += sectionHdr('AC bus &mdash; sources &rarr; load');
-        html += card('Generators', 'gen', genTot.toFixed(2) + ' kW', genOn ? 'Running' : 'Idle', genOn ? '#eff6ff' : '#fafaf7', genOn ? '#bfdbfe' : '#e8e6df', '#dbeafe', '#3b82f6', genOn ? '#3b82f6' : '#aaa', '550kVA x 2');
-        if (genOn) html += flow('down', '#3b82f6', genTot.toFixed(2) + ' kW running');
+        html += card('Generators', 'gen', genTot.toFixed(2) + ' kW', genActive ? 'Running' : 'Idle', genActive ? '#eff6ff' : '#fafaf7', genActive ? '#bfdbfe' : '#e8e6df', '#dbeafe', '#3b82f6', genActive ? '#3b82f6' : '#aaa', '550kVA x 2');
+        if (genActive) html += flow('down', '#3b82f6', genTot.toFixed(2) + ' kW running');
         else html += flow('down', '#aaa', '');
 
         html += card('Solar AC', 'solar', gciTot.toFixed(2) + ' kW', sActive ? 'AC-coupled PV' : 'Idle', sActive ? '#fffbeb' : '#fafaf7', sActive ? '#fde68a' : '#e8e6df', '#fef3c7', '#f59e0b', sActive ? '#f59e0b' : '#aaa', '200kWp');
@@ -1962,6 +1901,38 @@
       setVal('ld-pf1', ldPF1); setVal('ld-pf2', ldPF2); setVal('ld-pf3', ldPF3);
       setVal('ld-it', ldIt);
       setVal('ld-pt', ldPt);
+
+      // ---- BDI 1 + BDI 2 inverter output (AC) ----
+      function setBdiOutput(prefix, idPrefix) {
+        const v1 = num(xml, prefix + 'Voltage_L1', 1);
+        const v2 = num(xml, prefix + 'Voltage_L2', 1);
+        const v3 = num(xml, prefix + 'Voltage_L3', 1);
+        const i1 = num(xml, prefix + 'Current_I1', 2);
+        const i2 = num(xml, prefix + 'Current_I2', 2);
+        const i3 = num(xml, prefix + 'Current_I3', 2);
+        const p1 = num(xml, prefix + 'Power_P1_kW', 2);
+        const p2 = num(xml, prefix + 'Power_P2_kW', 2);
+        const p3 = num(xml, prefix + 'Power_P3_kW', 2);
+        const q1 = num(xml, prefix + 'Power_Q1_kVAr', 2);
+        const q2 = num(xml, prefix + 'Power_Q2_kVAr', 2);
+        const q3 = num(xml, prefix + 'Power_Q3_kVAr', 2);
+        const s1 = num(xml, prefix + 'Power_S1_kVA', 2);
+        const s2 = num(xml, prefix + 'Power_S2_kVA', 2);
+        const s3 = num(xml, prefix + 'Power_S3_kVA', 2);
+        const it = num(xml, prefix + 'Total_Current_I', 2) ?? ((i1 || 0) + (i2 || 0) + (i3 || 0));
+        const pt = num(xml, prefix + 'Total_Power_kW', 2) ?? ((p1 || 0) + (p2 || 0) + (p3 || 0));
+        const qt = num(xml, prefix + 'Total_Power_kVAr', 2) ?? ((q1 || 0) + (q2 || 0) + (q3 || 0));
+        const st = num(xml, prefix + 'Total_Power_kVA', 2) ?? ((s1 || 0) + (s2 || 0) + (s3 || 0));
+
+        setVal(idPrefix + '-v1', v1, 1); setVal(idPrefix + '-v2', v2, 1); setVal(idPrefix + '-v3', v3, 1);
+        setVal(idPrefix + '-i1', i1); setVal(idPrefix + '-i2', i2); setVal(idPrefix + '-i3', i3);
+        setVal(idPrefix + '-p1', p1); setVal(idPrefix + '-p2', p2); setVal(idPrefix + '-p3', p3);
+        setVal(idPrefix + '-q1', q1); setVal(idPrefix + '-q2', q2); setVal(idPrefix + '-q3', q3);
+        setVal(idPrefix + '-s1', s1); setVal(idPrefix + '-s2', s2); setVal(idPrefix + '-s3', s3);
+        setVal(idPrefix + '-it', it); setVal(idPrefix + '-pt', pt); setVal(idPrefix + '-qt', qt); setVal(idPrefix + '-st', st);
+      }
+      setBdiOutput('BDI1_BDI_', 'bdi1o');
+      setBdiOutput('BDI2_BDI_', 'bdi2o');
 
       // ---- SCC 1 + SCC 2 ----
       const scc1Pv = num(xml, 'SCC1_PV_Power_kW', 2);

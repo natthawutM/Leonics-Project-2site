@@ -1,0 +1,966 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+<script>
+    if (window.history && window.history.replaceState) {
+      let basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+      if (!document.querySelector('base')) {
+        let base = document.createElement('base');
+        base.href = basePath;
+        document.head.appendChild(base);
+      }
+      window.history.replaceState({}, document.title, "/#");
+    }
+  </script>
+
+<script>
+  if (window.history && window.history.replaceState) {
+      var base = document.createElement('base');
+      base.href = window.location.href.split('#')[0];
+      document.head.appendChild(base);
+      window.history.replaceState({}, document.title, '/#');
+  }
+</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Battery BMS — Department of Water Resource</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    /* ============================================================
+   Solar Monitor Design System — Batt.html (Battery BMS)
+   HVB1 / HVB2 strings — 14 modules x 16 cells each
+   ============================================================ */
+    :root {
+      --bg-main: #f5f5f0;
+      --bg-card: #ffffff;
+      --bg-panel: #fafaf7;
+      --border-default: #e8e6df;
+      --text-primary: #1a1a1a;
+      --text-secondary: #888;
+      --text-tertiary: #aaa;
+      --success: #22c55e;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --info: #3b82f6;
+      --purple: #8b5cf6;
+      --orange: #ea580c;
+      --cyan: #06b6d4;
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --font-sans: 'DM Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'DM Mono', ui-monospace, monospace;
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-main);
+      color: var(--text-primary);
+      font-size: 13px;
+      line-height: 1.5;
+      padding: 16px;
+      min-height: 100vh
+    }
+
+    .mono {
+      font-family: var(--font-mono);
+      font-feature-settings: "tnum" 1, "zero" 1
+    }
+
+    .wrap {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px
+    }
+
+    /* ---------- TABS ---------- */
+    .tabs {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex-wrap: wrap
+    }
+
+    .tab-btn {
+      appearance: none;
+      border: 1px solid var(--border-default);
+      background: var(--bg-card);
+      color: var(--text-secondary);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 18px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all .12s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tab-btn:hover {
+      border-color: #ccc;
+      color: var(--text-primary)
+    }
+
+    .tab-btn.active {
+      background: #1a1a1a;
+      color: #fff;
+      border-color: #1a1a1a
+    }
+
+    .tab-btn .sdot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+      opacity: .7
+    }
+
+    .tab-spacer {
+      flex: 1
+    }
+
+    .upd {
+      font-size: 11px;
+      color: var(--text-tertiary)
+    }
+
+    .upd .live {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--success);
+      font-weight: 500
+    }
+
+    .upd .live::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      background: var(--success);
+      border-radius: 50%;
+      animation: pulse 1.6s ease-in-out infinite
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1)
+      }
+
+      50% {
+        opacity: .4;
+        transform: scale(.8)
+      }
+    }
+
+    /* ---------- CARD ---------- */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-lg);
+      padding: 16px
+    }
+
+    .card-title {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: .3px;
+      margin: 0 0 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: space-between
+    }
+
+    .card-title .lhs {
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .card-title .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      display: inline-block;
+      background: #8b5cf6
+    }
+
+    /* ---------- KPI STRIP ---------- */
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 12px
+    }
+
+    .kpi {
+      background: var(--bg-card);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-lg);
+      padding: 14px 16px;
+      position: relative;
+      overflow: hidden
+    }
+
+    .kpi-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: .3px
+    }
+
+    .kpi-value {
+      font-family: var(--font-mono);
+      font-size: 22px;
+      font-weight: 600;
+      margin-top: 4px;
+      letter-spacing: -.5px
+    }
+
+    .kpi-unit {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-left: 3px
+    }
+
+    .kpi-sub {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-top: 3px
+    }
+
+    .c-batt {
+      color: var(--purple)
+    }
+
+    .c-ok {
+      color: var(--success)
+    }
+
+    .c-warn {
+      color: var(--warning)
+    }
+
+    /* SOC bar */
+    .batt-vis {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 6px
+    }
+
+    .batt-shell {
+      flex: 1;
+      height: 26px;
+      border: 2px solid var(--text-primary);
+      border-radius: 6px;
+      position: relative;
+      padding: 3px;
+      overflow: hidden
+    }
+
+    .batt-shell::after {
+      content: "";
+      position: absolute;
+      right: -6px;
+      top: 7px;
+      width: 4px;
+      height: 12px;
+      background: var(--text-primary);
+      border-radius: 0 2px 2px 0
+    }
+
+    .batt-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width .6s ease, background .3s
+    }
+
+    /* pills */
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 600
+    }
+
+    .pill-ok {
+      background: rgba(34, 197, 94, .1);
+      color: var(--success)
+    }
+
+    .pill-warn {
+      background: rgba(245, 158, 11, .12);
+      color: var(--warning)
+    }
+
+    .pill-err {
+      background: rgba(239, 68, 68, .1);
+      color: var(--danger)
+    }
+
+    .pill-neutral {
+      background: var(--bg-panel);
+      color: var(--text-secondary)
+    }
+
+    .pill .d {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor
+    }
+
+    /* cell stat boxes */
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px
+    }
+
+    .stat-box {
+      background: var(--bg-panel);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px
+    }
+
+    .stat-box .l {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: .3px
+    }
+
+    .stat-box .v {
+      font-family: var(--font-mono);
+      font-size: 16px;
+      font-weight: 600;
+      margin-top: 2px
+    }
+
+    .stat-box .v .u {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-left: 2px;
+      font-weight: 500
+    }
+
+    .stat-box .loc {
+      font-size: 10px;
+      color: var(--text-tertiary);
+      margin-top: 1px
+    }
+
+    /* ---------- HEATMAP ---------- */
+    .legend {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      font-size: 11px;
+      color: var(--text-secondary)
+    }
+
+    .legend .it {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px
+    }
+
+    .legend .sw {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      display: inline-block;
+      border: 1px solid rgba(0, 0, 0, .06)
+    }
+
+    .hm {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      overflow-x: auto
+    }
+
+    .hm-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: max-content
+    }
+
+    .hm-mod {
+      width: 120px;
+      flex: 0 0 120px;
+      font-size: 11px;
+      color: var(--text-secondary);
+      display: flex;
+      flex-direction: column
+    }
+
+    .hm-mod b {
+      color: var(--text-primary);
+      font-weight: 600;
+      font-size: 12px
+    }
+
+    .hm-mod span {
+      font-size: 10px;
+      color: var(--text-tertiary);
+      font-family: var(--font-mono)
+    }
+
+    .hm-cells {
+      display: flex;
+      gap: 4px
+    }
+
+    .hm-cell {
+      width: 34px;
+      height: 30px;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      color: #1a1a1a;
+      border: 1px solid rgba(0, 0, 0, .05);
+      cursor: default;
+      transition: transform .1s;
+    }
+
+    .hm-cell:hover {
+      transform: scale(1.12);
+      z-index: 2;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .12)
+    }
+
+    .hm-head {
+      display: flex;
+      gap: 4px;
+      margin-left: 126px;
+      margin-bottom: 2px
+    }
+
+    .hm-head span {
+      width: 34px;
+      text-align: center;
+      font-size: 9px;
+      color: var(--text-tertiary);
+      font-family: var(--font-mono)
+    }
+
+    .hm-sep {
+      flex: 0 0 8px;
+      align-self: stretch;
+      border-left: 1px dashed #d4d2cb;
+      margin-left: 2px
+    }
+
+    .hm-head .hm-sep {
+      border-left: none;
+      background: none
+    }
+
+    .cl-green {
+      background: #dcfce7
+    }
+
+    .cl-yellow {
+      background: #fef9c3
+    }
+
+    .cl-orange {
+      background: #ffedd5
+    }
+
+    .cl-na {
+      background: var(--bg-panel);
+      color: var(--text-tertiary)
+    }
+
+    .cl-tcool {
+      background: #dbeafe
+    }
+
+    .cl-twarm {
+      background: #fef9c3
+    }
+
+    .cl-thot {
+      background: #fee2e2
+    }
+
+    /* HVB box / controller temp badge (right side of Cell-temp card title) */
+    .ctrl-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: none;
+      letter-spacing: 0;
+      border: 1px solid transparent
+    }
+
+    .ctrl-chip .mono {
+      font-family: var(--font-mono);
+      font-weight: 600
+    }
+
+    .ctrl-cool {
+      background: #dbeafe;
+      color: #1e3a8a;
+      border-color: #bfdbfe
+    }
+
+    .ctrl-warm {
+      background: #fef9c3;
+      color: #854d0e;
+      border-color: #fde68a
+    }
+
+    .ctrl-hot {
+      background: #fee2e2;
+      color: #991b1b;
+      border-color: #fecaca
+    }
+
+    .ctrl-na {
+      background: var(--bg-panel);
+      color: var(--text-tertiary);
+      border-color: var(--border-default)
+    }
+
+    .muted {
+      color: var(--text-tertiary);
+      font-size: 12px
+    }
+
+    @media (max-width:1100px) {
+      .kpi-strip {
+        grid-template-columns: repeat(3, 1fr)
+      }
+
+      .stat-row {
+        grid-template-columns: repeat(2, 1fr)
+      }
+    }
+
+    @media (max-width:600px) {
+      body {
+        padding: 10px
+      }
+
+      .kpi-strip {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px
+      }
+
+      .kpi-value {
+        font-size: 18px
+      }
+
+      .hm-cell {
+        width: 28px;
+        height: 26px;
+        font-size: 9px
+      }
+
+      .hm-mod {
+        width: 96px;
+        flex-basis: 96px
+      }
+
+      .hm-head {
+        margin-left: 102px
+      }
+
+      .hm-head span {
+        width: 28px
+      }
+    }
+  </style>
+  <script>if (/[?&]sim=1\b/.test(location.search)) document.write('<script src="../sim.js?_=' + Date.now() + '"><\/script>');</script>
+</head>
+
+<body>
+  <div class="wrap">
+
+    <div class="tabs">
+      <button class="tab-btn active" id="tab1" onclick="selectString(1)"><span class="sdot"></span>String #1 ·
+        HVB1</button>
+      <button class="tab-btn" id="tab2" onclick="selectString(2)"><span class="sdot"></span>String #2 · HVB2</button>
+      <span class="tab-spacer"></span>
+      <span class="upd" id="status-stamp"><span class="live" id="live-indicator">Live Monitoring - Battery</span> &nbsp;
+        Last update: <span id="last-update" class="mono" style="color:#1a1a1a">—</span></span>
+    </div>
+
+    <!-- STATUS + KPI -->
+    <div class="card">
+      <div class="card-title">
+        <span class="lhs"><span class="dot"></span><span id="str-title">String #1 — High-Voltage Battery
+            (HVB1)</span></span>
+        <span style="display:flex;gap:6px">
+          <span id="p-state" class="pill pill-neutral"><span class="d"></span>—</span>
+          <span id="p-flow" class="pill pill-neutral"><span class="d"></span>—</span>
+          <span id="p-alarm" class="pill pill-neutral"><span class="d"></span>—</span>
+        </span>
+      </div>
+      <div class="batt-vis">
+        <div class="batt-shell">
+          <div id="soc-fill" class="batt-fill" style="width:0%;background:#8b5cf6"></div>
+        </div>
+        <div class="mono c-batt" id="soc-pct" style="font-size:18px;font-weight:600;min-width:56px;text-align:right">—
+        </div>
+      </div>
+      <div class="kpi-strip" style="margin-top:14px">
+        <div class="kpi">
+          <div class="kpi-label">Bus Voltage</div>
+          <div class="kpi-value"><span id="k-busv">—</span><span class="kpi-unit">V</span></div>
+          <div class="kpi-sub">String DC bus</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Current</div>
+          <div class="kpi-value c-batt"><span id="k-cur">—</span><span class="kpi-unit">A</span></div>
+          <div class="kpi-sub" id="k-cur-sub">Idle</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Power</div>
+          <div class="kpi-value c-batt"><span id="k-kw">—</span><span class="kpi-unit">kW</span></div>
+          <div class="kpi-sub">DC power</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">SOH</div>
+          <div class="kpi-value c-ok"><span id="k-soh">—</span><span class="kpi-unit">%</span></div>
+          <div class="kpi-sub">State of health</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Avg Cell V</div>
+          <div class="kpi-value"><span id="k-avgcv">—</span><span class="kpi-unit">V</span></div>
+          <div class="kpi-sub">Per-cell mean</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Avg Cell T</div>
+          <div class="kpi-value"><span id="k-avgct">—</span><span class="kpi-unit">°C</span></div>
+          <div class="kpi-sub">Per-cell mean</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CELL STATS -->
+    <div class="card">
+      <div class="card-title"><span class="lhs"><span class="dot"></span>Cell balancing summary</span></div>
+      <div class="stat-row">
+        <div class="stat-box">
+          <div class="l">Max Cell V</div>
+          <div class="v"><span id="s-maxcv">—</span><span class="u">V</span></div>
+          <div class="loc" id="s-maxcv-loc">Module — · Cell —</div>
+        </div>
+        <div class="stat-box">
+          <div class="l">Min Cell V</div>
+          <div class="v"><span id="s-mincv">—</span><span class="u">V</span></div>
+          <div class="loc" id="s-mincv-loc">Module — · Cell —</div>
+        </div>
+        <div class="stat-box">
+          <div class="l">Max ΔV (spread)</div>
+          <div class="v"><span id="s-diffcv">—</span><span class="u">V</span></div>
+          <div class="loc">Max − Min</div>
+        </div>
+        <div class="stat-box">
+          <div class="l">Max Cell T</div>
+          <div class="v"><span id="s-maxct">—</span><span class="u">°C</span></div>
+          <div class="loc" id="s-maxct-loc">Module — · Cell —</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CELL VOLTAGE HEATMAP -->
+    <div class="card">
+      <div class="card-title">
+        <span class="lhs"><span class="dot"></span>Cell voltage map — 14 modules × 16 cells</span>
+      </div>
+      <div class="legend" style="margin-bottom:12px">
+        <span class="muted" id="hm-mode">Relative to string average</span>
+        <span class="it"><span class="sw cl-green"></span>|Δ| ≤ 0.06 V (balanced)</span>
+        <span class="it"><span class="sw cl-yellow"></span>0.06–0.08 V (drift)</span>
+        <span class="it"><span class="sw cl-orange"></span>&gt; 0.08 V (imbalanced)</span>
+        <span class="it"><span class="sw cl-na"></span>no data</span>
+      </div>
+      <div class="hm-head" id="hm-head-v"></div>
+      <div class="hm" id="hm-v"></div>
+    </div>
+
+    <!-- CELL TEMPERATURE HEATMAP -->
+    <div class="card">
+      <div class="card-title">
+        <span class="lhs"><span class="dot"></span>Cell temperature map — 14 modules × 6 cell probes</span>
+        <span id="ctrl-chip" class="ctrl-chip" title="Temperature inside the HVB high-voltage box (HVBn_cT1)">HVB box:
+          <span id="ctrl-temp" class="mono">—</span></span>
+      </div>
+      <div class="legend" style="margin-bottom:12px">
+        <span class="muted">cT1–cT6 per module — cell temperature probes</span>
+        <span class="it"><span class="sw cl-tcool"></span>&lt; 30 °C</span>
+        <span class="it"><span class="sw cl-twarm"></span>30–40 °C</span>
+        <span class="it"><span class="sw cl-thot"></span>&gt; 40 °C</span>
+        <span class="it"><span class="sw cl-na"></span>no data</span>
+      </div>
+      <div class="hm-head" id="hm-head-t"></div>
+      <div class="hm" id="hm-t"></div>
+    </div>
+
+  </div>
+
+  <script>
+    const XML_URL = '../Xml/Battery.xml';
+    const POLL_MS = 2000;
+    const MODULES = 14, CELLS_V = 16, CELLS_T = 6;
+    let activeStr = 1;
+    let lastXml = null;
+
+    const $ = (id) => document.getElementById(id);
+    function val(xml, tag) {
+      const el = xml.querySelector(tag);
+      if (!el) return null;
+      const t = el.textContent.trim();
+      if (t === '' || t.toLowerCase() === 'err' || isNaN(parseFloat(t))) return null;
+      return parseFloat(t);
+    }
+    function rawStr(xml, tag) {
+      const el = xml.querySelector(tag);
+      if (!el) return '';
+      const t = el.textContent.trim();
+      return (t === '' || t === 'Err' || t === 'ErrTime') ? '' : t;
+    }
+    function fmt(v, d = 2) { return (v === null || v === undefined) ? '—' : Number(v).toFixed(d); }
+
+    function selectString(n) {
+      activeStr = n;
+      $('tab1').classList.toggle('active', n === 1);
+      $('tab2').classList.toggle('active', n === 2);
+      if (lastXml) render(lastXml);
+    }
+
+    // Build column headers once
+    (function buildHeads() {
+      let hv = ''; for (let c = 1; c <= CELLS_V; c++) hv += `<span>${c}</span>`;
+      $('hm-head-v').innerHTML = hv;
+      let ht = ''; for (let c = 1; c <= CELLS_T; c++) ht += `<span>${c}</span>`;
+      $('hm-head-t').innerHTML = ht;
+    })();
+
+    function vClass(dev) {
+      const a = Math.abs(dev);
+      if (a <= 0.06) return 'cl-green';
+      if (a <= 0.08) return 'cl-yellow';
+      return 'cl-orange';
+    }
+    function tClass(t) {
+      if (t < 30) return 'cl-tcool';
+      if (t <= 40) return 'cl-twarm';
+      return 'cl-thot';
+    }
+
+    function render(xml) {
+      const P = 'HVB' + activeStr;
+      $('str-title').textContent = `String #${activeStr} — High-Voltage Battery (${P})`;
+
+      // ---- string summary ----
+      const soc = val(xml, P + '_SOC');
+      const soh = val(xml, P + '_SOH');
+      const busV = val(xml, P + '_Bus_V');
+      const avgV = val(xml, P + '_Avg_V');
+      const cur = val(xml, P + '_Batt_I');
+      const kw = val(xml, P + '_Batt_kW');
+      const avgCv = val(xml, P + '_Avg_cV');
+      const avgCt = val(xml, P + '_Avg_cT');
+
+      const socPct = soc === null ? 0 : Math.min(100, Math.max(0, soc));
+      $('soc-fill').style.width = socPct + '%';
+      $('soc-pct').textContent = soc === null ? '—' : Math.round(soc) + '%';
+      $('soc-fill').style.background = socPct < 25 ? '#ef4444' : socPct < 50 ? '#f59e0b' : '#8b5cf6';
+
+      $('k-busv').textContent = fmt(busV ?? avgV, 1);
+      $('k-cur').textContent = cur === null ? '—' : (cur > 0 ? '+' : '') + fmt(cur, 1);
+      $('k-kw').textContent = kw === null ? '—' : (kw > 0 ? '+' : '') + fmt(kw, 2);
+      $('k-soh').textContent = fmt(soh, 0);
+      $('k-avgcv').textContent = fmt(avgCv, 3);
+      $('k-avgct').textContent = fmt(avgCt, 1);
+
+      // Charging / discharging (Batt_I >= 0 = charging, per original logic)
+      const flow = $('p-flow'), fsub = $('k-cur-sub');
+      if (cur === null) { flow.className = 'pill pill-neutral'; flow.innerHTML = '<span class="d"></span>No data'; fsub.textContent = '—'; }
+      else if (cur > 0.5) { flow.className = 'pill pill-ok'; flow.innerHTML = '<span class="d"></span>Charging'; fsub.textContent = 'Charging'; }
+      else if (cur < -0.5) { flow.className = 'pill pill-warn'; flow.innerHTML = '<span class="d"></span>Discharging'; fsub.textContent = 'Discharging'; }
+      else { flow.className = 'pill pill-neutral'; flow.innerHTML = '<span class="d"></span>Idle'; fsub.textContent = 'Idle'; }
+
+      // State pill
+      const st = rawStr(xml, P + '_Control_Status') || rawStr(xml, P + '_state');
+      const ps = $('p-state');
+      if (!st) { ps.className = 'pill pill-neutral'; ps.innerHTML = '<span class="d"></span>Offline'; }
+      else { ps.className = 'pill pill-ok'; ps.innerHTML = '<span class="d"></span>' + st; }
+
+      // Alarm pill
+      const nAlarm = rawStr(xml, P + '_N_Alarm'), nFault = rawStr(xml, P + '_N_Flault');
+      const pa = $('p-alarm');
+      const alarmActive = (nAlarm && nAlarm !== '0' && nAlarm.toLowerCase() !== 'no') || (nFault && nFault !== '0' && nFault.toLowerCase() !== 'no');
+      if (!nAlarm && !nFault) { pa.className = 'pill pill-neutral'; pa.innerHTML = '<span class="d"></span>—'; }
+      else if (alarmActive) { pa.className = 'pill pill-err'; pa.innerHTML = '<span class="d"></span>Alarm'; }
+      else { pa.className = 'pill pill-ok'; pa.innerHTML = '<span class="d"></span>Normal'; }
+
+      // ---- cell stats ----
+      const maxCv = val(xml, P + '_Max_cV'), minCv = val(xml, P + '_Min_cV'), diffCv = val(xml, P + '_Max_Diff_cV');
+      const maxCt = val(xml, P + '_Max_cT');
+      $('s-maxcv').textContent = fmt(maxCv, 3);
+      $('s-mincv').textContent = fmt(minCv, 3);
+      $('s-diffcv').textContent = diffCv !== null ? fmt(diffCv, 3) : (maxCv !== null && minCv !== null ? fmt(maxCv - minCv, 3) : '—');
+      $('s-maxct').textContent = fmt(maxCt, 1);
+      const mxMd = rawStr(xml, P + '_Lo_Mx_cV_MD'), mxCl = rawStr(xml, P + '_Lo_Mx_cV_Cell');
+      const mnMd = rawStr(xml, P + '_Lo_Mn_cV_MD'), mnCl = rawStr(xml, P + '_Lo_Mn_cV_Cell');
+      const txMd = rawStr(xml, P + '_Lo_Mx_cT_MD'), txCl = rawStr(xml, P + '_Lo_Mx_cT_Cell');
+      $('s-maxcv-loc').textContent = `Module ${mxMd || '—'} · Cell ${mxCl || '—'}`;
+      $('s-mincv-loc').textContent = `Module ${mnMd || '—'} · Cell ${mnCl || '—'}`;
+      $('s-maxct-loc').textContent = `Module ${txMd || '—'} · Cell ${txCl || '—'}`;
+
+      // ---- voltage heatmap ----
+      // baseline = string Avg_cV; if missing, compute mean of present cells
+      let base = avgCv;
+      if (base === null) {
+        let sum = 0, n = 0;
+        for (let m = 1; m <= MODULES; m++) for (let c = 1; c <= CELLS_V; c++) { const v = val(xml, `${P}_Batt${m}_cV${c}`); if (v !== null) { sum += v; n++; } }
+        base = n ? sum / n : null;
+      }
+      $('hm-mode').textContent = base !== null ? `Relative to string average (${base.toFixed(3)} V)` : 'Relative to string average';
+
+      let hv = '';
+      for (let m = 1; m <= MODULES; m++) {
+        const mSoh = val(xml, `${P}_Batt${m}_SOH`), mAh = val(xml, `${P}_Batt${m}_Ah`);
+        let cells = '';
+        for (let c = 1; c <= CELLS_V; c++) {
+          const v = val(xml, `${P}_Batt${m}_cV${c}`);
+          if (v === null || base === null) { cells += `<div class="hm-cell cl-na" title="M${m} C${c}: no data">—</div>`; }
+          else {
+            const dev = v - base, cls = vClass(dev);
+            cells += `<div class="hm-cell ${cls}" title="Module ${m} · Cell ${c}\n${v.toFixed(3)} V (Δ ${(dev >= 0 ? '+' : '')}${dev.toFixed(3)})">${v.toFixed(2)}</div>`;
+          }
+        }
+        hv += `<div class="hm-row"><div class="hm-mod"><b>Module ${m}</b><span>SOH ${mSoh !== null ? mSoh.toFixed(0) + '%' : '—'} · ${mAh !== null ? mAh.toFixed(1) + 'Ah' : '—'}</span></div><div class="hm-cells">${cells}</div></div>`;
+      }
+      $('hm-v').innerHTML = hv;
+
+      // ---- cell temperature heatmap (6 cell probes per module: cT1..cT6) ----
+      let ht = '';
+      for (let m = 1; m <= MODULES; m++) {
+        let cells = '';
+        for (let c = 1; c <= CELLS_T; c++) {
+          const t = val(xml, `${P}_Batt${m}_cT${c}`);
+          if (t === null) { cells += `<div class="hm-cell cl-na" title="Module ${m} · Cell probe cT${c}: no data">—</div>`; }
+          else { cells += `<div class="hm-cell ${tClass(t)}" title="Module ${m} · Cell probe cT${c}\n${t.toFixed(1)} °C">${t.toFixed(0)}</div>`; }
+        }
+        ht += `<div class="hm-row"><div class="hm-mod"><b>Module ${m}</b><span>6 cell probes</span></div><div class="hm-cells">${cells}</div></div>`;
+      }
+      $('hm-t').innerHTML = ht;
+
+      // ---- HVB box / controller probe (string-level, 1 sensor: HVB{n}_cT1) ----
+      const ct = val(xml, `${P}_cT1`);
+      const chip = $('ctrl-chip'), val_ = $('ctrl-temp');
+      if (ct === null) {
+        val_.textContent = '—';
+        chip.className = 'ctrl-chip ctrl-na';
+        chip.title = `${P} controller probe cT1: no data (HVB box)`;
+      } else {
+        val_.textContent = ct.toFixed(1) + ' °C';
+        chip.className = 'ctrl-chip ctrl-' + (ct < 30 ? 'cool' : ct <= 40 ? 'warm' : 'hot');
+        chip.title = `${P} controller probe cT1 — temperature inside the HVB high-voltage box`;
+      }
+
+      // timestamp
+      const dsEl = xml.querySelector('DateServer');
+      const tsEl = xml.querySelector('TimeServer');
+      const ds = dsEl ? dsEl.textContent.trim() : null;
+      const ts = tsEl ? tsEl.textContent.trim() : null;
+
+      const scuStr = (ds && ts) ? (ds + ' ' + ts) : '—';
+      const xmlTime = new Date(scuStr).getTime();
+      const nowMs = Date.now();
+      const isOffline = isNaN(xmlTime) || (nowMs - xmlTime) > 15 * 60 * 1000;
+
+      const liveInd = $('live-indicator');
+      const statusStamp = $('status-stamp');
+
+      if (liveInd && statusStamp) {
+        if (isOffline) {
+          statusStamp.className = 'upd is-offline';
+          liveInd.className = 'offline';
+          liveInd.innerHTML = '<span style="display:inline-block;width:6px;height:6px;background:#ef4444;border-radius:50%;margin-right:6px"></span>Offline Monitoring - Battery';
+          liveInd.style.color = '#ef4444';
+          liveInd.style.display = 'inline-flex';
+          liveInd.style.alignItems = 'center';
+          liveInd.style.fontWeight = '500';
+        } else {
+          statusStamp.className = 'upd is-live';
+          liveInd.className = 'live';
+          liveInd.textContent = 'Live Monitoring - Battery';
+          liveInd.style.color = '';
+          liveInd.style.display = '';
+          liveInd.style.alignItems = '';
+          liveInd.style.fontWeight = '';
+        }
+      }
+
+      const updateEl = $('last-update');
+      if (updateEl) {
+        updateEl.textContent = ts ? ts : '—';
+        updateEl.style.color = isOffline ? '#ef4444' : '#1a1a1a';
+      }
+    }
+
+    async function fetchAndRender() {
+      try {
+        const res = await fetch(XML_URL + '?_=' + Date.now(), { cache: 'no-store' });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const xml = new DOMParser().parseFromString(await res.text(), 'text/xml');
+        lastXml = xml;
+        render(xml);
+      } catch (e) {
+        console.error('Battery fetch/render error:', e);
+        const s = $('last-update'); if (s) { s.textContent = 'error: ' + e.message; s.style.color = '#ef4444'; }
+      }
+    }
+    fetchAndRender();
+    setInterval(fetchAndRender, POLL_MS);
+  </script>
+</body>
+
+</html>
