@@ -260,7 +260,7 @@
     }
 
     .col-support {
-      margin-top: -155px;
+      margin-top: -265px;
     }
 
     .flow-wrap {
@@ -453,6 +453,70 @@
       color: var(--text-secondary);
       margin-left: 2px;
       font-weight: 500
+    }
+
+    .solar-stack {
+      display: grid;
+      gap: 8px
+    }
+
+    .solar-unit-row {
+      display: grid;
+      grid-template-columns: 1.05fr 1fr 1fr;
+      gap: 8px
+    }
+
+    .solar-unit-row.solar-unit-row-ac {
+      grid-template-columns: 1.2fr 1fr
+    }
+
+    .solar-unit-name,
+    .solar-metric {
+      background: var(--bg-panel);
+      border-radius: var(--radius-sm);
+      min-height: 0;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center
+    }
+
+    .solar-unit-name {
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.1
+    }
+
+    .solar-unit-name .sub {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      margin-top: 3px
+    }
+
+    .solar-metric .lbl {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.3px
+    }
+
+    .solar-metric .val {
+      font-family: var(--font-mono);
+      font-size: 16px;
+      font-weight: 600;
+      margin-top: 2px;
+      line-height: 1
+    }
+
+    .solar-metric .val .u {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-left: 4px
     }
 
     /* 3-phase table */
@@ -783,8 +847,8 @@
     }
 
     .gci-cell.active {
-      background: #fffbeb;
-      border-left: 3px solid var(--warning)
+      background: var(--bg-panel);
+      box-shadow: none
     }
 
     /* ---------- RESPONSIVE ---------- */
@@ -906,6 +970,29 @@
 
       .metric-box .lbl {
         font-size: 9px
+      }
+
+      .solar-unit-row {
+        grid-template-columns: 1fr;
+        gap: 8px
+      }
+
+      .solar-unit-row.solar-unit-row-ac {
+        grid-template-columns: 1fr
+      }
+
+      .solar-unit-name,
+      .solar-metric {
+        min-height: 0;
+        padding: 8px 10px
+      }
+
+      .solar-unit-name {
+        font-size: 14px
+      }
+
+      .solar-metric .val {
+        font-size: 14px
       }
 
       .weather-grid {
@@ -1037,6 +1124,23 @@
       .metric-box .lbl {
         font-size: 8px
       }
+
+      .solar-unit-name,
+      .solar-metric {
+        padding: 7px 8px
+      }
+
+      .solar-unit-name {
+        font-size: 13px
+      }
+
+      .solar-metric .lbl {
+        font-size: 8px
+      }
+
+      .solar-metric .val {
+        font-size: 12px
+      }
     }
   </style>
 </head>
@@ -1155,22 +1259,34 @@
           <div class="mono c-solar" style="font-size:18px;font-weight:600"><span id="gci-sum">—</span><span
               style="font-size:12px;color:#888">&nbsp;kW</span></div>
         </div>
-        <div class="gci-grid">
-          <div class="gci-cell" id="gci1-cell">
-            <div class="lbl">GCI 1</div>
-            <div class="val"><span id="gci1-p">—</span><span class="u">kW</span></div>
+        <div class="solar-stack" style="margin-top:10px">
+          <div class="solar-unit-row solar-unit-row-ac">
+            <div class="solar-unit-name">GCI 1<div class="sub">Grid-tied inverter</div></div>
+            <div class="solar-metric gci-cell" id="gci1-cell">
+              <div class="lbl">AC Power</div>
+              <div class="val"><span id="gci1-p">—</span><span class="u">kW</span></div>
+            </div>
           </div>
-          <div class="gci-cell" id="gci2-cell">
-            <div class="lbl">GCI 2</div>
-            <div class="val"><span id="gci2-p">—</span><span class="u">kW</span></div>
+          <div class="solar-unit-row solar-unit-row-ac">
+            <div class="solar-unit-name">GCI 2<div class="sub">Grid-tied inverter</div></div>
+            <div class="solar-metric gci-cell" id="gci2-cell">
+              <div class="lbl">AC Power</div>
+              <div class="val"><span id="gci2-p">—</span><span class="u">kW</span></div>
+            </div>
           </div>
-          <div class="gci-cell" id="gci3-cell">
-            <div class="lbl">GCI 3</div>
-            <div class="val"><span id="gci3-p">—</span><span class="u">kW</span></div>
+          <div class="solar-unit-row solar-unit-row-ac">
+            <div class="solar-unit-name">GCI 3<div class="sub">Grid-tied inverter</div></div>
+            <div class="solar-metric gci-cell" id="gci3-cell">
+              <div class="lbl">AC Power</div>
+              <div class="val"><span id="gci3-p">—</span><span class="u">kW</span></div>
+            </div>
           </div>
-          <div class="gci-cell" id="gci4-cell">
-            <div class="lbl">GCI 4</div>
-            <div class="val"><span id="gci4-p">—</span><span class="u">kW</span></div>
+          <div class="solar-unit-row solar-unit-row-ac">
+            <div class="solar-unit-name">GCI 4<div class="sub">Grid-tied inverter</div></div>
+            <div class="solar-metric gci-cell" id="gci4-cell">
+              <div class="lbl">AC Power</div>
+              <div class="val"><span id="gci4-p">—</span><span class="u">kW</span></div>
+            </div>
           </div>
         </div>
       </div>
@@ -1219,22 +1335,28 @@
     <div class="col col-support">
       <div class="card">
         <div class="card-title"><span class="dot" style="background:#f59e0b"></span>Solar DC (SCC 1 + SCC 2)</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-          <div class="metric-box">
-            <div class="lbl">SCC 1 — PV</div>
-            <div class="val mono c-solar"><span id="scc1-pv">—</span><span class="u">kW</span></div>
+        <div class="solar-stack">
+          <div class="solar-unit-row">
+            <div class="solar-unit-name">SCC 1<div class="sub">String Charge Controller</div></div>
+            <div class="solar-metric">
+              <div class="lbl">PV Power</div>
+              <div class="val mono c-solar"><span id="scc1-pv">—</span><span class="u">kW</span></div>
+            </div>
+            <div class="solar-metric">
+              <div class="lbl">Charge Power</div>
+              <div class="val mono"><span id="scc1-chg">—</span><span class="u">kW</span></div>
+            </div>
           </div>
-          <div class="metric-box">
-            <div class="lbl">SCC 1 — Charge</div>
-            <div class="val mono"><span id="scc1-chg">—</span><span class="u">kW</span></div>
-          </div>
-          <div class="metric-box">
-            <div class="lbl">SCC 2 — PV</div>
-            <div class="val mono c-solar"><span id="scc2-pv">—</span><span class="u">kW</span></div>
-          </div>
-          <div class="metric-box">
-            <div class="lbl">SCC 2 — Charge</div>
-            <div class="val mono"><span id="scc2-chg">—</span><span class="u">kW</span></div>
+          <div class="solar-unit-row">
+            <div class="solar-unit-name">SCC 2<div class="sub">String Charge Controller</div></div>
+            <div class="solar-metric">
+              <div class="lbl">PV Power</div>
+              <div class="val mono c-solar"><span id="scc2-pv">—</span><span class="u">kW</span></div>
+            </div>
+            <div class="solar-metric">
+              <div class="lbl">Charge Power</div>
+              <div class="val mono"><span id="scc2-chg">—</span><span class="u">kW</span></div>
+            </div>
           </div>
         </div>
         <div style="margin-top:12px">
@@ -1454,7 +1576,7 @@
     /* ============================================================
        XML data layer — Terusan
        ============================================================ */
-    const XML_URL = 'Xml/Main_test.xml';   // primary live data
+    const XML_URL = 'Xml/Main.xml';   // primary live data
     const XML_FALLBACK_URL = 'Xml2/Main.xml'; // battery aggregate data / fallback values
     const POLL_MS = 2000;
     const KPI_BAR_SCALE_KW = 50;
@@ -1522,6 +1644,8 @@
         const gciP = [data.gci1_power || 0, data.gci2_power || 0, data.gci3_power || 0, data.gci4_power || 0];
         const gciTot = gciP.reduce((a, b) => a + b, 0);
         const bdi1P = data.bdi1_power || 0;
+        const bdi2P = data.bdi2_power || 0;
+        const bdiTotP = bdi1P + bdi2P;
         const batP = data.battery_power || 0;
         const essP = data.ess_power ?? batP;
         const batS = data.ess_soc ?? data.battery_soc ?? 0;
@@ -1535,10 +1659,10 @@
         const rh = data.rh || 0;
 
         const genActive = gTot > 0.5;
-        const bdiCharging = bdi1P < -0.5;
-        const bdiDischarging = bdi1P > 0.5;
-        const batCharging = essP < -0.5;
-        const batDischarging = essP > 0.5;
+        const bdiCharging = bdiTotP < -0.5;
+        const bdiDischarging = bdiTotP > 0.5;
+        const batCharging = essP > 0.5;
+        const batDischarging = essP < -0.5;
 
         const W = 760;
         const cardW = 160;
@@ -1698,14 +1822,14 @@
         svg += node(bdiX, bdiY, {
           iconSym: 'bdi',
           iconColor: '#555',
-          title: 'BDI-Master',
-          titleSub: '150kW',
-          value: fmt(bdi1P, 1) + ' kW',
-          subLabel: bdiCharging ? 'Absorbing' : bdiDischarging ? 'Supplying' : 'Idle',
+          title: 'BDI',
+          titleSub: '300kW',
+          value: fmt(bdiTotP, 1) + ' kW',
+          subLabel: bdiCharging ? 'Charging' : bdiDischarging ? 'Supplying' : 'Idle',
           subColor: bdiColor,
           bg: '#f8f8f6',
           border: '#d5d3cc',
-          valueColor: Math.abs(bdi1P) > 0.5 ? '#1a1a1a' : '#aaa',
+          valueColor: Math.abs(bdiTotP) > 0.5 ? '#1a1a1a' : '#aaa',
         });
 
         svg += node(weatherX, weatherY, {
@@ -1773,8 +1897,9 @@
         const genOn = data.gen1_on || data.gen2_on;
         const irr = data.irradiance || 0, tMod = data.tmod || 0, tAmb = data.tamb || 0;
         const bdi1P = data.bdi1_power || 0, bdi2P = data.bdi2_power || 0;
+        const bdiTotP = bdi1P + bdi2P;
         
-        const batCharging = batP < -0.5, batDischarging = batP > 0.5;
+        const batCharging = batP > 0.5, batDischarging = batP < -0.5;
         const batColor = batCharging ? '#22c55e' : batDischarging ? '#8b5cf6' : '#888';
 
         function card(label, icon, value, sub, bg, brd, iconBg, iconColor, valueColor, labelSub) {
@@ -1853,8 +1978,7 @@
         
         html += divider;
         html += sectionHdr('DC bus &mdash; BDI &harr; Battery &harr; Solar DC');
-        html += card('BDI-Master', 'bdi', Math.abs(bdi1P).toFixed(2) + ' kW', bdi1Absorbing ? 'Absorbing (AC &rarr; DC)' : bdi1Supplying ? 'Supplying (DC &rarr; AC)' : 'Idle', '#f8f8f6', '#d5d3cc', '#eee', '#555', Math.abs(bdi1P) > 0.5 ? '#1a1a1a' : '#aaa', '150kW');
-        html += card('BDI-Slave', 'bdi', Math.abs(bdi2P).toFixed(2) + ' kW', bdi2Absorbing ? 'Absorbing (AC &rarr; DC)' : bdi2Supplying ? 'Supplying (DC &rarr; AC)' : 'Idle', '#f8f8f6', '#d5d3cc', '#eee', '#555', Math.abs(bdi2P) > 0.5 ? '#1a1a1a' : '#aaa', '150kW');
+        html += card('BDI', 'bdi', Math.abs(bdiTotP).toFixed(2) + ' kW', anyBdiAbsorbing ? 'Charging (AC &rarr; DC)' : anyBdiSupplying ? 'Supplying (DC &rarr; AC)' : 'Idle', '#f8f8f6', '#d5d3cc', '#eee', '#555', Math.abs(bdiTotP) > 0.5 ? '#1a1a1a' : '#aaa', '300kW');
         
         if (anyBdiAbsorbing) html += flow('down', '#22c55e', 'charging');
         else if (anyBdiSupplying) html += flow('up', '#8b5cf6', 'discharging');
@@ -2038,6 +2162,8 @@
       const socPct = soc1 !== null && soc2 !== null ? (soc1 + soc2) / 2 :
         soc1 !== null ? soc1 : soc2 !== null ? soc2 : 0;
 
+      const bdi1Total = num(xml, 'BDI1_BDI_Total_Power_kW', 2) ?? 0;
+      const bdi2Total = num(xml, 'BDI2_BDI_Total_Power_kW', 2) ?? 0;
       const bdi1DC = num(xml, 'BDI1_BDI_DC_Power_kW', 2) ?? 0;
       const bdi2DC = num(xml, 'BDI2_BDI_DC_Power_kW', 2) ?? 0;
       const battP = bdi1DC + bdi2DC;
@@ -2052,7 +2178,7 @@
 
       const essSoc = fallbackXml ? (num(fallbackXml, 'Batt_Avg_SOC', 1) ?? socPct) : socPct;
       const essVoltage = fallbackXml ? (num(fallbackXml, 'Batt_Avg_Voltage', 1) ?? battV ?? 0) : (battV ?? 0);
-      const essPower = fallbackXml ? (num(fallbackXml, 'Batt_Sum_Power_kW', 1) ?? battP ?? 0) : (battP ?? 0);
+      const essPower = battP ?? 0;
 
       setVal('b-v', battV, 1); setVal('b-i', battI);
       setText('b-p', battP !== null ? (battP > 0 ? '+' : '') + fmt(battP) : '—');
@@ -2066,10 +2192,10 @@
       if (battP === null) {
         bpill.className = 'pill pill-neutral';
         bpill.innerHTML = '<span class="dot dot-off"></span>Idle';
-      } else if (battP < -0.5) {
+      } else if (battP > 0.5) {
         bpill.className = 'pill pill-batt';
         bpill.innerHTML = '<span class="dot dot-batt"></span>Charging';
-      } else if (battP > 0.5) {
+      } else if (battP < -0.5) {
         bpill.className = 'pill pill-batt';
         bpill.innerHTML = '<span class="dot dot-batt"></span>Discharging';
       } else {
@@ -2126,7 +2252,7 @@
 
       $('k-solar-sub').textContent = rad !== null ? `Irradiance ${fmt(rad, 0)} W/m²` : 'PV production';
       $('k-grid-sub').textContent = `GEN-1 ${fmt(g1P, 1)} · GEN-2 ${fmt(g2P, 1)}`;
-      $('k-batt-sub').textContent = battP < -0.5 ? 'Charging' : (battP > 0.5 ? 'Discharging' : 'Idle');
+      $('k-batt-sub').textContent = battP > 0.5 ? 'Charging' : (battP < -0.5 ? 'Discharging' : 'Idle');
 
       const maxRef = KPI_BAR_SCALE_KW;
       $('k-solar-bar').style.width = Math.min(100, (solarTotal / maxRef) * 100) + '%';
@@ -2139,7 +2265,7 @@
         gen1_power: g1P, gen1_on: g1Run === 'Running',
         gen2_power: g2P, gen2_on: g2Run === 'Running',
         gci1_power: gci1P, gci2_power: gci2P, gci3_power: gci3P, gci4_power: gci4P,
-        bdi1_power: bdi1DC, bdi2_power: bdi2DC,
+        bdi1_power: bdi1Total, bdi2_power: bdi2Total,
         bdi1_soc: soc1 ?? 0,
         bdi1_current: bdi1I,
         bdi2_soc: soc2 ?? 0,
