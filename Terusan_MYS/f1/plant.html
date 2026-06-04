@@ -256,10 +256,15 @@
       border-radius: var(--radius-lg);
       padding: 16px;
       min-width: 0;
+      align-self: start;
+    }
+
+    .col-support {
+      margin-top: -155px;
     }
 
     .flow-wrap {
-      background: #ffffff;
+      background: var(--bg-panel);
       border: 1px solid var(--border-default);
       border-radius: var(--radius-md);
       padding: 12px;
@@ -792,6 +797,10 @@
       .flow-card {
         grid-column: 1 / -1;
       }
+
+      .col-support {
+        margin-top: 0;
+      }
     }
 
     @media (max-width: 768px) {
@@ -1109,7 +1118,7 @@
     <!-- ==================== DEVICE CARDS ==================== -->
 
     <!-- Column 1: Battery + GCI -->
-    <div class="col">
+    <div class="col col-main">
       <div class="card">
         <div class="card-title"><span class="dot" style="background:#8b5cf6"></span>Battery (BDI 1 + BDI 2)</div>
         <div class="batt-vis">
@@ -1207,7 +1216,7 @@
     </div>
 
     <!-- Column 2: SCC + Load -->
-    <div class="col">
+    <div class="col col-support">
       <div class="card">
         <div class="card-title"><span class="dot" style="background:#f59e0b"></span>Solar DC (SCC 1 + SCC 2)</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
@@ -1387,7 +1396,7 @@
     </div>
 
     <!-- Column 3: Generator + Weather + AC Input -->
-    <div class="col">
+    <div class="col col-side">
       <div class="card">
         <div class="card-title"><span class="dot" style="background:#3b82f6"></span>AC Buts — Ctrl PM</div>
         <table class="phase-table">
@@ -1445,7 +1454,7 @@
     /* ============================================================
        XML data layer — Terusan
        ============================================================ */
-    const XML_URL = 'Xml/Main.xml';   // primary live data
+    const XML_URL = 'Xml/Main_test.xml';   // primary live data
     const XML_FALLBACK_URL = 'Xml2/Main.xml'; // battery aggregate data / fallback values
     const POLL_MS = 2000;
     const KPI_BAR_SCALE_KW = 50;
@@ -1543,7 +1552,7 @@
         const weatherX = 650, weatherY = bdiY;
         const batX = bdiX, batY = bdiY + 170;
         const sccX = genX, sccY = Math.round((bdiY + batY) / 2);
-        const svgH = batY + cardH / 2 + 30;
+        const svgH = batY + cardH / 2 + 16;
 
         const node = (x, y, opts) => {
           const { iconSym, iconColor, title, titleSub, value, subLabel, bg, border, valueColor, subColor, w, h, borderWidth } = opts;
@@ -1558,7 +1567,7 @@
           if (iconSym === 'solar') {
             svgPaths = `<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M4.93 4.93l1.41 1.41"/><path d="M17.66 17.66l1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M6.34 17.66l-1.41 1.41"/><path d="M19.07 4.93l-1.41 1.41"/>`;
           } else if (iconSym === 'gen') {
-            svgPaths = `<rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><circle cx="12" cy="12" r="3"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M2 12h2"/><path d="M20 12h2"/>`;
+            svgPaths = `<path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>`;
           } else if (iconSym === 'load') {
             svgPaths = `<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>`;
           } else if (iconSym === 'batt') {
@@ -1675,7 +1684,7 @@
           iconColor: '#555',
           title: 'BDI-Master',
           titleSub: '150kW',
-          value: (bdi1P > 0 ? '+' : '') + fmt(bdi1P, 1) + ' kW',
+          value: fmt(bdi1P, 1) + ' kW',
           subLabel: bdiCharging ? 'Absorbing' : bdiDischarging ? 'Supplying' : 'Idle',
           subColor: bdiColor,
           bg: '#f8f8f6',
@@ -1701,7 +1710,7 @@
           iconColor: '#a855f7',
           title: 'BATTERY',
           titleSub: '1,350.45kWh',
-          value: (essP > 0 ? '+' : '') + fmt(essP, 1) + ' kW',
+          value: fmt(essP, 1) + ' kW',
           subLabel: 'SOC ' + Math.round(batS) + '%',
           subColor: '#888',
           bg: '#faf5ff',
@@ -1751,7 +1760,7 @@
           if (icon === 'solar') {
             svgPaths = `<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M4.93 4.93l1.41 1.41"/><path d="M17.66 17.66l1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M6.34 17.66l-1.41 1.41"/><path d="M19.07 4.93l-1.41 1.41"/>`;
           } else if (icon === 'gen') {
-            svgPaths = `<rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><circle cx="12" cy="12" r="3"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M2 12h2"/><path d="M20 12h2"/>`;
+            svgPaths =`<path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>`;
           } else if (icon === 'load') {
             svgPaths = `<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>`;
           } else if (icon === 'batt') {
@@ -1833,10 +1842,10 @@
         
         // Add SOC bar to battery card similar to reference
         const socColor = batS < 20 ? '#ef4444' : batS < 50 ? '#f59e0b' : '#22c55e';
-        const batteryCardStr = `<div class="mpf-card" style="background:#faf5ff;border-color:#d8b4fe;border-radius:12px;">
+      const batteryCardStr = `<div class="mpf-card" style="background:#faf5ff;border-color:#d8b4fe;border-radius:12px;">
       <div class="mpf-ic" style="background:#ede9fe;color:#8b5cf6"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="16" height="10" rx="2"/><path d="M20 10v4"/><line x1="6" y1="10" x2="6" y2="14"/><line x1="10" y1="10" x2="10" y2="14"/><line x1="14" y1="10" x2="14" y2="14"/></svg></div>
       <div class="mpf-body"><div class="mpf-l">Battery<span style="font-size:11px;font-weight:400;color:#888;text-transform:uppercase"> &middot; 1,350.45kWh</span></div>
-      <div class="mpf-v" style="color:${batColor}">${(batP > 0 ? '+' : '')}${batP.toFixed(2)} kW</div>
+      <div class="mpf-v" style="color:${batColor}">${batP.toFixed(2)} kW</div>
       <div style="height:4px;background:#e8e6df;border-radius:2px;margin-top:6px;overflow:hidden">
       <div style="height:100%;width:${batS}%;background:${socColor};border-radius:2px"></div></div></div></div>`;
         
