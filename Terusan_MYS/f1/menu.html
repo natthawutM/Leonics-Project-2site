@@ -9,17 +9,7 @@
   <meta http-equiv="Expires" content="0">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Terusan - Leonics MOC</title>
-  <script>
-    if (window.history && window.history.replaceState) {
-      var basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
-      if (!document.querySelector('base')) {
-        var base = document.createElement('base');
-        base.href = basePath;
-        document.head.appendChild(base);
-      }
-      window.history.replaceState({}, document.title, '/#');
-    }
-  </script>
+  <script src="js/path-mask.js"></script>
   <link
     href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap"
     rel="stylesheet">
@@ -673,28 +663,115 @@
   </div>
 
   <script>
-    // Active state for nav tabs (click highlight)
+    // Active state + history sync for nav tabs
     (function () {
-      const buttons = document.querySelectorAll('.nav-btn');
+      const buttons = Array.from(document.querySelectorAll('.nav-btn'));
       const mainFrame = document.getElementById('IF_m');
-      buttons.forEach(btn => {
-        btn.addEventListener('click', function () {
-          buttons.forEach(b => b.classList.remove('active'));
-          this.classList.add('active');
-          if (mainFrame) {
-            mainFrame.setAttribute('scrolling', this.dataset.scroll || 'auto');
-          }
+      const defaultButton = document.querySelector('.nav-btn.active') || buttons[0];
+
+      function normalizeSrc(href) {
+        return href || '';
+      }
+
+      function buildState(button) {
+        return {
+          maskedPath: true,
+          realPath: window.location.pathname + window.location.search,
+          navKey: button ? (button.dataset.nav || '') : '',
+          frameSrc: button ? normalizeSrc(button.getAttribute('href')) : '',
+          frameScroll: button ? (button.dataset.scroll || 'auto') : 'auto'
+        };
+      }
+
+      function getButtonByNav(navKey) {
+        return buttons.find(function (btn) {
+          return btn.dataset.nav === navKey;
+        }) || null;
+      }
+
+      function getButtonBySrc(src) {
+        const cleanSrc = normalizeSrc(src).split('?')[0];
+        return buttons.find(function (btn) {
+          return normalizeSrc(btn.getAttribute('href')).split('?')[0] === cleanSrc;
+        }) || null;
+      }
+
+      function applyActive(button) {
+        buttons.forEach(function (btn) {
+          btn.classList.toggle('active', btn === button);
         });
+      }
+
+      function applyView(button, options) {
+        const opts = options || {};
+        if (!button || !mainFrame) {
+          return;
+        }
+        applyActive(button);
+        mainFrame.setAttribute('scrolling', button.dataset.scroll || 'auto');
+        if (opts.forceSrc !== false) {
+          const nextSrc = normalizeSrc(button.getAttribute('href'));
+          if (mainFrame.getAttribute('src') !== nextSrc) {
+            mainFrame.setAttribute('src', nextSrc);
+          }
+        }
+      }
+
+      function syncFromFrame() {
+        if (!mainFrame) {
+          return;
+        }
+        let framePath = '';
+        try {
+          framePath = mainFrame.contentWindow.location.pathname || '';
+        } catch (err) {
+          framePath = mainFrame.getAttribute('src') || '';
+        }
+        const frameSrc = framePath.split('/').pop() || mainFrame.getAttribute('src') || '';
+        const matched = getButtonBySrc(frameSrc);
+        if (matched) {
+          applyActive(matched);
+          mainFrame.setAttribute('scrolling', matched.dataset.scroll || 'auto');
+        }
+      }
+
+      buttons.forEach(function (btn) {
+        btn.addEventListener('click', function (event) {
+          event.preventDefault();
+          applyView(btn);
+          window.history.pushState(buildState(btn), document.title, '/#');
+        });
+      });
+
+      window.addEventListener('popstate', function (event) {
+        const state = event.state || {};
+        const targetButton =
+          getButtonByNav(state.navKey) ||
+          getButtonBySrc(state.frameSrc) ||
+          defaultButton;
+
+        applyView(targetButton);
       });
 
       if (mainFrame) {
         mainFrame.addEventListener('load', function () {
-          try {
-            const src = mainFrame.contentWindow.location.pathname || '';
-            const isEnergyPage = src.indexOf('graph_energy.php') !== -1;
-            mainFrame.setAttribute('scrolling', isEnergyPage ? 'no' : 'auto');
-          } catch (err) {}
+          syncFromFrame();
         });
+      }
+
+      const initialState = window.history.state || {};
+      const initialButton =
+        getButtonByNav(initialState.navKey) ||
+        getButtonBySrc(initialState.frameSrc) ||
+        defaultButton;
+
+      if (initialButton) {
+        applyView(initialButton, { forceSrc: false });
+        window.history.replaceState(
+          Object.assign({}, buildState(initialButton), initialState),
+          document.title,
+          '/#'
+        );
       }
     })();
 

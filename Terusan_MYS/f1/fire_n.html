@@ -2,17 +2,7 @@
 <html>
 <head>
 
-  <script>
-    if (window.history && window.history.replaceState) {
-      var basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
-      if (!document.querySelector('base')) {
-        var base = document.createElement('base');
-        base.href = basePath;
-        document.head.appendChild(base);
-      }
-      window.history.replaceState({}, document.title, '/#');
-    }
-  </script>
+  <script src="js/path-mask.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
 	<title>Untitled</title>
