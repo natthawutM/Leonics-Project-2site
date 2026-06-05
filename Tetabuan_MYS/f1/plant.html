@@ -170,7 +170,7 @@
     .kpi-sub {
       font-size: 11px;
       color: var(--text-tertiary);
-      margin-top: 4px
+      margin-top: 4px;
     }
 
     .kpi-bar {
@@ -238,7 +238,7 @@
 
     /* ---------- POWER FLOW DIAGRAM (full-width, landscape) ---------- */
     .flow-card {
-      grid-column: 1 / 2;
+      grid-column: 1 / -1;
       background: var(--bg-card);
       border: 1px solid var(--border-default);
       border-radius: var(--radius-lg);
@@ -248,7 +248,7 @@
     }
 
     .col-support {
-      margin-top: -250px;
+      margin-top: 0;
     }
 
     .flow-wrap {
@@ -455,7 +455,7 @@
     }
 
     .solar-unit-row.solar-unit-row-ac {
-      grid-template-columns: 1.2fr 1fr
+      grid-template-columns: 1.05fr 1fr 1fr
     }
 
     .solar-unit-name,
@@ -876,60 +876,41 @@
 
     @media (max-width: 600px) {
       body {
-        padding: 8px
+        padding: 10px
       }
 
       .dash {
-        gap: 8px
+        gap: 10px
+      }
+
+      .col {
+        gap: 10px
       }
 
       .card {
-        padding: 10px;
+        padding: 12px;
         border-radius: 10px
       }
 
-      .card-title {
-        margin-bottom: 8px;
-        font-size: 10px
-      }
-
       .kpi-strip {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 6px
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px
       }
 
-      /* 4 in a row to fit all */
       .kpi {
-        padding: 8px 8px
+        padding: 10px 12px
       }
 
       .kpi-label {
-        font-size: 9px;
-        letter-spacing: 0.1px;
-        gap: 4px
-      }
-
-      .kpi-icon {
-        width: 8px;
-        height: 8px
+        font-size: 10px
       }
 
       .kpi-value {
-        font-size: 15px;
-        margin-top: 2px
-      }
-
-      .kpi-unit {
-        font-size: 10px;
-        margin-left: 2px
+        font-size: 20px
       }
 
       .kpi-sub {
-        font-size: 9px;
-        margin-top: 2px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis
+        font-size: 10px
       }
 
       .phase-table th,
@@ -1046,7 +1027,7 @@
       }
 
       .solar-unit-row.solar-unit-row-ac {
-        grid-template-columns: 1fr
+        grid-template-columns: 1.05fr 1fr 1fr
       }
 
       .solar-unit-name,
@@ -1081,24 +1062,25 @@
       }
 
       .kpi-strip {
-        gap: 4px
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px
       }
 
       .kpi {
-        padding: 6px 6px
+        padding: 8px 10px;
       }
 
       .kpi-value {
-        font-size: 13px
+        font-size: 18px
       }
 
       .kpi-label {
-        font-size: 8px;
+        font-size: 9px;
         gap: 3px
       }
 
       .kpi-sub {
-        font-size: 8px
+        font-size: 9px;
       }
 
       .metric-box {
@@ -1178,187 +1160,38 @@
     <div class="kpi-strip full" id="energy-strip" style="margin-top:-4px">
       <div class="kpi">
         <div class="kpi-label"><span class="kpi-icon bg-solar"></span>Today Solar</div>
-        <div class="kpi-value c-solar" style="font-size:20px"><span id="e-solar">—</span><span
+        <div class="kpi-value c-solar"><span id="e-solar">—</span><span
             class="kpi-unit">kWh</span></div>
         <div class="kpi-sub" id="e-solar-sub">Production today</div>
       </div>
       <div class="kpi">
         <div class="kpi-label"><span class="kpi-icon bg-grid"></span>Today Gen</div>
-        <div class="kpi-value c-grid" style="font-size:20px"><span id="e-gen">—</span><span class="kpi-unit">kWh</span>
+        <div class="kpi-value c-grid"><span id="e-gen">—</span><span class="kpi-unit">kWh</span>
         </div>
         <div class="kpi-sub" id="e-gen-sub">Generator today</div>
       </div>
       <div class="kpi">
         <div class="kpi-label"><span class="kpi-icon bg-load"></span>Today Load</div>
-        <div class="kpi-value" id="e-load-wrap" style="font-size:20px;color:#1a1a1a"><span id="e-load">—</span><span
+        <div class="kpi-value" id="e-load-wrap" style="color:#1a1a1a"><span id="e-load">—</span><span
             class="kpi-unit" id="e-load-unit">kWh</span>
         </div>
         <div class="kpi-sub" id="e-load-sub">Consumption today</div>
       </div>
       <div class="kpi">
         <div class="kpi-label"><span class="kpi-icon" style="background:#22c55e"></span>Solar Ratio</div>
-        <div class="kpi-value" style="font-size:20px;color:#22c55e"><span id="e-ratio">—</span><span
+        <div class="kpi-value" style="color:#22c55e"><span id="e-ratio">—</span><span
             class="kpi-unit">%</span></div>
         <div class="kpi-sub" id="e-co2">CO₂ saved: — kg</div>
       </div>
     </div>
 
-    <!-- ==================== POWER FLOW (full width, landscape) ==================== -->
-    <div class="flow-card">
-      <div class="card-title"><span class="dot dot-ok"></span>Power flow — Tetabuan</div>
-      <div class="flow-wrap" id="powerflow-host"></div>
-    </div>
-
     <!-- ==================== DEVICE CARDS ==================== -->
 
-    <!-- Column 1: Battery + GCI -->
+    <!-- Column 1: Power flow + Load + BDI output -->
     <div class="col">
       <div class="card">
-        <div class="card-title"><span class="dot" style="background:#8b5cf6"></span>Battery (BDI 1 + BDI 2)</div>
-        <div class="batt-vis">
-          <div class="batt-shell">
-            <div id="batt-fill" class="batt-fill" style="width:0%;background:#8b5cf6"></div>
-          </div>
-          <div id="batt-pct" class="batt-pct c-batt">—</div>
-        </div>
-        <div class="metric-row" style="margin-top:12px">
-          <div class="metric-box">
-            <div class="lbl">Voltage</div>
-            <div class="val mono"><span id="b-v">—</span><span class="u">V</span></div>
-          </div>
-          <div class="metric-box">
-            <div class="lbl">Current</div>
-            <div class="val mono"><span id="b-i">—</span><span class="u">A</span></div>
-          </div>
-          <div class="metric-box">
-            <div class="lbl">DC Power</div>
-            <div class="val mono c-batt"><span id="b-p">—</span><span class="u">kW</span></div>
-          </div>
-        </div>
-        <div style="margin-top:10px;display:flex;justify-content:space-between;align-items:center">
-          <span id="b-status" class="pill pill-neutral"><span class="dot dot-off"></span>Idle</span>
-          <span style="font-size:11px;color:#aaa">BDI1: <span id="b-bdi1" class="mono" style="color:#1a1a1a">—</span> ·
-            BDI2: <span id="b-bdi2" class="mono" style="color:#1a1a1a">—</span> kW</span>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-title"><span class="dot" style="background:#f59e0b"></span>Solar AC (GCI 1–4)</div>
-        <div style="display:flex;justify-content:space-between;align-items:baseline">
-          <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.3px">Total AC output</div>
-          <div class="mono c-solar" style="font-size:18px;font-weight:600"><span id="gci-sum">—</span><span
-              style="font-size:12px;color:#888">&nbsp;kW</span></div>
-        </div>
-        <div class="solar-stack" style="margin-top:10px">
-          <div class="solar-unit-row solar-unit-row-ac">
-            <div class="solar-unit-name">GCI 1<div class="sub">Grid-tied inverter</div></div>
-            <div class="solar-metric gci-cell" id="gci1-cell">
-              <div class="lbl">AC Power</div>
-              <div class="val"><span id="gci1-p">—</span><span class="u">kW</span></div>
-            </div>
-          </div>
-          <div class="solar-unit-row solar-unit-row-ac">
-            <div class="solar-unit-name">GCI 2<div class="sub">Grid-tied inverter</div></div>
-            <div class="solar-metric gci-cell" id="gci2-cell">
-              <div class="lbl">AC Power</div>
-              <div class="val"><span id="gci2-p">—</span><span class="u">kW</span></div>
-            </div>
-          </div>
-          <div class="solar-unit-row solar-unit-row-ac">
-            <div class="solar-unit-name">GCI 3<div class="sub">Grid-tied inverter</div></div>
-            <div class="solar-metric gci-cell" id="gci3-cell">
-              <div class="lbl">AC Power</div>
-              <div class="val"><span id="gci3-p">—</span><span class="u">kW</span></div>
-            </div>
-          </div>
-          <div class="solar-unit-row solar-unit-row-ac">
-            <div class="solar-unit-name">GCI 4<div class="sub">Grid-tied inverter</div></div>
-            <div class="solar-metric gci-cell" id="gci4-cell">
-              <div class="lbl">AC Power</div>
-              <div class="val"><span id="gci4-p">—</span><span class="u">kW</span></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-title"><span class="dot" style="background:#ea580c"></span>Diesel generators</div>
-        <div class="gen-row">
-          <div>
-            <div class="gen-name">Generator 1</div>
-            <div class="gen-sub">Runtime: <span id="g1-hr" class="mono">—</span> h • Today: <span id="g1-td"
-                class="mono">—</span> kWh</div>
-          </div>
-          <div class="gen-right">
-            <span id="g1-pill" class="pill pill-neutral"><span class="dot dot-off"></span>—</span>
-            <div style="margin-top:4px;font-size:11px;color:#888">Power <span id="g1-p" class="v">—</span> kW</div>
-          </div>
-        </div>
-        <div class="gen-row">
-          <div>
-            <div class="gen-name">Generator 2</div>
-            <div class="gen-sub">Runtime: <span id="g2-hr" class="mono">—</span> h • Today: <span id="g2-td"
-                class="mono">—</span> kWh</div>
-          </div>
-          <div class="gen-right">
-            <span id="g2-pill" class="pill pill-neutral"><span class="dot dot-off"></span>—</span>
-            <div style="margin-top:4px;font-size:11px;color:#888">Power <span id="g2-p" class="v">—</span> kW</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-title"><span class="dot" style="background:#06b6d4"></span>Weather &amp; environment</div>
-        <div class="weather-grid">
-          <div class="w-tile"><span class="l">Module temp</span><span class="r mono"><span id="w-tmod">—</span>°C</span>
-          </div>
-          <div class="w-tile"><span class="l">Ambient</span><span class="r mono"><span id="w-tamb">—</span>°C</span>
-          </div>
-          <div class="w-tile"><span class="l">Humidity</span><span class="r mono"><span id="w-rh">—</span>%</span></div>
-          <div class="w-tile"><span class="l">Today Irr.</span><span class="r mono"><span id="w-irrkwh">—</span>
-              kWh/m²</span></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Column 2: SCC + Load -->
-    <div class="col col-support">
-      <div class="card">
-        <div class="card-title"><span class="dot" style="background:#f59e0b"></span>Solar DC (SCC 1 + SCC 2)</div>
-        <div class="solar-stack">
-          <div class="solar-unit-row">
-            <div class="solar-unit-name">SCC 1<div class="sub">String Charge Controller</div></div>
-            <div class="solar-metric">
-              <div class="lbl">PV Power</div>
-              <div class="val mono c-solar"><span id="scc1-pv">—</span><span class="u">kW</span></div>
-            </div>
-            <div class="solar-metric">
-              <div class="lbl">Charge Power</div>
-              <div class="val mono"><span id="scc1-chg">—</span><span class="u">kW</span></div>
-            </div>
-          </div>
-          <div class="solar-unit-row">
-            <div class="solar-unit-name">SCC 2<div class="sub">String Charge Controller</div></div>
-            <div class="solar-metric">
-              <div class="lbl">PV Power</div>
-              <div class="val mono c-solar"><span id="scc2-pv">—</span><span class="u">kW</span></div>
-            </div>
-            <div class="solar-metric">
-              <div class="lbl">Charge Power</div>
-              <div class="val mono"><span id="scc2-chg">—</span><span class="u">kW</span></div>
-            </div>
-          </div>
-        </div>
-        <div style="margin-top:12px">
-          <div
-            style="display:flex;justify-content:space-between;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.3px">
-            <span>Irradiance</span>
-            <span class="mono" style="color:#1a1a1a"><span id="s-rad">—</span> W/m²</span>
-          </div>
-          <div class="irrad-meter">
-            <div id="s-rad-bar" class="irrad-fill" style="width:0%"></div>
-          </div>
-        </div>
+        <div class="card-title"><span class="dot dot-ok"></span>Power flow — Tetabuan</div>
+        <div class="flow-wrap" id="powerflow-host"></div>
       </div>
 
       <div class="card">
@@ -1505,6 +1338,164 @@
           </tbody>
         </table>
       </div>
+
+    </div>
+
+    <!-- Column 2: Battery + Solar + Generators + Weather -->
+    <div class="col col-support">
+      <div class="card">
+        <div class="card-title"><span class="dot" style="background:#8b5cf6"></span>Battery (BDI 1 + BDI 2)</div>
+        <div class="batt-vis">
+          <div class="batt-shell">
+            <div id="batt-fill" class="batt-fill" style="width:0%;background:#8b5cf6"></div>
+          </div>
+          <div id="batt-pct" class="batt-pct c-batt">—</div>
+        </div>
+        <div class="metric-row" style="margin-top:12px">
+          <div class="metric-box">
+            <div class="lbl">Voltage</div>
+            <div class="val mono"><span id="b-v">—</span><span class="u">V</span></div>
+          </div>
+          <div class="metric-box">
+            <div class="lbl">Current</div>
+            <div class="val mono"><span id="b-i">—</span><span class="u">A</span></div>
+          </div>
+          <div class="metric-box">
+            <div class="lbl">DC Power</div>
+            <div class="val mono c-batt"><span id="b-p">—</span><span class="u">kW</span></div>
+          </div>
+        </div>
+        <div style="margin-top:10px;display:flex;justify-content:space-between;align-items:center">
+          <span id="b-status" class="pill pill-neutral"><span class="dot dot-off"></span>Idle</span>
+          <span style="font-size:11px;color:#aaa">BDI1: <span id="b-bdi1" class="mono" style="color:#1a1a1a">—</span> ·
+            BDI2: <span id="b-bdi2" class="mono" style="color:#1a1a1a">—</span> kW</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot" style="background:#f59e0b"></span>Solar AC (GCI 1–4)</div>
+        <div class="solar-stack" style="margin-top:10px">
+          <div class="solar-unit-row solar-unit-row-ac">
+            <div class="solar-unit-name">GCI 1</div>
+            <div class="solar-metric">
+              <div class="lbl">PV Power</div>
+              <div class="val mono c-solar"><span id="gci1-pv">—</span><span class="u">kW</span></div>
+            </div>
+            <div class="solar-metric gci-cell" id="gci1-cell">
+              <div class="lbl">AC Power</div>
+              <div class="val"><span id="gci1-p">—</span><span class="u">kW</span></div>
+            </div>
+          </div>
+          <div class="solar-unit-row solar-unit-row-ac">
+            <div class="solar-unit-name">GCI 2</div>
+            <div class="solar-metric">
+              <div class="lbl">PV Power</div>
+              <div class="val mono c-solar"><span id="gci2-pv">—</span><span class="u">kW</span></div>
+            </div>
+            <div class="solar-metric gci-cell" id="gci2-cell">
+              <div class="lbl">AC Power</div>
+              <div class="val"><span id="gci2-p">—</span><span class="u">kW</span></div>
+            </div>
+          </div>
+          <div class="solar-unit-row solar-unit-row-ac">
+            <div class="solar-unit-name">GCI 3</div>
+            <div class="solar-metric">
+              <div class="lbl">PV Power</div>
+              <div class="val mono c-solar"><span id="gci3-pv">—</span><span class="u">kW</span></div>
+            </div>
+            <div class="solar-metric gci-cell" id="gci3-cell">
+              <div class="lbl">AC Power</div>
+              <div class="val"><span id="gci3-p">—</span><span class="u">kW</span></div>
+            </div>
+          </div>
+          <div class="solar-unit-row solar-unit-row-ac">
+            <div class="solar-unit-name">GCI 4</div>
+            <div class="solar-metric">
+              <div class="lbl">PV Power</div>
+              <div class="val mono c-solar"><span id="gci4-pv">—</span><span class="u">kW</span></div>
+            </div>
+            <div class="solar-metric gci-cell" id="gci4-cell">
+              <div class="lbl">AC Power</div>
+              <div class="val"><span id="gci4-p">—</span><span class="u">kW</span></div>
+            </div>
+          </div>
+        </div>
+        <div style="margin:14px 0 10px;border-top:1px solid var(--border-default)"></div>
+        <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:10px">Solar DC (SCC 1 + SCC 2)</div>
+        <div class="solar-stack">
+          <div class="solar-unit-row">
+            <div class="solar-unit-name">SCC 1</div>
+            <div class="solar-metric">
+              <div class="lbl">PV Power</div>
+              <div class="val mono c-solar"><span id="scc1-pv">—</span><span class="u">kW</span></div>
+            </div>
+            <div class="solar-metric">
+              <div class="lbl">Charge Power</div>
+              <div class="val mono"><span id="scc1-chg">—</span><span class="u">kW</span></div>
+            </div>
+          </div>
+          <div class="solar-unit-row">
+            <div class="solar-unit-name">SCC 2</div>
+            <div class="solar-metric">
+              <div class="lbl">PV Power</div>
+              <div class="val mono c-solar"><span id="scc2-pv">—</span><span class="u">kW</span></div>
+            </div>
+            <div class="solar-metric">
+              <div class="lbl">Charge Power</div>
+              <div class="val mono"><span id="scc2-chg">—</span><span class="u">kW</span></div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:12px">
+          <div
+            style="display:flex;justify-content:space-between;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.3px">
+            <span>Irradiance</span>
+            <span class="mono" style="color:#1a1a1a"><span id="s-rad">—</span> W/m²</span>
+          </div>
+          <div class="irrad-meter">
+            <div id="s-rad-bar" class="irrad-fill" style="width:0%"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot" style="background:#ea580c"></span>Diesel generators</div>
+        <div class="gen-row">
+          <div>
+            <div class="gen-name">Generator 1</div>
+            <div class="gen-sub">Runtime: <span id="g1-hr" class="mono">—</span> h • Today: <span id="g1-td"
+                class="mono">—</span> kWh</div>
+          </div>
+          <div class="gen-right">
+            <span id="g1-pill" class="pill pill-neutral"><span class="dot dot-off"></span>—</span>
+            <div style="margin-top:4px;font-size:11px;color:#888">Power <span id="g1-p" class="v">—</span> kW</div>
+          </div>
+        </div>
+        <div class="gen-row">
+          <div>
+            <div class="gen-name">Generator 2</div>
+            <div class="gen-sub">Runtime: <span id="g2-hr" class="mono">—</span> h • Today: <span id="g2-td"
+                class="mono">—</span> kWh</div>
+          </div>
+          <div class="gen-right">
+            <span id="g2-pill" class="pill pill-neutral"><span class="dot dot-off"></span>—</span>
+            <div style="margin-top:4px;font-size:11px;color:#888">Power <span id="g2-p" class="v">—</span> kW</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot" style="background:#06b6d4"></span>Weather &amp; environment</div>
+        <div class="weather-grid">
+          <div class="w-tile"><span class="l">Module temp</span><span class="r mono"><span id="w-tmod">—</span>°C</span>
+          </div>
+          <div class="w-tile"><span class="l">Ambient</span><span class="r mono"><span id="w-tamb">—</span>°C</span>
+          </div>
+          <div class="w-tile"><span class="l">Humidity</span><span class="r mono"><span id="w-rh">—</span>%</span></div>
+          <div class="w-tile"><span class="l">Today Irr.</span><span class="r mono"><span id="w-irrkwh">—</span>
+              kWh/m²</span></div>
+        </div>
+      </div>
     </div>
 
     <!-- Column 3: Generator + Weather + AC Input -->
@@ -1569,7 +1560,10 @@
     const XML_URL = 'Xml/Main_test.xml';   // primary live data
     const XML_FALLBACK_URL = 'Xml2/Main.xml'; // fallback/mock data for Err/0 values
     const POLL_MS = 2000;
-    const KPI_BAR_SCALE_KW = 50;
+    const KPI_SOLAR_BAR_SCALE_KW = 490;
+    const KPI_GENERATOR_BAR_SCALE_KW = 1100;
+    const KPI_LOAD_BAR_SCALE_KW = 400;
+    const KPI_BATTERY_BAR_SCALE_KW = 1575;
 
     const $ = (id) => document.getElementById(id);
 
@@ -1644,7 +1638,9 @@
         const tAmb = data.tamb || 0;
         const rh = data.rh || 0;
 
-        const genActive = gTot > 0.5;
+        const genVoltageMax = Math.max(data.gen1_voltage || 0, data.gen2_voltage || 0);
+        const genStatus = gTot > 0.5 ? 'Running' : genVoltageMax <= 1 ? 'Standby' : 'Idle';
+        const genActive = genStatus === 'Running';
         const bdiCharging = bdiTotP < -0.5;
         const bdiDischarging = bdiTotP > 0.5;
         const batCharging = essP > 0.5;
@@ -1652,7 +1648,7 @@
 
         const W = 760;
         const cardW = 160;
-        const cardH = 100;
+        const cardH = 90;
         const genX = 110, genY = 180;
         const busY = genY;
         const loadX = W - 110, loadY = busY;
@@ -1747,7 +1743,7 @@
           iconSym: 'gen', iconColor: '#3b82f6',
           title: 'GEN', titleSub: '550kVA x 2',
           value: fmt(gTot, 1) + ' kW',
-          subLabel: genActive ? 'Running' : 'Idle',
+          subLabel: genStatus,
           subColor: genColor,
           bg: genActive ? '#eff6ff' : '#fafaf7',
           border: genActive ? '#bfdbfe' : '#e8e6df',
@@ -1796,7 +1792,7 @@
           bg: '#ecfeff',
           border: '#8be4ff',
           valueColor: '#0891b2',
-          w: 190,
+          w: 160,
           h: 136,
           borderWidth: 2,
           weatherRows: [
@@ -1848,7 +1844,9 @@
         const sccTot = (data.scc1_power || 0) + (data.scc2_power || 0);
         const genTot = (data.gen1_power || 0) + (data.gen2_power || 0);
         const genOn = data.gen1_on || data.gen2_on;
-        const genActive = genTot > 0.5;
+        const genVoltageMax = Math.max(data.gen1_voltage || 0, data.gen2_voltage || 0);
+        const genStatus = genTot > 0.5 ? 'Running' : genVoltageMax <= 1 ? 'Standby' : 'Idle';
+        const genActive = genStatus === 'Running';
         const irr = data.irradiance || 0, tMod = data.tmod || 0, tAmb = data.tamb || 0, rh = data.rh || 0;
         const bdi1P = data.bdi1_power || 0, bdi2P = data.bdi2_power || 0;
         const bdiTotP = bdi1P + bdi2P;
@@ -1901,26 +1899,8 @@
         const anyBdiSupplying = bdi1Supplying || bdi2Supplying;
         const anyBdiAbsorbing = bdi1Absorbing || bdi2Absorbing;
 
-        const weatherCard = `<div class="mpf-card" style="background:#ecfeff;border-color:#a5f3fc;border-radius:18px;padding:14px 16px;align-items:flex-start">
-        <div class="mpf-ic" style="width:34px;height:34px;background:#dff7fb;color:#0891b2">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="5"/><path d="M12 1v2"/><path d="M12 21v2"/><path d="M4.22 4.22l1.42 1.42"/><path d="M18.36 18.36l1.42 1.42"/><path d="M1 12h2"/><path d="M21 12h2"/><path d="M4.22 19.78l1.42-1.42"/><path d="M18.36 5.64l1.42-1.42"/>
-          </svg>
-        </div>
-        <div class="mpf-body">
-          <div class="mpf-l" style="font-size:11px;color:#6b7280;letter-spacing:.2px">Weather</div>
-          <div style="margin-top:8px;display:grid;grid-template-columns:86px 1fr;row-gap:6px;column-gap:6px;align-items:baseline">
-            <div style="font-size:11px;color:#6b7280">Irradiance</div>
-            <div style="font-family:var(--font-mono);font-size:15px;font-weight:600;color:#0891b2">${irr.toFixed(0)} <span style="font-size:11px;color:#6b7280">W/m²</span></div>
-            <div style="font-size:11px;color:#6b7280">PV Temp</div>
-            <div style="font-family:var(--font-mono);font-size:15px;font-weight:600;color:#0891b2">${tMod.toFixed(1)} <span style="font-size:11px;color:#6b7280">°C</span></div>
-            <div style="font-size:11px;color:#6b7280">Am Temp</div>
-            <div style="font-family:var(--font-mono);font-size:15px;font-weight:600;color:#0891b2">${tAmb.toFixed(1)} <span style="font-size:11px;color:#6b7280">°C</span></div>
-            <div style="font-size:11px;color:#6b7280">Humidity</div>
-            <div style="font-family:var(--font-mono);font-size:15px;font-weight:600;color:#0891b2">${rh.toFixed(0)} <span style="font-size:11px;color:#6b7280">%</span></div>
-          </div>
-        </div>
-      </div>`;
+        const weatherCard = card('Weather', 'weather', irr.toFixed(0) + ' W/m²', `PV ${tMod.toFixed(1)}°C · Amb ${tAmb.toFixed(1)}°C`,
+          '#fafaf7', '#e8e6df', '#cffafe', '#0891b2', '#0891b2');
 
         const homeCard = card('Load', 'load', ldP.toFixed(2) + ' kW', `L1:${ldV1.toFixed(0)} L2:${ldV2.toFixed(0)} L3:${ldV3.toFixed(0)} V`,
           '#eff6ff', '#93c5fd', '#dbeafe', '#3b82f6', '#1e40af');
@@ -1930,7 +1910,7 @@
         html += divider;
 
         html += sectionHdr('AC bus &mdash; sources &rarr; load');
-        html += card('Generators', 'gen', genTot.toFixed(2) + ' kW', genActive ? 'Running' : 'Idle', genActive ? '#eff6ff' : '#fafaf7', genActive ? '#bfdbfe' : '#e8e6df', '#dbeafe', '#3b82f6', genActive ? '#3b82f6' : '#aaa', '550kVA x 2');
+        html += card('Generators', 'gen', genTot.toFixed(2) + ' kW', genStatus, genActive ? '#eff6ff' : '#fafaf7', genActive ? '#bfdbfe' : '#e8e6df', '#dbeafe', '#3b82f6', genActive ? '#3b82f6' : '#aaa', '550kVA x 2');
         if (genActive) html += flow('down', '#3b82f6', genTot.toFixed(2) + ' kW running');
         else html += flow('down', '#aaa', '');
 
@@ -2118,13 +2098,16 @@
       setVal('scc2-pv', scc2Pv); setVal('scc2-chg', scc2Chg);
 
       // ---- GCI 1-4 ----
+      const gci1Pv = num(xml, 'GCI1_Sum_PV_kW', 2) ?? 0;
+      const gci2Pv = num(xml, 'GCI2_Sum_PV_kW', 2) ?? 0;
+      const gci3Pv = num(xml, 'GCI3_Sum_PV_kW', 2) ?? 0;
+      const gci4Pv = num(xml, 'GCI4_Sum_PV_kW', 2) ?? 0;
       const gci1P = num(xml, 'GCI1_AC_Power_kW', 2) ?? 0;
       const gci2P = num(xml, 'GCI2_AC_Power_kW', 2) ?? 0;
       const gci3P = num(xml, 'GCI3_AC_Power_kW', 2) ?? 0;
       const gci4P = num(xml, 'GCI4_AC_Power_kW', 2) ?? 0;
-      const gciSum = num(xml, 'GCI_Sum_AC_kW', 2) ?? (gci1P + gci2P + gci3P + gci4P);
+      setVal('gci1-pv', gci1Pv); setVal('gci2-pv', gci2Pv); setVal('gci3-pv', gci3Pv); setVal('gci4-pv', gci4Pv);
       setVal('gci1-p', gci1P); setVal('gci2-p', gci2P); setVal('gci3-p', gci3P); setVal('gci4-p', gci4P);
-      setVal('gci-sum', gciSum);
       [['gci1-cell', gci1P], ['gci2-cell', gci2P], ['gci3-cell', gci3P], ['gci4-cell', gci4P]].forEach(([id, p]) => {
         const el = $(id); if (!el) return;
         if (p > 0.5) el.classList.add('active'); else el.classList.remove('active');
@@ -2188,16 +2171,35 @@
       setVal('g2-hr', num(xml, 'Gen2_Run_hour_h', 1), 1);
       setVal('g2-p', g2P, 2);
 
-      function setGenPill(id, status, powerKw) {
-        const el = $(id); const s = (status || '').toLowerCase();
-        const running = s === 'running' || ((s !== 'stop' && s !== 'stopped') && (powerKw ?? 0) > 0.5);
-        if (running) { el.className = 'pill pill-ok'; el.innerHTML = '<span class="dot dot-ok"></span>Running'; }
-        else if (s === 'stop' || s === 'stopped') { el.className = 'pill pill-neutral'; el.innerHTML = '<span class="dot dot-off"></span>Stopped'; }
-        else if (s) { el.className = 'pill pill-warn'; el.innerHTML = '<span class="dot dot-warn"></span>' + status; }
-        else { el.className = 'pill pill-neutral'; el.innerHTML = '<span class="dot dot-off"></span>—'; }
+      function getGeneratorState(powerKw, voltageVals) {
+        const power = Number(powerKw) || 0;
+        const voltageMax = Math.max(...voltageVals.map(v => Number(v) || 0), 0);
+        if (power > 0.5) return 'Running';
+        if (voltageMax <= 1) return 'Standby';
+        return 'Idle';
       }
-      setGenPill('g1-pill', g1Run, g1P);
-      setGenPill('g2-pill', g2Run, g2P);
+      const g1Vmax = Math.max(
+        num(xml, 'Gen1_VoltageL1_L2', 1) || 0,
+        num(xml, 'Gen1_VoltageL2_L3', 1) || 0,
+        num(xml, 'Gen1_VoltageL3_L1', 1) || 0
+      );
+      const g2Vmax = Math.max(
+        num(xml, 'Gen2_VoltageL1_L2', 1) || 0,
+        num(xml, 'Gen2_VoltageL2_L3', 1) || 0,
+        num(xml, 'Gen2_VoltageL3_L1', 1) || 0
+      );
+      const g1State = getGeneratorState(g1P, [g1Vmax]);
+      const g2State = getGeneratorState(g2P, [g2Vmax]);
+      const genState = getGeneratorState(genTotal, [g1Vmax, g2Vmax]);
+
+      function setGenPill(id, state) {
+        const el = $(id);
+        if (state === 'Running') { el.className = 'pill pill-ok'; el.innerHTML = '<span class="dot dot-ok"></span>Running'; }
+        else if (state === 'Idle') { el.className = 'pill pill-neutral'; el.innerHTML = '<span class="dot dot-off"></span>Idle'; }
+        else { el.className = 'pill pill-neutral'; el.innerHTML = '<span class="dot dot-off"></span>Standby'; }
+      }
+      setGenPill('g1-pill', g1State);
+      setGenPill('g2-pill', g2State);
 
       // ---- Weather ----
       setVal('w-tmod', num(xml, 'Tmod', 1), 1);
@@ -2210,7 +2212,7 @@
       $('s-rad-bar').style.width = radPct + '%';
 
       // ---- KPI Strip totals ----
-      const solarTotal = num(xml, 'PV_kW', 2) ?? ((gciSum || 0) + (sccTotalChg || 0));
+      const solarTotal = (gci1Pv || 0) + (gci2Pv || 0) + (gci3Pv || 0) + (gci4Pv || 0) + (scc1Pv || 0) + (scc2Pv || 0);
       const grid = genTotal;
       const totalLoad = ldPt ?? 0;
       const realtimeSupply = solarTotal + grid;
@@ -2224,20 +2226,19 @@
       $('e-ratio').textContent = Math.round(realtimeRatio);
       $('e-ratio').parentElement.style.color = realtimeRatioColor;
 
-      $('k-solar-sub').textContent = rad !== null ? `Irradiance ${fmt(rad, 0)} W/m²` : 'PV production';
-      $('k-grid-sub').textContent = `GEN-1 ${fmt(g1P, 1)} · GEN-2 ${fmt(g2P, 1)}`;
+      $('k-solar-sub').textContent = 'GCI + SCC production';
+      $('k-grid-sub').textContent = genState.toLowerCase();
       $('k-batt-sub').textContent = battP > 0.5 ? 'Charging' : (battP < -0.5 ? 'Discharging' : 'Idle');
 
-      const maxRef = KPI_BAR_SCALE_KW;
-      $('k-solar-bar').style.width = Math.min(100, (solarTotal / maxRef) * 100) + '%';
-      $('k-grid-bar').style.width = Math.min(100, (grid / maxRef) * 100) + '%';
-      $('k-batt-bar').style.width = Math.min(100, (Math.abs(battP) / maxRef) * 100) + '%';
-      $('k-load-bar').style.width = Math.min(100, (totalLoad / maxRef) * 100) + '%';
+      $('k-solar-bar').style.width = Math.min(100, (solarTotal / KPI_SOLAR_BAR_SCALE_KW) * 100) + '%';
+      $('k-grid-bar').style.width = Math.min(100, (grid / KPI_GENERATOR_BAR_SCALE_KW) * 100) + '%';
+      $('k-batt-bar').style.width = Math.min(100, (Math.abs(battP) / KPI_BATTERY_BAR_SCALE_KW) * 100) + '%';
+      $('k-load-bar').style.width = Math.min(100, (totalLoad / KPI_LOAD_BAR_SCALE_KW) * 100) + '%';
 
       // ---- Power Flow ----
       PowerFlow.render({
-        gen1_power: g1P, gen1_on: g1Run === 'Running',
-        gen2_power: g2P, gen2_on: g2Run === 'Running',
+        gen1_power: g1P, gen1_on: g1State === 'Running', gen1_voltage: g1Vmax,
+        gen2_power: g2P, gen2_on: g2State === 'Running', gen2_voltage: g2Vmax,
         gci1_power: gci1P, gci2_power: gci2P, gci3_power: gci3P, gci4_power: gci4P,
         bdi1_power: bdi1Total, bdi2_power: bdi2Total,
         bdi1_soc: soc1 ?? 0,
