@@ -543,8 +543,8 @@
       <!-- 4 GCI cards rendered by JS -->
     </div>
 
-    <div class="stamp">
-      <span class="live">Live · refreshes every 2s</span>
+    <div id="status-stamp" class="stamp">
+      <span id="live-indicator" class="live">Live Monitoring - GCI</span>
       <span>Last update: <span id="last-update" class="mono" style="color:#1a1a1a">—</span></span>
     </div>
   </div>
@@ -679,8 +679,33 @@
         $('sum-today-pv').textContent = fmt(sumTodayPV, 2);
         $('sum-active').textContent = activeCount + ' / 4 units producing';
 
-        const now = new Date(), pad = n => String(n).padStart(2, '0');
-        $('last-update').textContent = pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds());
+        const dsEl = xml.querySelector('DateServer');
+        const tsEl = xml.querySelector('TimeServer');
+        const ds = dsEl ? dsEl.textContent.trim() : '';
+        const ts = tsEl ? tsEl.textContent.trim() : '';
+        const scuStr = (ds && ts) ? (ds + ' ' + ts) : '—';
+        const xmlTime = new Date(scuStr).getTime();
+        const isOffline = isNaN(xmlTime) || (Date.now() - xmlTime) > 15 * 60 * 1000;
+        const liveInd = $('live-indicator');
+        if (liveInd) {
+          if (isOffline) {
+            liveInd.className = 'offline';
+            liveInd.innerHTML = '<span style="display:inline-block;width:6px;height:6px;background:#ef4444;border-radius:50%;margin-right:6px"></span>Offline Monitoring - GCI';
+            liveInd.style.color = '#ef4444';
+            liveInd.style.display = 'inline-flex';
+            liveInd.style.alignItems = 'center';
+            liveInd.style.fontWeight = '500';
+          } else {
+            liveInd.className = 'live';
+            liveInd.textContent = 'Live Monitoring - GCI';
+            liveInd.style.color = '';
+            liveInd.style.display = '';
+            liveInd.style.alignItems = '';
+            liveInd.style.fontWeight = '';
+          }
+        }
+        $('last-update').textContent = ts ? ts : '—';
+        $('last-update').style.color = isOffline ? '#ef4444' : '#1a1a1a';
       } catch (e) {
         console.error('GCI fetch error:', e);
         const lu = $('last-update');

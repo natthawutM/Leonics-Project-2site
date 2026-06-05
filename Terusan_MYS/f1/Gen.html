@@ -142,8 +142,8 @@ body{font-family:var(--font-sans);background:var(--bg-main);color:var(--text-pri
     <!-- rendered by JS -->
   </div>
 
-  <div class="stamp">
-    <span class="live">Live · refreshes every 2s</span>
+  <div id="status-stamp" class="stamp">
+    <span id="live-indicator" class="live">Live Monitoring - Generator</span>
     <span>Last update: <span id="last-update" class="mono" style="color:#1a1a1a">—</span></span>
   </div>
 </div>
@@ -270,8 +270,31 @@ async function fetchAndRender(){
     $('sum-today-run').textContent = fmt(run1+run2, 2);
     $('sum-active').textContent = activeCount + ' / 2 units running';
 
-    const now = new Date(), pad = n => String(n).padStart(2,'0');
-    $('last-update').textContent = pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
+    const ds = str(xml, 'DateServer');
+    const ts = str(xml, 'TimeServer');
+    const scuStr = (ds && ts) ? (ds + ' ' + ts) : '—';
+    const xmlTime = new Date(scuStr).getTime();
+    const isOffline = isNaN(xmlTime) || (Date.now() - xmlTime) > 15 * 60 * 1000;
+    const liveInd = $('live-indicator');
+    if (liveInd) {
+      if (isOffline) {
+        liveInd.className = 'offline';
+        liveInd.innerHTML = '<span style="display:inline-block;width:6px;height:6px;background:#ef4444;border-radius:50%;margin-right:6px"></span>Offline Monitoring - Generator';
+        liveInd.style.color = '#ef4444';
+        liveInd.style.display = 'inline-flex';
+        liveInd.style.alignItems = 'center';
+        liveInd.style.fontWeight = '500';
+      } else {
+        liveInd.className = 'live';
+        liveInd.textContent = 'Live Monitoring - Generator';
+        liveInd.style.color = '';
+        liveInd.style.display = '';
+        liveInd.style.alignItems = '';
+        liveInd.style.fontWeight = '';
+      }
+    }
+    $('last-update').textContent = ts ? ts : '—';
+    $('last-update').style.color = isOffline ? '#ef4444' : '#1a1a1a';
   }catch(e){
     console.error('Gen fetch error:', e);
     const lu = $('last-update');

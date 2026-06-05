@@ -769,6 +769,15 @@
       animation: pulse 1.6s ease-in-out infinite;
     }
 
+    .stamp .live.offline {
+      color: #ef4444;
+    }
+
+    .stamp .live.offline::before {
+      background: #ef4444;
+      animation: none;
+    }
+
     @keyframes pulse {
 
       0%,
@@ -1546,8 +1555,8 @@
       </div>
     </div>
 
-    <div class="stamp full">
-      <span class="live">Live · refreshes every 2s</span>
+    <div id="status-stamp" class="stamp full">
+      <span id="live-indicator" class="live">Live Monitoring - Dashboard</span>
       <span>Last update: <span id="last-update" class="mono" style="color:#1a1a1a">—</span></span>
     </div>
 
@@ -2263,10 +2272,27 @@
       });
 
       // ---- Timestamp ----
-      const now = new Date();
-      const pad = (n) => String(n).padStart(2, '0');
-      $('last-update').textContent = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
-      $('last-update').style.color = '#1a1a1a';
+      const ds = str(xml, 'DateServer');
+      const ts = str(xml, 'TimeServer');
+      const scuStr = (ds && ts) ? (ds + ' ' + ts) : '—';
+      const xmlTime = new Date(scuStr).getTime();
+      const nowMs = Date.now();
+      const isOffline = isNaN(xmlTime) || (nowMs - xmlTime) > 15 * 60 * 1000;
+      const liveInd = $('live-indicator');
+      const statusStamp = $('status-stamp');
+
+      if (liveInd && statusStamp) {
+        if (isOffline) {
+          liveInd.className = 'live offline';
+          liveInd.textContent = 'Offline Monitoring - Dashboard';
+        } else {
+          liveInd.className = 'live';
+          liveInd.textContent = 'Live Monitoring - Dashboard';
+        }
+      }
+
+      $('last-update').textContent = ts ? ts : '—';
+      $('last-update').style.color = isOffline ? '#ef4444' : '#1a1a1a';
     }
 
     fetchAndRender();
