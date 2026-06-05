@@ -16,7 +16,6 @@ $m_2 = isset($months[$m_1]) ? $months[$m_1] : $m_1;
 $daysInMonth = cal_days_in_month(CAL_GREGORIAN, (int)$m_1, (int)$y_1);
 $date_name = $m_2." ".$y_1;
 
-// ── DB query ──
 include(__DIR__ . "/../Includes/DBConn.php");
 $link = connectToDB1(false);
 $dbWarning = '';
@@ -46,7 +45,6 @@ if($link){
     $dbWarning = 'Database connection unavailable.';
 }
 
-// Aggregate per day
 $labels=$Genn=$PVn=$Loadn=$Irrn="";
 $totalGen=$totalPV=$totalLoad=$totalIrr=0;
 
@@ -78,100 +76,54 @@ $hasChartData = $totalSupply > 0 || $totalLoad > 0 || $totalIrr > 0;
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Monthly Energy — Tetabuan</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link href="../css/log.css" rel="stylesheet" type="text/css">
   <style type="text/css">
-  :root {
-    --bg-main:#f5f5f0;
-    --bg-card:#fff;
-    --bg-panel:#fafaf7;
-    --border-default:#e8e6df;
-    --text-primary:#1a1a1a;
-    --text-secondary:#888;
-    --text-tertiary:#aaa;
-    --info:#3b82f6;
-    --cyan:#06b6d4;
-    --purple:#8b5cf6;
-    --warning:#f59e0b;
-    --danger:#ef4444;
-    --radius-md:8px;
-    --radius-lg:12px;
-    --font-sans:'DM Sans',system-ui,-apple-system,sans-serif;
-    --font-mono:'DM Mono',ui-monospace,monospace;
-  }
   *{box-sizing:border-box}
-  html,body{margin:0;padding:0}
-  body{font-family:var(--font-sans);background:var(--bg-main);color:var(--text-primary);font-size:13px;line-height:1.5;min-height:100vh}
-  .wrap{max-width:1400px;margin:0 auto;padding:0 16px 16px}
-  .card{background:var(--bg-card);border:1px solid var(--border-default);border-radius:var(--radius-lg);padding:16px}
-  .card-title{font-size:11px;font-weight:500;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.3px;margin:0 0 12px;display:flex;align-items:center;gap:8px}
-  .card-title .dot{width:6px;height:6px;border-radius:50%;background:var(--cyan)}
-
-  .toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--bg-panel)}
-  .toolbar .label{font-size:11px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.3px;font-weight:500;margin-right:6px}
-  .toolbar select{
-    font-family:var(--font-sans);font-size:13px;padding:7px 12px;
-    border:1px solid var(--border-default);border-radius:var(--radius-md);
-    background:#fff;color:var(--text-primary);
+  body{margin:0;padding:16px;font-family:'DM Sans',system-ui,sans-serif;background:#f5f5f0;color:#1a1a1a;font-size:13px}
+  .wrap{max-width:1180px;margin:0 auto}
+  .card{background:#fff;border:1px solid #e8e6df;border-radius:12px;padding:16px}
+  .card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+  .card-title{font-size:11px;font-weight:500;color:#888;text-transform:uppercase;letter-spacing:.3px;display:flex;align-items:center;gap:8px}
+  .card-title .dot{width:6px;height:6px;border-radius:50%;background:#f59e0b}
+  .card-title b{color:#1a1a1a;font-weight:600;font-size:13px;text-transform:none;letter-spacing:0}
+  .date-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .date-row select{
+    font-family:'DM Sans',sans-serif;font-size:13px;padding:7px 12px;
+    border:1px solid #e8e6df;border-radius:8px;background:#fafaf7;color:#1a1a1a;outline:none;
   }
-  .toolbar button{
-    font-family:var(--font-sans);font-size:13px;font-weight:500;
-    padding:7px 16px;border:none;border-radius:var(--radius-md);
-    background:var(--text-primary);color:#fff;cursor:pointer;transition:background .15s;
+  .date-row select:focus{border-color:#999}
+  .date-row button{
+    font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;
+    padding:7px 16px;border:none;border-radius:8px;background:#1a1a1a;color:#fff;cursor:pointer;
   }
-  .toolbar button:hover{background:#333}
-  .range-info{font-size:12px;color:var(--text-secondary);font-family:var(--font-mono)}
-
-  #chart-container{width:100%;height:380px;min-width:0}
-  .no-data{text-align:center;padding:60px 20px;color:var(--text-secondary);font-size:14px}
-  .no-data .icon{font-size:30px;color:var(--text-tertiary);margin-bottom:8px}
-  .notice{margin-top:12px;padding:10px 12px;border:1px solid #f3d6a0;background:#fff8e8;border-radius:var(--radius-md);color:#9a6700;font-size:12px}
-
-  /* legend tiles below chart */
-  .legend-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
-  .lg-tile{background:var(--bg-panel);border-radius:var(--radius-md);padding:10px 12px;display:flex;align-items:center;gap:10px}
-  .lg-tile .swatch{width:10px;height:10px;border-radius:2px;flex-shrink:0}
-  .lg-tile .name{font-size:11px;color:var(--text-secondary);font-weight:500;text-transform:uppercase;letter-spacing:0.3px}
-  .lg-tile .desc{font-size:11px;color:var(--text-tertiary);margin-top:2px}
-
-  @media (max-width:768px){
-    .wrap{padding:0 12px 12px}
-    #chart-container{height:320px}
-    .legend-grid{grid-template-columns:repeat(2,1fr)}
-    .toolbar{flex-direction:column;align-items:stretch}
-  }
-  @media (max-width:480px){
-    .wrap{padding:0 10px 10px}
-    .card{padding:12px;border-radius:10px}
-    #chart-container{height:280px}
-    .legend-grid{grid-template-columns:1fr}
-  }
-
-  /* Highcharts overrides for cleaner look */
-  .highcharts-background{fill:transparent}
-  .highcharts-grid-line{stroke:var(--border-default)}
-  .highcharts-axis-line{stroke:var(--border-default)}
-  .highcharts-tick{stroke:var(--border-default)}
-  .highcharts-axis-labels text{font-family:var(--font-mono) !important;font-size:11px !important;fill:var(--text-secondary) !important}
-  .highcharts-legend-item text{font-family:var(--font-sans) !important;font-size:12px !important;fill:var(--text-primary) !important}
-  .highcharts-tooltip{font-family:var(--font-sans) !important}
+  .date-row button:hover{background:#333}
+  .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+  .kpi-box{background:#fafaf7;border-radius:6px;padding:10px 12px}
+  .kpi-box .lbl{font-size:10px;font-weight:500;color:#888;text-transform:uppercase;letter-spacing:.3px}
+  .kpi-box .val{font-family:'DM Mono',monospace;font-size:17px;font-weight:600;margin-top:2px}
+  .kpi-box .val .u{font-size:10px;color:#888;margin-left:2px}
+  #container{width:100%;height:340px}
+  .notice{margin-top:12px;padding:10px 12px;border:1px solid #f3d6a0;background:#fff8e8;border-radius:8px;color:#9a6700;font-size:12px}
+  @media(max-width:900px){.kpi-row{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:600px){body{padding:10px}.card{padding:12px}#container{height:300px}}
+  @media(max-width:480px){.kpi-row{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
 
 <div class="wrap">
   <div class="card">
-    <div class="card-title"><span class="dot"></span>Daily Energy System Report Graph · Tetabuan</div>
-
-    <div class="toolbar">
-      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-        <form method="POST" action="monthly.php" id="dateform" style="display:flex;gap:8px;align-items:center">
-          <span class="label">Month</span>
+    <div class="card-head">
+      <div class="card-title"><span class="dot"></span>Monthly Energy Report — <b><?php echo $date_name; ?></b></div>
+      <div class="date-row">
+        <form method="POST" action="monthly.php" id="dateform" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
           <select name="m" id="m">
             <?php foreach($months as $k=>$v){
               echo '<option value="'.$k.'"'.($k==$m_1?' selected':'').'>'.$v.'</option>';
             } ?>
           </select>
-          <span class="label">Year</span>
           <select name="y" id="y">
             <?php for($i=2020;$i<=date('Y');$i++){
               echo '<option value="'.$i.'"'.($i==$y_1?' selected':'').'>'.$i.'</option>';
@@ -180,69 +132,54 @@ $hasChartData = $totalSupply > 0 || $totalLoad > 0 || $totalIrr > 0;
           <button type="submit">Apply</button>
         </form>
       </div>
-      <div class="range-info">Showing <?php echo $date_name; ?></div>
     </div>
 
-    <?php if(!$hasChartData): ?>
-      <div class="no-data">
-        <div class="icon">&#9888;</div>
-        <div>No energy data for <?php echo $date_name; ?></div>
-      </div>
-    <?php else: ?>
-      <div id="chart-container"></div>
-    <?php endif; ?>
+    <div class="kpi-row">
+      <div class="kpi-box"><div class="lbl">Solar</div><div class="val" style="color:#ef4444"><?php echo number_format($totalPV,2); ?><span class="u">kWh</span></div></div>
+      <div class="kpi-box"><div class="lbl">Gen</div><div class="val" style="color:#8b5cf6"><?php echo number_format($totalGen,2); ?><span class="u">kWh</span></div></div>
+      <div class="kpi-box"><div class="lbl">Load</div><div class="val" style="color:#06b6d4"><?php echo number_format($totalLoad,2); ?><span class="u">kWh</span></div></div>
+      <div class="kpi-box"><div class="lbl">Irradiation</div><div class="val" style="color:#f59e0b"><?php echo number_format($totalIrr,2); ?><span class="u">kWh/m²</span></div></div>
+    </div>
+
+    <div id="container"></div>
 
     <?php if($dbWarning !== ''): ?>
       <div class="notice"><?php echo $dbWarning; ?></div>
     <?php endif; ?>
-
-    <div class="legend-grid">
-      <div class="lg-tile"><span class="swatch" style="background:#ef4444"></span><div><div class="name" style="color:#ef4444">Solar (kWh)</div><div class="desc"><?php echo number_format($totalPV, 2); ?> kWh</div></div></div>
-      <div class="lg-tile"><span class="swatch" style="background:#8b5cf6"></span><div><div class="name" style="color:#8b5cf6">Gen (kWh)</div><div class="desc"><?php echo number_format($totalGen, 2); ?> kWh</div></div></div>
-      <div class="lg-tile"><span class="swatch" style="background:#06b6d4"></span><div><div class="name" style="color:#06b6d4">Load (kWh)</div><div class="desc"><?php echo number_format($totalLoad, 2); ?> kWh</div></div></div>
-      <div class="lg-tile"><span class="swatch" style="background:#f59e0b"></span><div><div class="name" style="color:#f59e0b">Irradiation (kWh/m2)</div><div class="desc"><?php echo number_format($totalIrr, 2); ?> kWh/m²</div></div></div>
-    </div>
   </div>
 </div>
 
 <script src="/highstock/js/jquery.min.js"></script>
 <script src="/highstock/js/highstock.js"></script>
 <script src="/highstock/js/modules/exporting.js"></script>
+<!-- <script src="../../../highstock/js/jquery.min.js"></script>
+<script src="../../../highstock/js/highstock.js"></script>
+<script src="../../../highstock/js/modules/exporting.js"></script> -->
 
-<?php if($hasChartData): ?>
 <script type="text/javascript">
 var chart;
 $(document).ready(function() {
   chart = new Highcharts.Chart({
     chart: {
-        renderTo: 'chart-container',
+        renderTo: 'container',
         zoomType: 'x',
         backgroundColor: 'transparent',
         style: { fontFamily: "'DM Sans', sans-serif" },
         spacing: [16, 8, 10, 8]
     },
     credits: { enabled: false },
-    exporting: { enabled: false },
     title: { text: '' },
-    subtitle: { text: '' },
-
-    xAxis: {
-        categories: [<?php echo rtrim($labels,',');?>],
-        lineColor: '#e8e6df',
-        tickColor: '#e8e6df',
-        labels: { style: { color: '#888', fontFamily: "'DM Mono'" } }
-    },
+    xAxis:{ categories:[<?php echo rtrim($labels,',');?>], title:{text:'Day',style:{color:'#888'}},
+      gridLineColor:'#e8e6df', lineColor:'#e8e6df', tickColor:'#e8e6df', labels:{style:{color:'#aaa'}} },
 
     yAxis: [{
-        title: { text: null },
-        labels: { format: '{value} kWh', style: { color: '#888', fontFamily: "'DM Mono'" } },
-        gridLineColor: '#e8e6df',
-        opposite: false
+        min:0, startOnTick:true, endOnTick:false, gridLineColor:'#e8e6df',
+        tickInterval:100,
+        title:{text:'kWh',style:{color:'#888'}}, labels:{style:{color:'#aaa'}}
     }, {
-        title: { text: null },
-        labels: { format: '{value} kWh/m2', style: { color: '#f59e0b', fontFamily: "'DM Mono'" } },
-        gridLineColor: 'transparent',
-        opposite: true
+        min:0, startOnTick:false, endOnTick:false, gridLineColor:'transparent', opposite:true,
+        tickInterval:1.0,
+        title:{text:'kWh/m²',style:{color:'#888'}}, labels:{style:{color:'#aaa'}}
     }],
 
     tooltip: {
@@ -257,51 +194,30 @@ $(document).ready(function() {
         headerFormat: '<span style="font-family:DM Mono;color:#888;font-size:11px">Day {point.key}</span><br/>'
     },
 
-    legend: { enabled: false },
+    legend:{ layout:'horizontal', align:'center', symbolWidth:10, symbolHeight:10, symbolRadius:5, itemStyle:{fontFamily:"'DM Sans',sans-serif",fontSize:'12px',color:'#555'} },
 
     plotOptions: {
+        series:{ legendSymbol:'rectangle' },
         column: {
-            pointPadding: 0.1,
+            pointPadding: 0.04,
             borderWidth: 0,
             borderRadius: 3
         },
-        spline: {
-            lineWidth: 2,
-            marker: { enabled: false },
-            states: { hover: { lineWidth: 3 } }
-        }
+        spline:{ lineWidth:2, marker:{enabled:false}, states:{hover:{lineWidth:3}} }
     },
 
     series: [{
-        type: 'column',
-        name: 'Solar',
-        color: '#ef4444',
-        data: [<?php echo rtrim($PVn,',');?>],
-        tooltip: { valueSuffix: ' kWh' }
+        type:'column', color:'#ef4444', name:'Solar (kWh)', data:[<?php echo rtrim($PVn,',');?>]
     }, {
-        type: 'column',
-        name: 'Gen',
-        color: '#8b5cf6',
-        data: [<?php echo rtrim($Genn,',');?>],
-        tooltip: { valueSuffix: ' kWh' }
+        type:'column', color:'#8b5cf6', name:'Gen (kWh)', data:[<?php echo rtrim($Genn,',');?>]
     }, {
-        type: 'spline',
-        name: 'Load',
-        color: '#06b6d4',
-        data: [<?php echo rtrim($Loadn,',');?>],
-        tooltip: { valueSuffix: ' kWh' }
+        type:'column', color:'#06b6d4', name:'Load (kWh)', data:[<?php echo rtrim($Loadn,',');?>]
     }, {
-        type: 'spline',
-        name: 'Irradiation',
-        color: '#f59e0b',
-        yAxis: 1,
-        data: [<?php echo rtrim($Irrn,',');?>],
-        tooltip: { valueSuffix: ' kWh/m2' }
+        type:'spline', color:'#f59e0b', name:'Irradiation (kWh/m²)', yAxis:1, data:[<?php echo rtrim($Irrn,',');?>]
     }]
   });
 });
 </script>
-<?php endif; ?>
 <script>
 function reportFrameHeight() {
   var body = document.body;

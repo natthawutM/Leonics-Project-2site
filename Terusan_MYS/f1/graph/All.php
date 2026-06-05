@@ -153,10 +153,12 @@ $hasChartData = $totalPoints > 0 && $meaningfulPoints > 0;
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Power Graph — Terusan</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link href="../css/log.css" rel="stylesheet" type="text/css">
   <style type="text/css">
   *{box-sizing:border-box}
-  body{margin:0;font-family:'DM Sans',system-ui,sans-serif;background:#f5f5f0;color:#1a1a1a;font-size:13px}
+  body{margin:0;padding:16px;font-family:'DM Sans',system-ui,sans-serif;background:#f5f5f0;color:#1a1a1a;font-size:13px}
   .wrap{max-width:1180px;margin:0 auto;padding:0 16px 16px}
   .card{background:#fff;border:1px solid #e8e6df;border-radius:12px;padding:16px}
   .card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
@@ -166,19 +168,21 @@ $hasChartData = $totalPoints > 0 && $meaningfulPoints > 0;
   .date-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
   .date-row input[type=date]{font-family:'DM Sans',sans-serif;font-size:13px;padding:7px 12px;border:1px solid #e8e6df;border-radius:8px;background:#fafaf7;color:#1a1a1a;outline:none}
   .date-row input[type=date]:focus{border-color:#999}
+  .date-row button{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;padding:7px 16px;border:none;border-radius:8px;background:#1a1a1a;color:#fff;cursor:pointer}
+  .date-row button:hover{background:#333}
   .kpi-row{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:16px}
   .kpi-box{background:#fafaf7;border-radius:6px;padding:10px 12px}
   .kpi-box .lbl{font-size:10px;font-weight:500;color:#888;text-transform:uppercase;letter-spacing:.3px}
   .kpi-box .val{font-family:'DM Mono',monospace;font-size:17px;font-weight:600;margin-top:2px}
   .kpi-box .val .u{font-size:10px;color:#888;margin-left:2px}
-  #chart-container{width:100%;height:430px}
+  #container{width:100%;height:430px}
   .axis-guide{font-size:11px;color:#666;background:#fafaf7;border:1px dashed #e8e6df;border-radius:6px;padding:6px 10px;margin:6px 0 4px;display:inline-block}
   .axis-guide b{color:#1a1a1a;font-weight:600}
   .note{font-size:11px;color:#aaa;margin-top:8px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
   .empty{padding:60px 20px;text-align:center;color:#888}
   .notice{margin-top:12px;padding:10px 12px;border:1px solid #f3d6a0;background:#fff8e8;border-radius:8px;color:#9a6700;font-size:12px}
   @media(max-width:900px){.kpi-row{grid-template-columns:repeat(3,1fr)}}
-  @media(max-width:600px){.wrap{padding:0 10px 10px}.card{padding:12px}#chart-container{height:340px}}
+  @media(max-width:600px){body{padding:10px}.wrap{padding:0 10px 10px}.card{padding:12px}#container{height:340px}}
   @media(max-width:480px){.kpi-row{grid-template-columns:repeat(2,1fr)}}
   </style>
 </head>
@@ -193,6 +197,7 @@ $hasChartData = $totalPoints > 0 && $meaningfulPoints > 0;
             <input type="hidden" name="d" id="hd" value="<?php echo $d_1; ?>" />
             <input type="hidden" name="m" id="hm" value="<?php echo $m_1; ?>" />
             <input type="hidden" name="y" id="hy" value="<?php echo $y_1; ?>" />
+            <button type="submit">Apply</button>
           </form>
         </div>
       </div>
@@ -206,13 +211,9 @@ $hasChartData = $totalPoints > 0 && $meaningfulPoints > 0;
         <div class="kpi-box"><div class="lbl">Latest SOC</div><div class="val" style="color:#8b5cf6"><?php echo $lastSoc!==null?number_format($lastSoc,1):'0.0'; ?><span class="u">%</span></div></div>
       </div>
 
-      <?php if(!$hasChartData): ?>
-      <div class="empty">No data for <?php echo $dateLabel; ?></div>
-      <?php else: ?>
-      <div id="chart-container"></div>
+      <div id="container"></div>
       <div class="axis-guide"><b>← Left axis</b>&nbsp;kW · SOC %&nbsp;&nbsp;|&nbsp;&nbsp;<b>Right axis →</b>&nbsp;Volt · W/m²</div>
-      <div class="note">real data · same query logic · updated UI</div>
-      <?php endif; ?>
+      <div class="note">drag to zoom · use the range bar to scroll 1 day</div>
 
       <?php if($db1Warning !== '' || $db2Warning !== ''): ?>
       <div class="notice"><?php echo trim($db1Warning . ' ' . $db2Warning); ?></div>
@@ -220,7 +221,10 @@ $hasChartData = $totalPoints > 0 && $meaningfulPoints > 0;
     </div>
   </div>
 
-<?php if($hasChartData): ?>
+<!-- <script src="../../../highstock/js/jquery.min.js"></script>
+<script src="../../../highstock/js/highstock.js"></script>
+<script src="../../../highstock/js/modules/exporting.js"></script> -->
+
 <script src="/highstock/js/jquery.min.js"></script>
 <script src="/highstock/js/highstock.js"></script>
 <script src="/highstock/js/modules/exporting.js"></script>
@@ -234,7 +238,7 @@ var PM5 = [<?php echo rtrim($nnIrr,',');?>];
 var PM6 = [<?php echo rtrim($nnSoc,',');?>];
 var PM7 = [<?php echo rtrim($nnBattV,',');?>];
 new Highcharts.StockChart({
-  chart:{renderTo:'chart-container',backgroundColor:'transparent',style:{fontFamily:"'DM Sans',sans-serif"},zoomType:'x'},
+  chart:{renderTo:'container',backgroundColor:'transparent',style:{fontFamily:"'DM Sans',sans-serif"},zoomType:'x'},
   credits:{enabled:false},
   title:{text:null},
   subtitle:{text:null},
@@ -258,10 +262,10 @@ new Highcharts.StockChart({
   legend:{enabled:true,symbolWidth:10,symbolHeight:10,symbolRadius:5,itemStyle:{fontFamily:"'DM Sans',sans-serif",fontSize:'12px',color:'#555'}},
   xAxis:{type:'datetime',gridLineColor:'#e8e6df',lineColor:'#e8e6df',tickColor:'#e8e6df',labels:{style:{color:'#aaa'}}},
   yAxis:[
-    {min:0,max:100,tickInterval:25,startOnTick:false,endOnTick:false,gridLineColor:'#e8e6df',title:{text:null},opposite:false,labels:{format:'{value}%',style:{color:'#aaa'}}},
-    {min:-100,max:100,tickInterval:50,startOnTick:false,endOnTick:false,gridLineColor:'#e8e6df',title:{text:null},opposite:false,labels:{format:'{value} kW',style:{color:'#aaa'}}},
-    {min:200,max:1000,tickInterval:200,startOnTick:false,endOnTick:false,gridLineColor:'transparent',title:{text:null},opposite:true,labels:{format:'{value} V',style:{color:'#aaa'}}},
-    {min:0,max:1200,tickInterval:300,startOnTick:false,endOnTick:false,gridLineColor:'transparent',title:{text:null},opposite:true,labels:{format:'{value} W/m²',style:{color:'#aaa'}}}
+    {min:0,max:100,tickInterval:25,startOnTick:false,endOnTick:false,gridLineColor:'#e8e6df',title:{text:null},opposite:false,offset: 36, showLastLabel: true,labels:{format:'{value}%',style:{color:'#aaa'}}},
+    {min:-300,max:300,tickInterval:150,startOnTick:false,endOnTick:false,gridLineColor:'#e8e6df',title:{text:null},opposite:false, showLastLabel: true,labels:{format:'{value} kW',style:{color:'#aaa'}}},
+    {min:200,max:1000,tickInterval:200,startOnTick:false,endOnTick:false,gridLineColor:'transparent',title:{text:null},opposite:true, showLastLabel: true,labels:{format:'{value} V',style:{color:'#aaa'}}},
+    {min:0,max:1200,tickInterval:300,startOnTick:false,endOnTick:false,gridLineColor:'transparent',title:{text:null},opposite:true,offset: 50, showLastLabel: true,labels:{format:'{value} W/m²',style:{color:'#aaa'}}}
   ],
   tooltip:{shared:true,backgroundColor:'#fff',borderColor:'#e8e6df',borderRadius:8,borderWidth:1,shadow:false,style:{fontFamily:"'DM Mono',monospace",fontSize:'12px',color:'#1a1a1a'}},
   plotOptions:{series:{lineWidth:1.4,marker:{enabled:false},states:{hover:{lineWidth:1.8}},legendSymbol:'rectangle'}},
@@ -276,7 +280,6 @@ new Highcharts.StockChart({
   ]
 });
 </script>
-<?php endif; ?>
 <script>
 var datePick = document.getElementById('datepick');
 var form = document.getElementById('dateform');

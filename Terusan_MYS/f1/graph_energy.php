@@ -13,8 +13,8 @@ html,body{height:100%;margin:0;padding:0;background:#f5f5f0;overflow:hidden}
 .container{height:100%;display:flex;flex-direction:column;gap:12px;padding:0 0 12px;overflow-y:auto;-webkit-overflow-scrolling:touch}
 iframe{width:100%;border:0;display:block;background:#f5f5f0}
 .report-frame{width:100%;overflow:auto}
-.report-frame--monthly{height:640px;flex:0 0 640px}
-.report-frame--yearly{height:980px;flex:0 0 980px}
+.report-frame--monthly{height:600px;flex:0 0 600px}
+.report-frame--yearly{height:900px;flex:0 0 900px}
 </style>
 </head>
 <body>
