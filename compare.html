@@ -80,8 +80,8 @@ h1{font-size:22px;font-weight:700;margin-bottom:4px}
 
 <script>
 const SITES = [
-  { id: 1, name: 'Tetabuan', path: '/BELB_Sabah/Tetabuan_MYS/f1/', xmlPath: 'Xml/Main.xml' },
-  { id: 2, name: 'Terusan', path: '/BELB_Sabah/Terusan_MYS/f1/', xmlPath: 'Xml/Main.xml' },
+  { id: 1, name: 'Tetabuan', path: 'Tetabuan_MYS/f1/', xmlPath: 'Xml/Main.xml' },
+  { id: 2, name: 'Terusan', path: 'Terusan_MYS/f1/', xmlPath: 'Xml/Main.xml' },
 ];
 
 const CIRC = 2 * Math.PI * 38; // ~238.8
@@ -138,9 +138,10 @@ function buildCompareCard(site, xml){
   let battDC = 0;
 
   if(online){
-    solar = firstNum(xml, ['PV_kW'])
-      ?? sumNums(xml, ['SCC1_Chg_Power_kW', 'SCC2_Chg_Power_kW', 'SCC3_Chg_Power_kW', 'SCC4_Chg_Power_kW'])
-      ?? sumNums(xml, ['GCI1_AC_Power_kW', 'GCI2_AC_Power_kW', 'GCI3_AC_Power_kW', 'GCI4_AC_Power_kW'])
+    solar = sumNums(xml, ['GCI1_Sum_PV_kW', 'GCI2_Sum_PV_kW', 'GCI3_Sum_PV_kW', 'GCI4_Sum_PV_kW', 'SCC1_PV_Power_kW', 'SCC2_PV_Power_kW'])
+      ?? firstNum(xml, ['PV_kW'])
+      ?? sumNums(xml, ['SCC1_PV_Power_kW', 'SCC2_PV_Power_kW', 'SCC3_PV_Power_kW', 'SCC4_PV_Power_kW'])
+      ?? sumNums(xml, ['GCI1_Sum_PV_kW', 'GCI2_Sum_PV_kW', 'GCI3_Sum_PV_kW', 'GCI4_Sum_PV_kW'])
       ?? 0;
 
     gen = sumNums(xml, ['Gen1_Total_Power_kW', 'Gen2_Total_Power_kW'])
@@ -197,13 +198,13 @@ function buildCompareCard(site, xml){
       <div class="cmp-sep"></div>
 
       <div class="cmp-metric">
-        <div class="lbl">Generator</div>
-        <div class="val" style="color:${genOn?'#ea580c':'#aaa'}">${online?(genOn?gen.toFixed(1)+' <span class="u">kW</span>':'Off'):'—'}</div>
+        <div class="lbl">Solar</div>
+        <div class="val" style="color:${solar>0.5?'#f59e0b':'#aaa'}">${online?solar.toFixed(1):'—'}<span class="u">kW</span></div>
       </div>
 
       <div class="cmp-metric">
-        <div class="lbl">Solar DC</div>
-        <div class="val" style="color:${solar>0.5?'#f59e0b':'#aaa'}">${online?solar.toFixed(1):'—'}<span class="u">kW</span></div>
+        <div class="lbl">Generator</div>
+        <div class="val" style="color:${genOn?'#ea580c':'#aaa'}">${online?(genOn?gen.toFixed(1)+' <span class="u">kW</span>':'Off'):'—'}</div>
       </div>
 
       <div class="cmp-metric">

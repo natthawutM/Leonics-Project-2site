@@ -472,7 +472,7 @@
     }
 
     .solar-unit-name {
-      font-size: 16px;
+      font-size: 13px;
       font-weight: 600;
       line-height: 1.1
     }
@@ -1654,12 +1654,16 @@
         const genVoltageMax = Math.max(data.gen1_voltage || 0, data.gen2_voltage || 0);
         const genStatus = gTot > 0.5 ? 'Running' : genVoltageMax <= 1 ? 'Standby' : 'Idle';
         const genActive = genStatus === 'Running';
-        const bdiCharging = bdiTotP < -0.5;
-        const bdiDischarging = bdiTotP > 0.5;
+        const bdiCharging = bdiTotP <= -0.5;
+        const bdiDischarging = bdiTotP >= 0.5;
+        const bdi1Charging = bdi1P <= -0.5;
+        const bdi1Discharging = bdi1P >= 0.5;
+        const bdi2Charging = bdi2P <= -0.5;
+        const bdi2Discharging = bdi2P >= 0.5;
         const batCharging = essP > 0.5;
         const batDischarging = essP < -0.5;
 
-        const W = 760;
+        const W = 900;
         const cardW = 160;
         const cardH = 90;
         const genX = 110, genY = 180;
@@ -1667,11 +1671,14 @@
         const loadX = W - 110, loadY = busY;
         const busL = genX + cardW / 2, busR = loadX - cardW / 2;
         const bdiX = Math.round((busL + busR) / 2) - 60;
-        const bdiY = busY + 150;
-        const gciX = 470, gciY = 70;
-        const weatherX = 650, weatherY = bdiY;
-        const batX = bdiX, batY = bdiY + 170;
-        const sccX = genX, sccY = Math.round((bdiY + batY) / 2);
+        const bdi2X = bdiX + cardW + 18;
+        const gciX = bdi2X, gciY = 70;
+        const weatherX = loadX, weatherY = busY + 150;
+        const bdiY = weatherY - 23;
+        const solarVerticalSpan = busY - (gciY + cardH / 2);
+        const bdiVerticalSpan = (bdiY - cardH / 2) - busY;
+        const sccX = genX, sccY = bdiY + cardH / 2 + bdiVerticalSpan;
+        const batX = bdiX, batY = sccY + solarVerticalSpan + cardH / 2;
         const svgH = batY + cardH / 2 + 16;
 
         const node = (x, y, opts) => {
@@ -1741,8 +1748,10 @@
         svg += `<rect x="${busL}" y="${busY - 2}" width="${busR - busL}" height="4" rx="2" fill="${LN}" opacity="0.18"/>`;
         svg += ln(gciX, gciY + cardH / 2, gciX, busY);
         svg += ln(bdiX, busY, bdiX, bdiY - cardH / 2);
+        svg += ln(bdi2X, busY, bdi2X, bdiY - cardH / 2);
         svg += ln(batX, bdiY + cardH / 2, batX, batY - cardH / 2);
-        svg += ln(batX, sccY, sccX + cardW / 2, sccY);
+        svg += ln(bdi2X, bdiY + cardH / 2, bdi2X, sccY);
+        svg += ln(sccX + cardW / 2, sccY, bdi2X, sccY);
 
         if (genActive) {
           svg += dots(busL, busY, bdiX, busY, '#3b82f6', 0.1);
@@ -1754,14 +1763,23 @@
           const startX = gciTot > 0.5 ? gciX : (genActive ? busL : bdiX);
           svg += dots(startX, busY, busR, busY, '#3b82f6', 0.35);
         }
-        if (bdiCharging) {
+        if (bdi1Charging) {
           svg += dots(bdiX, busY, bdiX, bdiY - cardH / 2, '#22c55e', 0.3);
           svg += dots(gciX, busY, bdiX, busY, '#22c55e', 0.45);
           svg += dots(bdiX, bdiY + cardH / 2, bdiX, sccY, '#22c55e', 0.4);
-        } else if (bdiDischarging) {
+        } else if (bdi1Discharging) {
           svg += dots(bdiX, bdiY - cardH / 2, bdiX, busY, '#8b5cf6', 0.3);
           svg += dots(bdiX, busY, gciX, busY, '#8b5cf6', 0.45);
           svg += dots(bdiX, sccY, bdiX, bdiY + cardH / 2, '#8b5cf6', 0.4);
+        }
+        if (bdi2Charging) {
+          svg += dots(bdi2X, busY, bdi2X, bdiY - cardH / 2, '#22c55e', 0.32);
+          svg += dots(bdi2X, bdiY + cardH / 2, bdi2X, sccY, '#22c55e', 0.42);
+          svg += dots(bdi2X, sccY, batX, sccY, '#22c55e', 0.5);
+        } else if (bdi2Discharging) {
+          svg += dots(batX, sccY, bdi2X, sccY, '#8b5cf6', 0.32);
+          svg += dots(bdi2X, sccY, bdi2X, bdiY + cardH / 2, '#8b5cf6', 0.42);
+          svg += dots(bdi2X, bdiY - cardH / 2, bdi2X, busY, '#8b5cf6', 0.5);
         }
         if (batCharging) {
           svg += dots(batX, sccY, batX, batY - cardH / 2, '#22c55e', 0.5);
@@ -1813,37 +1831,51 @@
           valueColor: '#1e40af',
         });
 
-        const bdiColor = bdiCharging ? '#22c55e' : bdiDischarging ? '#8b5cf6' : '#888';
+        const bdi1Color = bdi1Charging ? '#22c55e' : bdi1Discharging ? '#8b5cf6' : '#888';
         svg += node(bdiX, bdiY, {
           iconSym: 'bdi',
           iconColor: '#555',
-          title: 'BDI',
+          title: 'BDI 1',
           titleSub: '300kW',
-          value: fmt(bdiTotP, 1) + ' kW',
-          subLabel: bdiCharging ? 'Charging' : bdiDischarging ? 'Supplying' : 'Idle',
-          subColor: bdiColor,
+          value: fmt(bdi1P, 1) + ' kW',
+          subLabel: bdi1Charging ? 'Charging' : bdi1Discharging ? 'Supplying' : 'Idle',
+          subColor: bdi1Color,
           bg: '#f8f8f6',
           border: '#d5d3cc',
-          valueColor: Math.abs(bdiTotP) > 0.5 ? '#1a1a1a' : '#aaa',
+          valueColor: Math.abs(bdi1P) >= 0.5 ? '#1a1a1a' : '#aaa',
         });
 
-        svg += node(weatherX, weatherY, {
-          iconSym: 'weather',
-          iconColor: '#0891b2',
-          title: 'WEATHER',
-          bg: '#ecfeff',
-          border: '#8be4ff',
-          valueColor: '#0891b2',
-          w: 160,
-          h: 136,
-          borderWidth: 2,
-          weatherRows: [
-            { label: 'Irradiance', value: fmt(irr, 0), unit: 'W/m²' },
-            { label: 'PV Temp', value: fmt(tMod, 1), unit: '°C' },
-            { label: 'Am Temp', value: fmt(tAmb, 1), unit: '°C' },
-            { label: 'Humidity', value: fmt(rh, 0), unit: '%' },
-          ],
+        const bdi2Color = bdi2Charging ? '#22c55e' : bdi2Discharging ? '#8b5cf6' : '#888';
+        svg += node(bdi2X, bdiY, {
+          iconSym: 'bdi',
+          iconColor: '#555',
+          title: 'BDI 2',
+          titleSub: '300kW',
+          value: fmt(bdi2P, 1) + ' kW',
+          subLabel: bdi2Charging ? 'Charging' : bdi2Discharging ? 'Supplying' : 'Idle',
+          subColor: bdi2Color,
+          bg: '#f8f8f6',
+          border: '#d5d3cc',
+          valueColor: Math.abs(bdi2P) >= 0.5 ? '#1a1a1a' : '#aaa',
         });
+
+        // svg += node(weatherX, weatherY, {
+        //   iconSym: 'weather',
+        //   iconColor: '#0891b2',
+        //   title: 'WEATHER',
+        //   bg: '#ecfeff',
+        //   border: '#8be4ff',
+        //   valueColor: '#0891b2',
+        //   w: 160,
+        //   h: 136,
+        //   borderWidth: 2,
+        //   weatherRows: [
+        //     { label: 'Irradiance', value: fmt(irr, 0), unit: 'W/m²' },
+        //     { label: 'PV Temp', value: fmt(tMod, 1), unit: '°C' },
+        //     { label: 'Am Temp', value: fmt(tAmb, 1), unit: '°C' },
+        //     { label: 'Humidity', value: fmt(rh, 0), unit: '%' },
+        //   ],
+        // });
 
         const essColor = batCharging ? '#22c55e' : batDischarging ? '#8b5cf6' : '#888';
         svg += node(batX, batY, {
@@ -1896,8 +1928,9 @@
         const bdi1P = data.bdi1_power || 0, bdi2P = data.bdi2_power || 0;
         const bdiTotP = bdi1P + bdi2P;
         
-        const batCharging = batP > 0.5, batDischarging = batP < -0.5;
+        const batCharging = batP >= 0.5, batDischarging = batP <= -0.5;
         const batColor = batCharging ? '#22c55e' : batDischarging ? '#8b5cf6' : '#888';
+        const fmtSignedKw = (value) => value.toFixed(2) + ' kW';
 
         function card(label, icon, value, sub, bg, brd, iconBg, iconColor, valueColor, labelSub) {
           let svgPaths = '';
@@ -1936,12 +1969,12 @@
         const divider = '<div style="border-top:1px dashed #e8e6df;margin:14px 0 6px"></div>';
         const sectionHdr = (t) => `<div style="font-size:10px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.3px;padding:0 4px 8px">${t}</div>`;
 
-        const bdi1Absorbing = bdi1P < -0.5, bdi1Supplying = bdi1P > 0.5;
-        const bdi2Absorbing = bdi2P < -0.5, bdi2Supplying = bdi2P > 0.5;
+        const bdi1Absorbing = bdi1P <= -0.5, bdi1Supplying = bdi1P >= 0.5;
+        const bdi2Absorbing = bdi2P <= -0.5, bdi2Supplying = bdi2P >= 0.5;
         const sActive = gciTot > 0.5;
         const dcActive = sccTot > 0.5;
-        const anyBdiSupplying = bdi1Supplying || bdi2Supplying;
-        const anyBdiAbsorbing = bdi1Absorbing || bdi2Absorbing;
+        const bdi1Color = bdi1Absorbing ? '#22c55e' : bdi1Supplying ? '#8b5cf6' : '#888';
+        const bdi2Color = bdi2Absorbing ? '#22c55e' : bdi2Supplying ? '#8b5cf6' : '#888';
 
         const weatherCard = card('Weather', 'weather', irr.toFixed(0) + ' W/m²', `PV ${tMod.toFixed(1)}°C · Amb ${tAmb.toFixed(1)}°C`, 
           '#fafaf7', '#e8e6df', '#cffafe', '#0891b2', '#0891b2');
@@ -1950,8 +1983,8 @@
           '#eff6ff', '#93c5fd', '#dbeafe', '#3b82f6', '#1e40af');
 
         let html = '';
-        html += weatherCard;
-        html += divider;
+        // html += weatherCard;
+        // html += divider;
 
         html += sectionHdr('AC bus &mdash; sources &rarr; load');
         html += card('Gen', 'gen', genTot.toFixed(2) + ' kW', genStatus, genOn ? '#eff6ff' : '#fafaf7', genOn ? '#bfdbfe' : '#e8e6df', '#dbeafe', '#3b82f6', genOn ? '#3b82f6' : '#aaa', '400kVA x 2');
@@ -1962,9 +1995,9 @@
         if (sActive) html += flow('down', '#f59e0b', gciTot.toFixed(2) + ' kW producing');
         else html += flow('down', '#aaa', '');
 
-        if (anyBdiSupplying) {
+        if (bdi1Supplying || bdi2Supplying) {
             html += flow('up', '#8b5cf6', 'BDI &rarr; AC bus');
-        } else if (anyBdiAbsorbing) {
+        } else if (bdi1Absorbing || bdi2Absorbing) {
             html += flow('down', '#22c55e', 'AC bus &rarr; BDI');
         } else {
             html += flow('down', '#aaa', '');
@@ -1975,10 +2008,11 @@
         
         html += divider;
         html += sectionHdr('DC bus &mdash; BDI &harr; Battery &harr; Solar DC');
-        html += card('BDI', 'bdi', Math.abs(bdiTotP).toFixed(2) + ' kW', anyBdiAbsorbing ? 'Charging (AC &rarr; DC)' : anyBdiSupplying ? 'Supplying (DC &rarr; AC)' : 'Idle', '#f8f8f6', '#d5d3cc', '#eee', '#555', Math.abs(bdiTotP) > 0.5 ? '#1a1a1a' : '#aaa', '300kW');
+        html += card('BDI 1', 'bdi', fmtSignedKw(bdi1P), bdi1Absorbing ? 'Charging (AC &rarr; DC)' : bdi1Supplying ? 'Supplying (DC &rarr; AC)' : 'Idle', '#f8f8f6', '#d5d3cc', '#eee', '#555', Math.abs(bdi1P) >= 0.5 ? '#1a1a1a' : '#aaa', '300kW');
+        html += card('BDI 2', 'bdi', fmtSignedKw(bdi2P), bdi2Absorbing ? 'Charging (AC &rarr; DC)' : bdi2Supplying ? 'Supplying (DC &rarr; AC)' : 'Idle', '#f8f8f6', '#d5d3cc', '#eee', '#555', Math.abs(bdi2P) >= 0.5 ? '#1a1a1a' : '#aaa', '300kW');
         
-        if (anyBdiAbsorbing) html += flow('down', '#22c55e', 'charging');
-        else if (anyBdiSupplying) html += flow('up', '#8b5cf6', 'discharging');
+        if (bdi1Absorbing || bdi2Absorbing) html += flow('down', '#22c55e', 'charging');
+        else if (bdi1Supplying || bdi2Supplying) html += flow('up', '#8b5cf6', 'discharging');
         else html += flow('down', '#aaa', '');
         
         const battSub = batCharging ? `Charging &middot; SOC ${Math.round(batS)}%` : batDischarging ? `Discharging &middot; SOC ${Math.round(batS)}%` : `Idle &middot; SOC ${Math.round(batS)}%`;
@@ -1988,7 +2022,8 @@
       const batteryCardStr = `<div class="mpf-card" style="background:#faf5ff;border-color:#d8b4fe;border-radius:12px;">
       <div class="mpf-ic" style="background:#ede9fe;color:#8b5cf6"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="16" height="10" rx="2"/><path d="M20 10v4"/><line x1="6" y1="10" x2="6" y2="14"/><line x1="10" y1="10" x2="10" y2="14"/><line x1="14" y1="10" x2="14" y2="14"/></svg></div>
       <div class="mpf-body"><div class="mpf-l">Battery<span style="font-size:11px;font-weight:400;color:#888;text-transform:uppercase"> &middot; 1,350.45kWh</span></div>
-      <div class="mpf-v" style="color:${batColor}">${batP.toFixed(2)} kW</div>
+      <div class="mpf-v" style="color:${batColor}">${fmtSignedKw(batP)}</div>
+      <div class="mpf-sub">${battSub}</div>
       <div style="height:4px;background:#e8e6df;border-radius:2px;margin-top:6px;overflow:hidden">
       <div style="height:100%;width:${batS}%;background:${socColor};border-radius:2px"></div></div></div></div>`;
         
@@ -2133,9 +2168,9 @@
 
       // ---- SCC 1 + SCC 2 ----
       const scc1Pv = num(xml, 'SCC1_PV_Power_kW', 2);
-      const scc1Chg = num(xml, 'SCC1_Chg_Power_kW', 2);
+      const scc1Chg = num(xml, 'SCC1_PV_Power_kW', 2);
       const scc2Pv = num(xml, 'SCC2_PV_Power_kW', 2);
-      const scc2Chg = num(xml, 'SCC2_Chg_Power_kW', 2);
+      const scc2Chg = num(xml, 'SCC2_PV_Power_kW', 2);
       const sccTotalChg = (scc1Chg || 0) + (scc2Chg || 0);
       setVal('scc1-pv', scc1Pv); setVal('scc1-chg', scc1Chg);
       setVal('scc2-pv', scc2Pv); setVal('scc2-chg', scc2Chg);
@@ -2285,7 +2320,7 @@
       PowerFlow.render({
         gen1_power: g1P, gen1_on: g1State === 'Running', gen1_voltage: g1Vmax,
         gen2_power: g2P, gen2_on: g2State === 'Running', gen2_voltage: g2Vmax,
-        gci1_power: gci1P, gci2_power: gci2P, gci3_power: gci3P, gci4_power: gci4P,
+        gci1_power: gci1Pv, gci2_power: gci2Pv, gci3_power: gci3Pv, gci4_power: gci4Pv,
         bdi1_power: bdi1Total, bdi2_power: bdi2Total,
         bdi1_soc: soc1 ?? 0,
         bdi1_current: bdi1I,

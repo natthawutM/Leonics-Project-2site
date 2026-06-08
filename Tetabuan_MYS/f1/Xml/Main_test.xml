@@ -19,7 +19,7 @@
 <BDI1_BDI_Power_P1_kW>0.1</BDI1_BDI_Power_P1_kW>**
 <BDI1_BDI_Power_P2_kW>0.2</BDI1_BDI_Power_P2_kW>**
 <BDI1_BDI_Power_P3_kW>0.3</BDI1_BDI_Power_P3_kW>**
-<BDI1_BDI_Total_Power_kW>0.60</BDI1_BDI_Total_Power_kW>
+<BDI1_BDI_Total_Power_kW>-0.5</BDI1_BDI_Total_Power_kW>
 <BDI1_BDI_Power_Q1_kVAr>0.1</BDI1_BDI_Power_Q1_kVAr>**
 <BDI1_BDI_Power_Q2_kVAr>0.2</BDI1_BDI_Power_Q2_kVAr>**
 <BDI1_BDI_Power_Q3_kVAr>0.1</BDI1_BDI_Power_Q3_kVAr>**

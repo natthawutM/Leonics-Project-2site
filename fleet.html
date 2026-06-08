@@ -200,6 +200,10 @@
       margin-left: 1px
     }
 
+    .sc-kpi .val.is-dim {
+      opacity: .5
+    }
+
     .sc-status {
       display: flex;
       justify-content: space-between;
@@ -222,6 +226,10 @@
 
     .sc-dot-ok {
       background: var(--success)
+    }
+
+    .sc-dot-stale {
+      background: var(--warning)
     }
 
     .sc-dot-err {
@@ -283,6 +291,10 @@
       { id: 2, name: 'Terusan', loc: 'Sabah, Malaysia', path: 'Terusan_MYS/f1/', menuPath: 'menu.html', proxyType: 'Terusan' },
     ];
 
+    const LIVE_OK_SECONDS = 10;
+    const LIVE_STALE_SECONDS = 120;
+    const siteTimestampState = {};
+
     function num(xml, tag) {
       const el = xml.querySelector(tag);
       if (!el) return null;
@@ -295,8 +307,23 @@
       return v === null ? '-' : Number(v).toFixed(d);
     }
 
-    function buildProxyUrl(site) {
-      return `f1/proxy.php?type=${encodeURIComponent(site.proxyType)}&what=main&_=${Date.now()}`;
+    function parseXmlDateTime(dateText, timeText) {
+      const m = /^(\d{2})-([A-Za-z]{3})-(\d{2}|\d{4})$/.exec((dateText || '').trim());
+      const t = /^(\d{2}):(\d{2}):(\d{2})$/.exec((timeText || '').trim());
+      if (!m || !t) return null;
+
+      const months = { jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11 };
+      const month = months[m[2].toLowerCase()];
+      if (month === undefined) return null;
+
+      let year = Number(m[3]);
+      if (m[3].length === 2) year += year >= 70 ? 1900 : 2000;
+
+      return new Date(year, month, Number(m[1]), Number(t[1]), Number(t[2]), Number(t[3]));
+    }
+
+    function buildMainXmlUrl(site) {
+      return `${site.path}Xml/Main.xml?_=${Date.now()}`;
     }
 
     function sumNums(xml, tags) {
@@ -325,11 +352,38 @@
       return !!(err && err.textContent.trim());
     }
 
+    function getLiveState(site, metrics) {
+      if (!metrics || !metrics.timestampKey || !metrics.serverDateObj || Number.isNaN(metrics.serverDateObj.getTime())) {
+        return { status: 'offline', label: 'Offline', dotClass: 'sc-dot-err' };
+      }
+
+      const state = siteTimestampState[site.proxyType] || { lastKey: null, changedAt: 0 };
+      if (metrics.timestampKey !== state.lastKey) {
+        state.lastKey = metrics.timestampKey;
+        state.changedAt = Date.now();
+      } else if (!state.changedAt) {
+        state.changedAt = Date.now();
+      }
+      siteTimestampState[site.proxyType] = state;
+
+      const ageSec = Math.abs((Date.now() - metrics.serverDateObj.getTime()) / 1000);
+      const frozenSec = state.changedAt ? ((Date.now() - state.changedAt) / 1000) : 0;
+
+      if (ageSec <= LIVE_OK_SECONDS && frozenSec <= LIVE_OK_SECONDS) {
+        return { status: 'online', label: 'Online', dotClass: 'sc-dot-ok' };
+      }
+      if (ageSec <= LIVE_STALE_SECONDS && frozenSec <= LIVE_STALE_SECONDS) {
+        return { status: 'stale', label: 'Stale', dotClass: 'sc-dot-stale' };
+      }
+      return { status: 'offline', label: 'Offline', dotClass: 'sc-dot-err' };
+    }
+
     function extractSiteMetrics(xml) {
       if (!xml || hasXmlError(xml)) return null;
 
-      const solar = firstNum(xml, ['PV_kW'])
-        ?? sumNums(xml, ['SCC1_Chg_Power_kW', 'SCC2_Chg_Power_kW', 'SCC3_Chg_Power_kW', 'SCC4_Chg_Power_kW'])
+      const solar = sumNums(xml, ['GCI1_Sum_PV_kW', 'GCI2_Sum_PV_kW', 'GCI3_Sum_PV_kW', 'GCI4_Sum_PV_kW', 'SCC1_PV_Power_kW', 'SCC2_PV_Power_kW'])
+        ?? firstNum(xml, ['PV_kW'])
+        ?? sumNums(xml, ['SCC1_PV_Power_kW', 'SCC2_PV_Power_kW', 'SCC3_PV_Power_kW', 'SCC4_PV_Power_kW'])
         ?? sumNums(xml, ['GCI1_Sum_PV_kW', 'GCI2_Sum_PV_kW', 'GCI3_Sum_PV_kW', 'GCI4_Sum_PV_kW']);
 
       const gen = sumNums(xml, ['Gen1_Total_Power_kW', 'Gen2_Total_Power_kW'])
@@ -337,6 +391,10 @@
 
       const load = firstNum(xml, ['Load_PM_Total_P_kW'])
         ?? sumNums(xml, ['BDI1_Load_Total_Power_kW', 'BDI2_Load_Total_Power_kW']);
+
+      const battery = sumNums(xml, ['BDI1_BDI_DC_Power_kW', 'BDI2_BDI_DC_Power_kW'])
+        ?? firstNum(xml, ['BDI_BDI_DC_Power_kW'])
+        ?? sumNums(xml, ['BDI1_BDI_Total_Power_kW', 'BDI2_BDI_Total_Power_kW']);
 
       let soc = num(xml, 'BDI_BDI_SOC');
       if (soc === null) {
@@ -346,26 +404,35 @@
         soc = socValues.length ? socValues.reduce((a, b) => a + b, 0) / socValues.length : null;
       }
 
+      const ds = xml.querySelector('DateServer');
       const ts = xml.querySelector('TimeServer');
+      const dateServer = ds ? ds.textContent.trim() : '';
+      const timeServer = ts ? ts.textContent.trim() : '';
       return {
         solar,
         gen,
         load,
+        battery,
         soc,
-        timeServer: ts ? ts.textContent.trim() : ''
+        dateServer,
+        timeServer,
+        timestampKey: dateServer && timeServer ? (dateServer + ' ' + timeServer) : '',
+        serverDateObj: parseXmlDateTime(dateServer, timeServer)
       };
     }
 
     function buildCard(site, data) {
       const metrics = extractSiteMetrics(data);
-      const online = metrics !== null;
-      const solar = online ? metrics.solar : null;
-      const gen = online ? metrics.gen : null;
-      const load = online ? metrics.load : null;
-      const soc = online ? metrics.soc : null;
-      const timeStr = online && metrics.timeServer ? metrics.timeServer : '-';
+      const liveState = getLiveState(site, metrics);
+      const hasMetrics = metrics !== null;
+      const isDim = liveState.status === 'offline';
+      const solar = hasMetrics ? metrics.solar : null;
+      const gen = hasMetrics ? metrics.gen : null;
+      const load = hasMetrics ? metrics.load : null;
+      const battery = hasMetrics ? metrics.battery : null;
+      const timeStr = hasMetrics && metrics.timestampKey ? metrics.timestampKey : '-';
 
-      return `<a class="site-card ${online ? '' : 'offline'}" href="${site.path}${site.menuPath}" target="_top">
+      return `<a class="site-card ${hasMetrics ? '' : 'offline'}" href="${site.path}${site.menuPath}" target="_top">
     <div class="sc-top">
       <span class="sc-badge sc-badge-offgrid">Off-Grid</span>
       <span class="sc-type">Solar+Bat+Gen</span>
@@ -373,13 +440,13 @@
     <div class="sc-name">${site.name}</div>
     <div class="sc-loc">${site.loc}</div>
     <div class="sc-kpis">
-      <div class="sc-kpi"><div class="lbl">Solar</div><div class="val" style="color:${solar > 0.5 ? '#f59e0b' : ''}">${fmt(solar)}<span class="u">kW</span></div></div>
-      <div class="sc-kpi"><div class="lbl">Gen</div><div class="val" style="color:${gen > 0.5 ? '#ea580c' : ''}">${fmt(gen)}<span class="u">kW</span></div></div>
-      <div class="sc-kpi"><div class="lbl">Load</div><div class="val" style="color:${load > 0.5 ? '#3b82f6' : ''}">${fmt(load)}<span class="u">kW</span></div></div>
-      <div class="sc-kpi"><div class="lbl">SOC</div><div class="val" style="color:${soc !== null ? (soc < 20 ? '#ef4444' : soc < 50 ? '#f59e0b' : '#22c55e') : ''}">${soc !== null ? Math.round(soc) : '-'}<span class="u">%</span></div></div>
+      <div class="sc-kpi"><div class="lbl">Solar</div><div class="val ${isDim ? 'is-dim' : ''}" style="color:${solar > 0.5 ? '#f59e0b' : ''}">${fmt(solar)}<span class="u">kW</span></div></div>
+      <div class="sc-kpi"><div class="lbl">Generators</div><div class="val ${isDim ? 'is-dim' : ''}" style="color:${gen !== null ? '#3b82f6' : ''}">${fmt(gen)}<span class="u">kW</span></div></div>
+      <div class="sc-kpi"><div class="lbl">Load</div><div class="val ${isDim ? 'is-dim' : ''}" style="color:${load !== null ? '#1a1a1a' : ''}">${fmt(load)}<span class="u">kW</span></div></div>
+      <div class="sc-kpi"><div class="lbl">Battery</div><div class="val ${isDim ? 'is-dim' : ''}" style="color:${battery !== null ? '#8b5cf6' : ''}">${fmt(battery)}<span class="u">kW</span></div></div>
     </div>
     <div class="sc-status">
-      <div class="sc-pill"><span class="sc-dot ${online ? 'sc-dot-ok' : 'sc-dot-err'}"></span>${online ? 'Online' : 'Offline'}</div>
+      <div class="sc-pill"><span class="sc-dot ${liveState.dotClass}"></span>${liveState.label}</div>
       <div class="sc-time">${timeStr}</div>
     </div>
   </a>`;
@@ -387,7 +454,7 @@
 
     async function fetchSite(site) {
       try {
-        const res = await fetch(buildProxyUrl(site), { cache: 'no-store' });
+        const res = await fetch(buildMainXmlUrl(site), { cache: 'no-store' });
         if (!res.ok) return null;
         const text = await res.text();
         const xml = new DOMParser().parseFromString(text, 'text/xml');

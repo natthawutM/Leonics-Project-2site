@@ -4,12 +4,15 @@
 // Daily energy bars from `terusan_mys.energylog` table.
 // Uses mysql_* (PHP 5.x).
 // ============================================================
-if($_POST==NULL){
+$reqM = isset($_POST["m"]) ? $_POST["m"] : (isset($_GET["m"]) ? $_GET["m"] : null);
+$reqY = isset($_POST["y"]) ? $_POST["y"] : (isset($_GET["y"]) ? $_GET["y"] : null);
+$isDataRequest = isset($_GET['data']) && $_GET['data'] == '1';
+if($reqM===NULL || $reqY===NULL){
     $m_1 = date('m');
     $y_1 = date('Y');
 }else{
-    $m_1 = $_POST["m"];
-    $y_1 = $_POST["y"];
+    $m_1 = $reqM;
+    $y_1 = $reqY;
 }
 $months=array('01'=>'Jan','02'=>'Feb','03'=>'Mar','04'=>'Apr','05'=>'May','06'=>'Jun','07'=>'Jul','08'=>'Aug','09'=>'Sep','10'=>'Oct','11'=>'Nov','12'=>'Dec');
 $m_2 = isset($months[$m_1]) ? $months[$m_1] : $m_1;
@@ -72,6 +75,40 @@ $totalSupply = $totalGen + $totalPV;
 $solarRatio = $totalSupply > 0 ? round($totalPV / $totalSupply * 100, 1) : 0;
 $avgDayPV   = $daysInMonth > 0 ? round($totalPV / $daysInMonth, 1) : 0;
 $hasChartData = $totalSupply > 0 || $totalLoad > 0 || $totalIrr > 0;
+
+function series_json_nums($csv){
+    $csv = rtrim($csv, ',');
+    if($csv === '') return array();
+    $parts = explode(',', $csv);
+    $out = array();
+    foreach($parts as $part){
+        $part = trim($part);
+        $out[] = $part === '' ? 0 : (float)$part;
+    }
+    return $out;
+}
+
+if($isDataRequest){
+    header('Content-Type: application/json; charset=utf-8');
+    $pvArr = series_json_nums($PVn);
+    $genArr = series_json_nums($Genn);
+    $loadArr = series_json_nums($Loadn);
+    $irrArr = series_json_nums($Irrn);
+    echo json_encode(array(
+        'pv' => $pvArr,
+        'gen' => $genArr,
+        'load' => $loadArr,
+        'irr' => $irrArr,
+        'cat' => series_json_nums($labels),
+        'kpi' => array(
+            'pv' => round(array_sum($pvArr), 2),
+            'gen' => round(array_sum($genArr), 2),
+            'load' => round(array_sum($loadArr), 2),
+            'irr' => round(array_sum($irrArr), 2)
+        )
+    ));
+    exit();
+}
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -137,10 +174,10 @@ $hasChartData = $totalSupply > 0 || $totalLoad > 0 || $totalIrr > 0;
     </div>
 
     <div class="kpi-row">
-      <div class="kpi-box"><div class="lbl">Solar</div><div class="val" style="color:#ef4444"><?php echo number_format($totalPV,2); ?><span class="u">kWh</span></div></div>
-      <div class="kpi-box"><div class="lbl">Gen</div><div class="val" style="color:#8b5cf6"><?php echo number_format($totalGen,2); ?><span class="u">kWh</span></div></div>
-      <div class="kpi-box"><div class="lbl">Load</div><div class="val" style="color:#06b6d4"><?php echo number_format($totalLoad,2); ?><span class="u">kWh</span></div></div>
-      <div class="kpi-box"><div class="lbl">Irradiation</div><div class="val" style="color:#f59e0b"><?php echo number_format($totalIrr,2); ?><span class="u">kWh/m²</span></div></div>
+      <div class="kpi-box"><div class="lbl">Solar</div><div class="val" style="color:#ef4444"><span id="kpi-pv"><?php echo number_format($totalPV,2); ?></span><span class="u">kWh</span></div></div>
+      <div class="kpi-box"><div class="lbl">Gen</div><div class="val" style="color:#8b5cf6"><span id="kpi-gen"><?php echo number_format($totalGen,2); ?></span><span class="u">kWh</span></div></div>
+      <div class="kpi-box"><div class="lbl">Load</div><div class="val" style="color:#06b6d4"><span id="kpi-load"><?php echo number_format($totalLoad,2); ?></span><span class="u">kWh</span></div></div>
+      <div class="kpi-box"><div class="lbl">Irradiation</div><div class="val" style="color:#f59e0b"><span id="kpi-irr"><?php echo number_format($totalIrr,2); ?></span><span class="u">kWh/m²</span></div></div>
     </div>
 
     <div id="container"></div>
@@ -160,6 +197,11 @@ $hasChartData = $totalSupply > 0 || $totalLoad > 0 || $totalIrr > 0;
 
 <script type="text/javascript">
 var chart;
+var _cat=[<?php echo rtrim($labels,',');?>];
+var _pv=[<?php echo rtrim($PVn,',');?>];
+var _gen=[<?php echo rtrim($Genn,',');?>];
+var _load=[<?php echo rtrim($Loadn,',');?>];
+var _irr=[<?php echo rtrim($Irrn,',');?>];
 $(document).ready(function() {
   chart = new Highcharts.Chart({
     chart: {
@@ -171,7 +213,7 @@ $(document).ready(function() {
     },
     credits: { enabled: false },
     title: { text: '' },
-    xAxis:{ categories:[<?php echo rtrim($labels,',');?>], title:{text:'Day',style:{color:'#888'}},
+    xAxis:{ categories:_cat, title:{text:'Day',style:{color:'#888'}},
       gridLineColor:'#e8e6df', lineColor:'#e8e6df', tickColor:'#e8e6df', labels:{style:{color:'#aaa'}} },
 
     yAxis: [{
@@ -209,15 +251,50 @@ $(document).ready(function() {
     },
 
     series: [{
-        type:'column', color:'#ef4444', name:'Solar (kWh)', data:[<?php echo rtrim($PVn,',');?>]
+        type:'column', color:'#ef4444', name:'Solar (kWh)', data:_pv
     }, {
-        type:'column', color:'#8b5cf6', name:'Gen (kWh)', data:[<?php echo rtrim($Genn,',');?>]
+        type:'column', color:'#8b5cf6', name:'Gen (kWh)', data:_gen
     }, {
-        type:'column', color:'#06b6d4', name:'Load (kWh)', data:[<?php echo rtrim($Loadn,',');?>]
+        type:'column', color:'#06b6d4', name:'Load (kWh)', data:_load
     }, {
-        type:'spline', color:'#f59e0b', name:'Irradiation (kWh/m²)', yAxis:1, data:[<?php echo rtrim($Irrn,',');?>]
+        type:'spline', color:'#f59e0b', name:'Irradiation (kWh/m²)', yAxis:1, data:_irr
     }]
   });
+
+  var AUTO_REFRESH_MS = 300000;
+  var fmt2 = function(n){ return Number(n).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}); };
+  window.setInterval(function(){
+    var m = document.getElementById('m');
+    var y = document.getElementById('y');
+    if(!m || !y) return;
+    var url = 'monthly.php?data=1&m=' + encodeURIComponent(m.value) + '&y=' + encodeURIComponent(y.value);
+    fetch(url, { cache: 'no-store' })
+      .then(function(res){ return res.json(); })
+      .then(function(data){
+        if(!data) return;
+        _cat = data.cat || [];
+        _pv = data.pv || [];
+        _gen = data.gen || [];
+        _load = data.load || [];
+        _irr = data.irr || [];
+        chart.xAxis[0].setCategories(_cat, false);
+        chart.series[0].setData(_pv, false, false, false);
+        chart.series[1].setData(_gen, false, false, false);
+        chart.series[2].setData(_load, false, false, false);
+        chart.series[3].setData(_irr, false, false, false);
+        if(data.kpi){
+          document.getElementById('kpi-pv').textContent = fmt2(data.kpi.pv || 0);
+          document.getElementById('kpi-gen').textContent = fmt2(data.kpi.gen || 0);
+          document.getElementById('kpi-load').textContent = fmt2(data.kpi.load || 0);
+          document.getElementById('kpi-irr').textContent = fmt2(data.kpi.irr || 0);
+        }
+        chart.redraw();
+        reportFrameHeight();
+      })
+      .catch(function(err){
+        console.error('monthly auto refresh failed', err);
+      });
+  }, AUTO_REFRESH_MS);
 });
 </script>
 <script>

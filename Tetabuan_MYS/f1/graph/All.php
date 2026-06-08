@@ -1,14 +1,18 @@
 <?php
-if($_POST==NULL){
+$reqD = isset($_POST["d"]) ? $_POST["d"] : (isset($_GET["d"]) ? $_GET["d"] : null);
+$reqM = isset($_POST["m"]) ? $_POST["m"] : (isset($_GET["m"]) ? $_GET["m"] : null);
+$reqY = isset($_POST["y"]) ? $_POST["y"] : (isset($_GET["y"]) ? $_GET["y"] : null);
+$isDataRequest = isset($_GET['data']) && $_GET['data'] == '1';
+if($reqD===NULL || $reqM===NULL || $reqY===NULL){
     $date1_=date('Y-m-d');
     $d_1=date('d');
     $m_1=date('m');
     $m_2=date('M');
     $y_1=date('Y');
 }else{
-    $d_1=$_POST["d"];
-    $m_1=$_POST["m"];
-    $y_1=$_POST["y"];
+    $d_1=$reqD;
+    $m_1=$reqM;
+    $y_1=$reqY;
     $date1_=$y_1."-".$m_1."-".$d_1;
     $months=array('01'=>'Jan','02'=>'Feb','03'=>'Mar','04'=>'Apr','05'=>'May','06'=>'Jun','07'=>'Jul','08'=>'Aug','09'=>'Sep','10'=>'Oct','11'=>'Nov','12'=>'Dec');
     $m_2=isset($months[$m_1])?$months[$m_1]:$m_1;
@@ -24,7 +28,7 @@ $db1Warning = '';
 $db2Warning = '';
 
 if($link1){
-    if($_POST==NULL){
+    if($reqD===NULL || $reqM===NULL || $reqY===NULL){
         $latestSql = "SELECT DATE(MAX(DatetimeLocal)) AS latest_date
                       FROM graph
                       WHERE COALESCE(PV_kW,0) > 0
@@ -147,6 +151,47 @@ if($link2){
 $dateLabel = $d_1."-".$m_2."-".$y_1;
 $dateValue = $y_1."-".$m_1."-".$d_1;
 $hasChartData = $totalPoints > 0 && $meaningfulPoints > 0;
+
+function series_pairs_json($csv) {
+    $csv = rtrim($csv, ',');
+    if ($csv === '') {
+        return array();
+    }
+    $json = '[' . preg_replace('/Date\.UTC\(([^\)]*)\)/', 'Date.UTC($1)', $csv) . ']';
+    $json = preg_replace_callback('/Date\.UTC\(([^\)]*)\)/', function($m) {
+        $parts = array_map('trim', explode(',', $m[1]));
+        $nums = array_map('intval', $parts);
+        while (count($nums) < 6) {
+            $nums[] = 0;
+        }
+        $ts = gmmktime($nums[3], $nums[4], $nums[5], $nums[1] + 1, $nums[2], $nums[0]) * 1000;
+        return (string)$ts;
+    }, $json);
+    $data = json_decode($json, true);
+    return is_array($data) ? $data : array();
+}
+
+if($isDataRequest){
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode(array(
+        'pv' => series_pairs_json($nnPv),
+        'gen' => series_pairs_json($nnGen),
+        'load' => series_pairs_json($nnLoad),
+        'ctrl' => series_pairs_json($nnCtrl),
+        'irrd' => series_pairs_json($nnIrr),
+        'soc' => series_pairs_json($nnSoc),
+        'battV' => series_pairs_json($nnBattV),
+        'kpi' => array(
+            'lastBatt' => round($lastBatt, 1),
+            'sumPv' => round($sumPv, 1),
+            'sumGen' => round($sumGen, 1),
+            'sumLoad' => round($sumLoad, 1),
+            'lastIrr' => round($lastIrr, 1),
+            'lastSoc' => $lastSoc !== null ? round($lastSoc, 1) : null
+        )
+    ));
+    exit();
+}
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -202,12 +247,12 @@ $hasChartData = $totalPoints > 0 && $meaningfulPoints > 0;
       </div>
 
       <div class="kpi-row">
-        <div class="kpi-box"><div class="lbl">Latest Batt V.</div><div class="val" style="color:#ea580c"><?php echo number_format($lastBatt,1); ?><span class="u">V</span></div></div>
-        <div class="kpi-box"><div class="lbl">PV Total</div><div class="val" style="color:#f59e0b"><?php echo number_format($sumPv,1); ?><span class="u">kWh</span></div></div>
-        <div class="kpi-box"><div class="lbl">AC Input Total</div><div class="val" style="color:#3b82f6"><?php echo number_format($sumGen,1); ?><span class="u">kWh</span></div></div>
-        <div class="kpi-box"><div class="lbl">Load Total</div><div class="val" style="color:#1a1a1a"><?php echo number_format($sumLoad,1); ?><span class="u">kWh</span></div></div>
-        <div class="kpi-box"><div class="lbl">Latest Irradiance</div><div class="val" style="color:#ef4444"><?php echo number_format($lastIrr,1); ?><span class="u">W/m²</span></div></div>
-        <div class="kpi-box"><div class="lbl">Latest SOC</div><div class="val" style="color:#8b5cf6"><?php echo $lastSoc!==null?number_format($lastSoc,1):'0.0'; ?><span class="u">%</span></div></div>
+        <div class="kpi-box"><div class="lbl">Latest Batt V.</div><div class="val" style="color:#ea580c"><span id="kpi-batt"><?php echo number_format($lastBatt,1); ?></span><span class="u">V</span></div></div>
+        <div class="kpi-box"><div class="lbl">PV Total</div><div class="val" style="color:#f59e0b"><span id="kpi-pv"><?php echo number_format($sumPv,1); ?></span><span class="u">kWh</span></div></div>
+        <div class="kpi-box"><div class="lbl">AC Input Total</div><div class="val" style="color:#3b82f6"><span id="kpi-gen"><?php echo number_format($sumGen,1); ?></span><span class="u">kWh</span></div></div>
+        <div class="kpi-box"><div class="lbl">Load Total</div><div class="val" style="color:#1a1a1a"><span id="kpi-load"><?php echo number_format($sumLoad,1); ?></span><span class="u">kWh</span></div></div>
+        <div class="kpi-box"><div class="lbl">Latest Irradiance</div><div class="val" style="color:#ef4444"><span id="kpi-irrd"><?php echo number_format($lastIrr,1); ?></span><span class="u">W/m²</span></div></div>
+        <div class="kpi-box"><div class="lbl">Latest SOC</div><div class="val" style="color:#8b5cf6"><span id="kpi-soc"><?php echo $lastSoc!==null?number_format($lastSoc,1):'0.0'; ?></span><span class="u">%</span></div></div>
       </div>
 
       <div id="container"></div>
@@ -235,14 +280,17 @@ var PM4 = [<?php echo rtrim($nnCtrl,',');?>];
 var PM5 = [<?php echo rtrim($nnIrr,',');?>];
 var PM6 = [<?php echo rtrim($nnSoc,',');?>];
 var PM7 = [<?php echo rtrim($nnBattV,',');?>];
-new Highcharts.StockChart({
+var RANGE_KEY = 'tetabuan_all_range';
+var savedRange = parseInt(window.localStorage.getItem(RANGE_KEY), 10);
+if (isNaN(savedRange) || savedRange < 0 || savedRange > 2) savedRange = 2;
+var chart = new Highcharts.StockChart({
   chart:{renderTo:'container',backgroundColor:'transparent',style:{fontFamily:"'DM Sans',sans-serif"},zoomType:'x'},
   credits:{enabled:false},
   title:{text:null},
   subtitle:{text:null},
   rangeSelector:{
     inputEnabled:false,
-    selected:2,
+    selected:savedRange,
     buttonTheme:{
       fill:'#fff',stroke:'#e8e6df','stroke-width':1,r:6,
       style:{color:'#888',fontWeight:'500'},
@@ -281,6 +329,7 @@ new Highcharts.StockChart({
 <script>
 var datePick = document.getElementById('datepick');
 var form = document.getElementById('dateform');
+var fmt1 = function(val){ return Number(val).toLocaleString(undefined, {minimumFractionDigits:1, maximumFractionDigits:1}); };
 if(datePick){
   datePick.addEventListener('change', function(){
     var parts = this.value.split('-');
@@ -289,6 +338,56 @@ if(datePick){
     document.getElementById('hd').value = parts[2];
     form.submit();
   });
+}
+
+if(chart.rangeSelector && chart.rangeSelector.buttons){
+  chart.rangeSelector.buttons.forEach(function(btn, idx){
+    if(!btn || !btn.element) return;
+    btn.element.addEventListener('click', function(){
+      window.localStorage.setItem(RANGE_KEY, String(idx));
+    });
+  });
+}
+
+var AUTO_REFRESH_MS = 300000;
+if(form){
+  window.setInterval(function(){
+    if(!datePick || !datePick.value){ return; }
+    var parts = datePick.value.split('-');
+    if(parts.length !== 3){ return; }
+    var url = 'All.php?data=1&y=' + encodeURIComponent(parts[0]) + '&m=' + encodeURIComponent(parts[1]) + '&d=' + encodeURIComponent(parts[2]);
+    fetch(url, { cache: 'no-store' })
+      .then(function(res){ return res.json(); })
+      .then(function(data){
+        if(!data){ return; }
+        PM1 = data.pv || [];
+        PM2 = data.gen || [];
+        PM3 = data.load || [];
+        PM4 = data.ctrl || [];
+        PM5 = data.irrd || [];
+        PM6 = data.soc || [];
+        PM7 = data.battV || [];
+        chart.series[0].setData(PM7, false, false, false);
+        chart.series[1].setData(PM1, false, false, false);
+        chart.series[2].setData(PM2, false, false, false);
+        chart.series[3].setData(PM3, false, false, false);
+        chart.series[4].setData(PM4, false, false, false);
+        chart.series[5].setData(PM5, false, false, false);
+        chart.series[6].setData(PM6, false, false, false);
+        if(data.kpi){
+          document.getElementById('kpi-batt').textContent = fmt1(data.kpi.lastBatt || 0);
+          document.getElementById('kpi-pv').textContent = fmt1(data.kpi.sumPv || 0);
+          document.getElementById('kpi-gen').textContent = fmt1(data.kpi.sumGen || 0);
+          document.getElementById('kpi-load').textContent = fmt1(data.kpi.sumLoad || 0);
+          document.getElementById('kpi-irrd').textContent = fmt1(data.kpi.lastIrr || 0);
+          document.getElementById('kpi-soc').textContent = data.kpi.lastSoc === null ? '0.0' : fmt1(data.kpi.lastSoc);
+        }
+        chart.redraw();
+      })
+      .catch(function(err){
+        console.error('All.php auto refresh failed', err);
+      });
+  }, AUTO_REFRESH_MS);
 }
 </script>
 </body>
