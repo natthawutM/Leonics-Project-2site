@@ -285,6 +285,8 @@ var PM7 = [<?php echo rtrim($nnBattV,',');?>];
 var RANGE_KEY = 'terusan_all_range';
 var savedRange = parseInt(window.localStorage.getItem(RANGE_KEY), 10);
 if (isNaN(savedRange) || savedRange < 0 || savedRange > 2) savedRange = 2;
+var customExtremes = null;
+var suppressExtremesSync = false;
 var chart = new Highcharts.StockChart({
   chart:{renderTo:'container',backgroundColor:'transparent',style:{fontFamily:"'DM Sans',sans-serif"},zoomType:'x'},
   credits:{enabled:false},
@@ -308,7 +310,22 @@ var chart = new Highcharts.StockChart({
   },
   scrollbar:{enabled:false},
   legend:{enabled:true,symbolWidth:10,symbolHeight:10,symbolRadius:5,itemStyle:{fontFamily:"'DM Sans',sans-serif",fontSize:'12px',color:'#555'}},
-  xAxis:{type:'datetime',gridLineColor:'#e8e6df',lineColor:'#e8e6df',tickColor:'#e8e6df',labels:{style:{color:'#aaa'}}},
+  xAxis:{type:'datetime',gridLineColor:'#e8e6df',lineColor:'#e8e6df',tickColor:'#e8e6df',labels:{style:{color:'#aaa'}},
+    events:{
+      afterSetExtremes:function(e){
+        if(suppressExtremesSync) return;
+        if(e.trigger === 'rangeSelectorButton'){
+          customExtremes = null;
+          return;
+        }
+        if(typeof e.min === 'number' && typeof e.max === 'number'){
+          customExtremes = { min: e.min, max: e.max };
+        } else {
+          customExtremes = null;
+        }
+      }
+    }
+  },
   yAxis:[
     {min:0,max:100,tickInterval:25,startOnTick:false,endOnTick:false,gridLineColor:'#e8e6df',title:{text:null},opposite:false,offset: 36, showLastLabel: true,labels:{format:'{value}%',style:{color:'#aaa'}}},
     {min:-300,max:300,tickInterval:150,startOnTick:false,endOnTick:false,gridLineColor:'#e8e6df',title:{text:null},opposite:false, showLastLabel: true,labels:{format:'{value} kW',style:{color:'#aaa'}}},
@@ -346,6 +363,7 @@ if(chart.rangeSelector && chart.rangeSelector.buttons){
   chart.rangeSelector.buttons.forEach(function(btn, idx){
     if(!btn || !btn.element) return;
     btn.element.addEventListener('click', function(){
+      customExtremes = null;
       window.localStorage.setItem(RANGE_KEY, String(idx));
     });
   });
@@ -376,6 +394,11 @@ if(form){
         chart.series[4].setData(PM4, false, false, false);
         chart.series[5].setData(PM5, false, false, false);
         chart.series[6].setData(PM6, false, false, false);
+        if(customExtremes && chart.xAxis && chart.xAxis[0]){
+          suppressExtremesSync = true;
+          chart.xAxis[0].setExtremes(customExtremes.min, customExtremes.max, false, false);
+          suppressExtremesSync = false;
+        }
         if(data.kpi){
           document.getElementById('kpi-batt').textContent = fmt1(data.kpi.lastBatt || 0);
           document.getElementById('kpi-pv').textContent = fmt1(data.kpi.sumPv || 0);
